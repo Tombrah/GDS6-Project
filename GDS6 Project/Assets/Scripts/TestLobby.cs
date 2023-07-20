@@ -8,6 +8,9 @@ using Unity.Services.Lobbies.Models;
 
 public class TestLobby : MonoBehaviour
 {
+    private Lobby hostLobby;
+    private float timer;
+
     private async void Start()
     {
         await UnityServices.InitializeAsync();
@@ -20,6 +23,25 @@ public class TestLobby : MonoBehaviour
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
+    private void Update()
+    {
+        
+    }
+
+    private async void HandleHeartbeat()
+    {
+        if (hostLobby != null)
+        {
+            timer -= Time.deltaTime;
+            if (timer < 0)
+            {
+                timer = 15;
+
+                await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
+            }
+        }
+    }
+
     public async void CreateLobby()
     {
         try
@@ -27,6 +49,8 @@ public class TestLobby : MonoBehaviour
             string lobbyName = "MyLobby";
             int maxPlayers = 2;
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers);
+
+            hostLobby = lobby;
 
             Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers);
         }
