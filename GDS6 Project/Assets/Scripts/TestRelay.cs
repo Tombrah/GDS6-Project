@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Relay;
+using System.Threading.Tasks;
 using Unity.Services.Relay.Models;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
@@ -14,19 +15,19 @@ public class TestRelay : MonoBehaviour
 {
     [SerializeField] private TMP_InputField codeInput;
 
-    private async void Start()
-    {
-        await UnityServices.InitializeAsync();
+    //private async void Start()
+    //{
+    //    await UnityServices.InitializeAsync();
+    //
+    //    AuthenticationService.Instance.SignedIn += () =>
+    //    {
+    //        Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
+    //    };
+    //
+    //    await AuthenticationService.Instance.SignInAnonymouslyAsync();
+    //}
 
-        AuthenticationService.Instance.SignedIn += () =>
-        {
-            Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
-        };
-
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
-    }
-
-    public async void CreateRelay()
+    public async Task<string> CreateRelay()
     {
         try
         {
@@ -39,18 +40,20 @@ public class TestRelay : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartHost();
+
+            return joinCode;
         }
         catch (RelayServiceException e)
         {
             Debug.Log(e);
+            return null;
         }
     }
 
-    public async void JoinRelay()
+    public async void JoinRelay(string joinCode)
     {
         try
         {
-            string joinCode = codeInput.text;
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
             RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");

@@ -15,6 +15,12 @@ public class TestLobby : MonoBehaviour
     private float heartbeatTimer;
     private float lobbyUpdateTimer;
 
+    [SerializeField] private Transform lobbyList;
+    [SerializeField] private GameObject lobbyPrefab;
+
+    private bool isJoining;
+    private bool isHost;
+
     private string playerName;
 
     private async void Start()
@@ -64,6 +70,18 @@ public class TestLobby : MonoBehaviour
                 Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 joinedLobby = lobby;
             }
+
+            if (joinedLobby.Data["RelayCode"].Value != "0")
+            {
+                if (!isHost)
+                {
+                    GetComponent<TestRelay>().JoinRelay(joinedLobby.Data["RelayCode"].Value);
+
+                    joinedLobby = null;
+                }
+
+                gameObject.SetActive(false);
+            }
         }
     }
 
@@ -75,15 +93,21 @@ public class TestLobby : MonoBehaviour
             int maxPlayers = 2;
             CreateLobbyOptions lobbyOptions = new CreateLobbyOptions
             {
-                IsPrivate = true,
-                Player = GetPlayer()
+                IsPrivate = false,
+                Player = GetPlayer(),
+                Data = new Dictionary<string, DataObject>
+                {
+                    { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, "0") }
+                }
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, lobbyOptions);
 
             hostLobby = lobby;
             joinedLobby = hostLobby;
 
-            displayCode.text = lobby.LobbyCode;
+            isHost = true;
+
+            displayCode.text = "Lobby Created!";
             Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + " " + lobby.Id + " " + lobby.LobbyCode);
             PrintPlayers(hostLobby);
         }
@@ -115,7 +139,10 @@ public class TestLobby : MonoBehaviour
             Debug.Log("Lobbies Found: " + queryResponse.Results.Count);
             foreach(Lobby lobby in queryResponse.Results)
             {
-                Debug.Log(lobby.Name + " " + lobby.MaxPlayers);
+                GameObject lobbyInstance = Instantiate(lobbyPrefab, transform);
+                LobbyPrefab lobbyPrefabScript = lobbyInstance.GetComponent<LobbyPrefab>();
+
+                lobbyPrefabScript.Initialise(this, lobby);
             }
         }
         catch (LobbyServiceException e)
@@ -124,19 +151,24 @@ public class TestLobby : MonoBehaviour
         }
     }
 
-    public async void JoinLobby()
+    public async void JoinLobby(Lobby targetLobby)
     {
+        if (isJoining) { return; }
+
+        isJoining = true;
+        
         try
         {
-            JoinLobbyByCodeOptions joinLobbyOptions = new JoinLobbyByCodeOptions
+            JoinLobbyByIdOptions joinLobbyOptions = new JoinLobbyByIdOptions
             {
                 Player = GetPlayer()
             };
 
-            string codeInput = GetComponentInChildren<TMP_InputField>().text;
-            Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(codeInput, joinLobbyOptions);
+            Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(targetLobby.Id, joinLobbyOptions);
 
             joinedLobby = lobby;
+
+            displayCode.text = "Lobby Joined!";
 
             Debug.Log("Joined Lobby!");
             PrintPlayers(lobby);
@@ -144,7 +176,10 @@ public class TestLobby : MonoBehaviour
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+            isJoining = false;
         }
+
+        isJoining = false;
     }
 
     public async void LeaveLobby()
@@ -180,6 +215,31 @@ public class TestLobby : MonoBehaviour
         foreach (Player player in lobby.Players)
         {
             Debug.Log(player.Id + " " + player.Data["PlayerName"].Value);
+        }
+    }
+
+    public async void StartGame()
+    {
+        if (isHost)
+        {
+            try
+            {
+                string relayCode = await GetComponent<TestRelay>().CreateRelay();
+
+                Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+                {
+                    Data = new Dictionary<string, DataObject>
+                    {
+                        { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, relayCode) }
+                    }
+                });
+
+                joinedLobby = lobby;
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
         }
     }
 }
