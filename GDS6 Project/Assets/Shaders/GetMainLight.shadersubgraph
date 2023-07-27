@@ -268,7 +268,7 @@
             "m_Id": "c66bea6e5ffb498ab701dcec79bb1f42"
         },
         {
-            "m_Id": "4c8928564e87448985e6cf32a7cc6b5c"
+            "m_Id": "d7bed6a990bc48f49bd56c35c900473c"
         },
         {
             "m_Id": "297d1e0108d8480f80de4d0b71f0ea05"
@@ -363,21 +363,6 @@
     "m_Property": {
         "m_Id": "aa7b02cf56f4499a911328ef743a94ec"
     }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
-    "m_ObjectId": "4c8928564e87448985e6cf32a7cc6b5c",
-    "m_Id": 2,
-    "m_DisplayName": "DirectionAtten",
-    "m_SlotType": 1,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "DirectionAtten",
-    "m_StageCapability": 3,
-    "m_Value": 0.0,
-    "m_DefaultValue": 0.0,
-    "m_Labels": []
 }
 
 {
@@ -611,6 +596,21 @@
         "e32": 0.0,
         "e33": 1.0
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "d7bed6a990bc48f49bd56c35c900473c",
+    "m_Id": 2,
+    "m_DisplayName": "DistanceAtten",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "DistanceAtten",
+    "m_StageCapability": 3,
+    "m_Value": 0.0,
+    "m_DefaultValue": 0.0,
+    "m_Labels": []
 }
 
 {
