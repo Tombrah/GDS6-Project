@@ -283,7 +283,7 @@ MonoBehaviour:
   crouchSpeed: 3
   jumpForce: 2
   gravity: -9.81
-  mouseSensitivity: 50
+  mouseSensitivity: 200
   crouchHeight: 1
   playerHeight: 2
   crouchRate: 0.1
