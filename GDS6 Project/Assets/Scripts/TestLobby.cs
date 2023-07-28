@@ -9,14 +9,16 @@ using TMPro;
 
 public class TestLobby : MonoBehaviour
 {
-    [SerializeField] private TMP_Text displayCode;
     private Lobby hostLobby;
     private Lobby joinedLobby;
     private float heartbeatTimer;
     private float lobbyUpdateTimer;
+    private int previousPlayerCount = 0;
 
     [SerializeField] private Transform lobbyList;
     [SerializeField] private GameObject lobbyPrefab;
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private Transform container;
 
     private bool isJoining;
     private bool isHost;
@@ -71,6 +73,27 @@ public class TestLobby : MonoBehaviour
                 joinedLobby = lobby;
             }
 
+            if (previousPlayerCount < joinedLobby.Players.Count)
+            {
+                foreach (Transform child in container)
+                {
+                    if (child.CompareTag("PlayerUI"))
+                    {
+                        continue;
+                    }
+                    Destroy(child.gameObject);
+                }
+
+                foreach (Player player in joinedLobby.Players)
+                {
+                    GameObject playerInstance = Instantiate(playerPrefab, container);
+                    PlayerPrefab playerPrefabScript = playerInstance.GetComponent<PlayerPrefab>();
+                    playerPrefabScript.SetName(GetPlayerName(player));
+                }
+
+                previousPlayerCount = joinedLobby.Players.Count;
+            }
+
             if (joinedLobby.Data["RelayCode"].Value != "0")
             {
                 if (!isHost)
@@ -107,9 +130,11 @@ public class TestLobby : MonoBehaviour
 
             isHost = true;
 
-            displayCode.text = "Lobby Created!";
+            GameObject playerInstance = Instantiate(playerPrefab, container);
+            PlayerPrefab playerPrefabScript = playerInstance.GetComponent<PlayerPrefab>();
+            playerPrefabScript.SetName(playerName);
+
             Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + " " + lobby.Id + " " + lobby.LobbyCode);
-            PrintPlayers(hostLobby);
         }
         catch (LobbyServiceException e)
         {
@@ -137,9 +162,18 @@ public class TestLobby : MonoBehaviour
             QueryResponse queryResponse = await Lobbies.Instance.QueryLobbiesAsync(queryLobbyOptions);
 
             Debug.Log("Lobbies Found: " + queryResponse.Results.Count);
+            foreach (Transform child in container)
+            {
+                if (child.CompareTag("LobbyUI"))
+                {
+                    continue;
+                }
+                Destroy(child.gameObject);
+            }
+
             foreach(Lobby lobby in queryResponse.Results)
             {
-                GameObject lobbyInstance = Instantiate(lobbyPrefab, transform);
+                GameObject lobbyInstance = Instantiate(lobbyPrefab, container);
                 LobbyPrefab lobbyPrefabScript = lobbyInstance.GetComponent<LobbyPrefab>();
 
                 lobbyPrefabScript.Initialise(this, lobby);
@@ -168,10 +202,7 @@ public class TestLobby : MonoBehaviour
 
             joinedLobby = lobby;
 
-            displayCode.text = "Lobby Joined!";
-
             Debug.Log("Joined Lobby!");
-            PrintPlayers(lobby);
         }
         catch (LobbyServiceException e)
         {
@@ -205,17 +236,10 @@ public class TestLobby : MonoBehaviour
         };
     }
 
-    public void PrintPlayers()
-    {
-        PrintPlayers(joinedLobby);
-    }
 
-    private void PrintPlayers(Lobby lobby)
+    private string GetPlayerName(Player player)
     {
-        foreach (Player player in lobby.Players)
-        {
-            Debug.Log(player.Id + " " + player.Data["PlayerName"].Value);
-        }
+        return player.Data["PlayerName"].Value;
     }
 
     public async void StartGame()

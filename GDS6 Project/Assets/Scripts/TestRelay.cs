@@ -13,7 +13,7 @@ using TMPro;
 
 public class TestRelay : MonoBehaviour
 {
-    [SerializeField] private TMP_InputField codeInput;
+    [SerializeField] private GameObject startCam;
 
     //private async void Start()
     //{
@@ -39,6 +39,7 @@ public class TestRelay : MonoBehaviour
             RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
+            startCam.SetActive(false);
             NetworkManager.Singleton.StartHost();
 
             return joinCode;
@@ -59,6 +60,7 @@ public class TestRelay : MonoBehaviour
             RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
+            startCam.SetActive(false);
             NetworkManager.Singleton.StartClient();
         }
         catch (RelayServiceException e)
