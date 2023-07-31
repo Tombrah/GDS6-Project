@@ -5,6 +5,11 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
+using Unity.Services.Relay;
+using Unity.Services.Relay.Models;
+using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
+using Unity.Networking.Transport.Relay;
 using TMPro;
 
 public class TestLobby : MonoBehaviour
@@ -20,6 +25,7 @@ public class TestLobby : MonoBehaviour
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform container;
     [SerializeField] private TMP_InputField nameInput;
+    [SerializeField] private TMP_Text lobbyNameText;
 
     private bool isJoining;
     private bool isHost;
@@ -82,7 +88,7 @@ public class TestLobby : MonoBehaviour
                     {
                         continue;
                     }
-                    Destroy(child.gameObject);
+                    DestroyImmediate(child.gameObject);
                 }
 
                 foreach (Player player in joinedLobby.Players)
@@ -93,18 +99,6 @@ public class TestLobby : MonoBehaviour
                 }
 
                 previousPlayerCount = joinedLobby.Players.Count;
-            }
-
-            if (joinedLobby.Data["RelayCode"].Value != "0")
-            {
-                if (!isHost)
-                {
-                    GetComponent<TestRelay>().JoinRelay(joinedLobby.Data["RelayCode"].Value);
-
-                    joinedLobby = null;
-                }
-
-                gameObject.SetActive(false);
             }
         }
     }
@@ -134,6 +128,10 @@ public class TestLobby : MonoBehaviour
             GameObject playerInstance = Instantiate(playerPrefab, container);
             PlayerPrefab playerPrefabScript = playerInstance.GetComponent<PlayerPrefab>();
             playerPrefabScript.SetName(playerName);
+
+            lobbyNameText.text = lobbyName;
+
+            CreateRelay();
 
             Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + " " + lobby.Id + " " + lobby.LobbyCode);
         }
@@ -169,7 +167,7 @@ public class TestLobby : MonoBehaviour
                 {
                     continue;
                 }
-                Destroy(child.gameObject);
+                DestroyImmediate(child.gameObject);
             }
 
             foreach(Lobby lobby in queryResponse.Results)
@@ -202,6 +200,8 @@ public class TestLobby : MonoBehaviour
             Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(targetLobby.Id, joinLobbyOptions);
 
             joinedLobby = lobby;
+
+            JoinRelay(joinedLobby.Data["RelayCode"].Value);
 
             Debug.Log("Joined Lobby!");
         }
@@ -243,28 +243,56 @@ public class TestLobby : MonoBehaviour
         return player.Data["PlayerName"].Value;
     }
 
-    public async void StartGame()
+    public void StartGame()
     {
         if (isHost)
         {
-            try
-            {
-                string relayCode = await GetComponent<TestRelay>().CreateRelay();
+            Loader.LoadNetwork(Loader.Scene.GameScene);
+        }
+    }
 
-                Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
-                {
-                    Data = new Dictionary<string, DataObject>
+    public async void CreateRelay()
+    {
+        try
+        {
+            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(1);
+
+            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+            Debug.Log(joinCode);
+
+            RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+
+            NetworkManager.Singleton.StartHost();
+
+            Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+            {
+                Data = new Dictionary<string, DataObject>
                     {
-                        { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, relayCode) }
+                        { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
                     }
-                });
+            });
+        }
+        catch (RelayServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
 
-                joinedLobby = lobby;
-            }
-            catch (LobbyServiceException e)
-            {
-                Debug.Log(e);
-            }
+    public async void JoinRelay(string joinCode)
+    {
+        try
+        {
+            JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
+
+            RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+
+            NetworkManager.Singleton.StartClient();
+        }
+        catch (RelayServiceException e)
+        {
+            Debug.Log(e);
         }
     }
 }

@@ -35,8 +35,12 @@ public class PlayerMovement : NetworkBehaviour
     public float checkRadius = 0.4f;
     public LayerMask groundLayer;
 
+    [SerializeField] private List<Vector3> spawnPointList;
+    [SerializeField] private List<Color32> characterColours;
+
     private Camera cam;
     private CharacterController controller;
+
 
 
     private void Awake()
@@ -56,6 +60,8 @@ public class PlayerMovement : NetworkBehaviour
             cam.enabled = false;
             this.enabled = false;
         }
+
+        transform.position = spawnPointList[(int)OwnerClientId];
     }
 
     private void Update()

@@ -195,7 +195,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ccf6704b55bc1ff4d86cb4259e341056, type: 2}
+  - {fileID: 2100000, guid: 5dd0f67e81db018428c6204c7e3566a4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -294,6 +294,14 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 0
+  spawnPointList:
+  - {x: -5, y: 1.05, z: -5}
+  - {x: 5, y: 1.05, z: 5}
+  characterColours:
+  - serializedVersion: 2
+    rgba: 4280580583
+  - serializedVersion: 2
+    rgba: 4293387595
 --- !u!114 &498548322657747033
 MonoBehaviour:
   m_ObjectHideFlags: 0
