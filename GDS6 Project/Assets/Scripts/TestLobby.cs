@@ -19,6 +19,7 @@ public class TestLobby : MonoBehaviour
     [SerializeField] private GameObject lobbyPrefab;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform container;
+    [SerializeField] private TMP_InputField nameInput;
 
     private bool isJoining;
     private bool isHost;
@@ -112,7 +113,7 @@ public class TestLobby : MonoBehaviour
     {
         try
         {
-            string lobbyName = "MyLobby";
+            string lobbyName = nameInput.text;
             int maxPlayers = 2;
             CreateLobbyOptions lobbyOptions = new CreateLobbyOptions
             {
