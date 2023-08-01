@@ -55,13 +55,14 @@ public class PlayerMovement : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        transform.position = spawnPointList[(int)OwnerClientId];
+
         if (!IsOwner)
         {
             cam.enabled = false;
             this.enabled = false;
         }
 
-        transform.position = spawnPointList[(int)OwnerClientId];
     }
 
     private void Update()
