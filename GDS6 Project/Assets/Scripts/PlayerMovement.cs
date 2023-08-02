@@ -38,6 +38,7 @@ public class PlayerMovement : NetworkBehaviour
     [SerializeField] private List<Vector3> spawnPointList;
     [SerializeField] private List<Color32> characterColours;
 
+    private Renderer rend;
     private Camera cam;
     private CharacterController controller;
 
@@ -49,6 +50,7 @@ public class PlayerMovement : NetworkBehaviour
 
         controller = GetComponent<CharacterController>();
         cam = GetComponentInChildren<Camera>();
+        rend = GetComponent<Renderer>();
 
         controller.height = playerHeight;
     }
@@ -56,6 +58,11 @@ public class PlayerMovement : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         transform.position = spawnPointList[(int)OwnerClientId];
+
+        Material mat = new Material(rend.material);
+        rend.material = mat;
+        rend.material.SetColor("DiffuseColour", characterColours[(int)OwnerClientId]);
+
 
         if (!IsOwner)
         {
