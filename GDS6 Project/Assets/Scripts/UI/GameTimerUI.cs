@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class CountdownUI : MonoBehaviour
+public class GameTimerUI : MonoBehaviour
 {
     private TMP_Text text;
 
@@ -21,7 +21,7 @@ public class CountdownUI : MonoBehaviour
 
     private void GameManager_OnStateChanged(object sender, System.EventArgs e)
     {
-        if (GameManager.Instance.IsCountdownActive())
+        if (GameManager.Instance.IsGamePlaying())
         {
             Show();
         }
@@ -33,7 +33,7 @@ public class CountdownUI : MonoBehaviour
 
     private void Update()
     {
-        text.text = Mathf.Ceil(GameManager.Instance.GetCountdownTimer()).ToString();
+        text.text = Mathf.Ceil(GameManager.Instance.GetGameTimer()).ToString();
     }
 
     private void Show()

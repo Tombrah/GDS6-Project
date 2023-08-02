@@ -74,6 +74,11 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Update()
     {
+        if (!GameManager.Instance.IsGamePlaying())
+        {
+            return;
+        }
+
         isGrounded = Physics.Raycast(transform.position, Vector3.down, controller.height / 2 + 0.5f);
 
         MouseLook();

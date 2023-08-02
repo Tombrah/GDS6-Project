@@ -3,14 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class CountdownUI : MonoBehaviour
+public class GameOverUI : MonoBehaviour
 {
-    private TMP_Text text;
-
-    private void Awake()
-    {
-        text = GetComponent<TMP_Text>();
-    }
+    [SerializeField] private TMP_Text text;
 
     private void Start()
     {
@@ -21,7 +16,7 @@ public class CountdownUI : MonoBehaviour
 
     private void GameManager_OnStateChanged(object sender, System.EventArgs e)
     {
-        if (GameManager.Instance.IsCountdownActive())
+        if (GameManager.Instance.IsGameOver())
         {
             Show();
         }
@@ -29,11 +24,6 @@ public class CountdownUI : MonoBehaviour
         {
             Hide();
         }
-    }
-
-    private void Update()
-    {
-        text.text = Mathf.Ceil(GameManager.Instance.GetCountdownTimer()).ToString();
     }
 
     private void Show()

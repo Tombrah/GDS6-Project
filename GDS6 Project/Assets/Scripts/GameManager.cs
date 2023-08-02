@@ -19,11 +19,12 @@ public class GameManager : NetworkBehaviour
     }
 
     [SerializeField] private GameObject playerPrefab;
-    private NetworkVariable<State> state = new NetworkVariable<State>(State.CountdownToStart);
+    private NetworkVariable<State> state = new NetworkVariable<State>(State.WaitingToStart);
     private NetworkVariable<float> waitingToStartTimer = new NetworkVariable<float>(1f);
     private NetworkVariable<float> countdownTimer = new NetworkVariable<float>(3f);
     private NetworkVariable<float> gamePlayingTimer = new NetworkVariable<float>(0f);
-    private float gamePlayingTimerMax = 90f;
+    [Tooltip("In-game timer in seconds")]
+    [SerializeField] private float gamePlayingTimerMax = 90f;
 
     private void Awake()
     {
@@ -32,10 +33,16 @@ public class GameManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        state.OnValueChanged += State_OnValueChanged;
         if (IsServer)
         {
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
         }
+    }
+
+    private void State_OnValueChanged(State previousValue, State newValue)
+    {
+        OnStateChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void SceneManager_OnLoadEventCompleted(string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
@@ -61,7 +68,7 @@ public class GameManager : NetworkBehaviour
                 if (waitingToStartTimer.Value < 0f)
                 {
                     state.Value = State.CountdownToStart;
-                    OnStateChanged?.Invoke(this, EventArgs.Empty);
+                    Debug.Log("Waiting Finished");
                 }
                 break;
             case State.CountdownToStart:
@@ -70,7 +77,6 @@ public class GameManager : NetworkBehaviour
                 {
                     state.Value = State.GamePlaying;
                     gamePlayingTimer.Value = gamePlayingTimerMax;
-                    OnStateChanged?.Invoke(this, EventArgs.Empty);
                 }
                 break;
             case State.GamePlaying:
@@ -78,12 +84,15 @@ public class GameManager : NetworkBehaviour
                 if (gamePlayingTimer.Value < 0f)
                 {
                     state.Value = State.GameEnded;
-                    OnStateChanged?.Invoke(this, EventArgs.Empty);
                 }
                 break;
             case State.GameEnded:
                 break;
         }
+    }
+    public bool IsCountdownActive()
+    {
+        return state.Value == State.CountdownToStart;
     }
 
     public bool IsGamePlaying()
@@ -91,13 +100,18 @@ public class GameManager : NetworkBehaviour
         return state.Value == State.GamePlaying;
     }
 
-    public bool IsCountdownActive()
+    public bool IsGameOver()
     {
-        return state.Value == State.CountdownToStart;
+        return state.Value == State.GameEnded;
     }
 
     public float GetCountdownTimer()
     {
         return countdownTimer.Value;
+    }
+
+    public float GetGameTimer()
+    {
+        return gamePlayingTimer.Value;
     }
 }
