@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d113526613635f468a80596c595ac54, type: 3}
   m_Name: ScreenSpaceOutlines
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   renderPassEvent: 300
   outlinesLayerMask:
     serializedVersion: 2

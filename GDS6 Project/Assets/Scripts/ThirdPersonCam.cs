@@ -34,6 +34,10 @@ public class ThirdPersonCam : MonoBehaviour
 
     private void Update()
     {
+        if (!GameManager.Instance.IsGamePlaying())
+        {
+            return;
+        }
         // switch styles
         if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchCameraStyle(CameraStyle.Basic);
         if (Input.GetKeyDown(KeyCode.Alpha2)) SwitchCameraStyle(CameraStyle.Combat);

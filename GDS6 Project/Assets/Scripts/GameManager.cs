@@ -50,8 +50,9 @@ public class GameManager : NetworkBehaviour
     {
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            GameObject player = Instantiate(playerPrefab, playerSpawnPoints[(int)clientId]);
+            GameObject player = Instantiate(playerPrefab, playerSpawnPoints[(int)clientId].position, playerSpawnPoints[(int)clientId].rotation);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+            player.GetComponentInChildren<PlayerMovementTutorial>().spawnPoint = playerSpawnPoints[(int)clientId];
         }
     }
 

@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 using TMPro;
 
-public class PlayerMovementTutorial : MonoBehaviour
+public class PlayerMovementTutorial : NetworkBehaviour
 {
     [Header("Movement")]
     public float moveSpeed;
@@ -35,6 +36,8 @@ public class PlayerMovementTutorial : MonoBehaviour
 
     Rigidbody rb;
 
+    public Transform spawnPoint;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -43,10 +46,22 @@ public class PlayerMovementTutorial : MonoBehaviour
         readyToJump = true;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner)
+        {
+            this.enabled = false;
+        }
+    }
+
     private void Update()
     {
+        if (!GameManager.Instance.IsGamePlaying())
+        {
+            return;
+        }
         // ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f);
 
         MyInput();
         SpeedControl();
@@ -60,6 +75,10 @@ public class PlayerMovementTutorial : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!GameManager.Instance.IsGamePlaying())
+        {
+            return;
+        }
         MovePlayer();
     }
 

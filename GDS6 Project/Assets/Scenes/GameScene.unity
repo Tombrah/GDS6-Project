@@ -132,7 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 26709576}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RobberSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -148,7 +148,7 @@ Transform:
   m_GameObject: {fileID: 26709575}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: 0.0136, y: 0.16919997, z: 0.01300003}
+  m_LocalPosition: {x: 0.0136, y: 0.1692, z: 0.0068}
   m_LocalScale: {x: 0.01, y: 0.010000002, z: 0.010000002}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -767,7 +767,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1118607965}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: CopSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -783,7 +783,7 @@ Transform:
   m_GameObject: {fileID: 1118607964}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: -0.0514, y: -0.12079999, z: 0.012999992}
+  m_LocalPosition: {x: -0.0514, y: -0.0919, z: 0.0068}
   m_LocalScale: {x: 0.01, y: 0.010000002, z: 0.010000002}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1304,8 +1304,8 @@ Transform:
   m_GameObject: {fileID: 919132149002184903}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 0.67511, y: -0.07, z: 0.44}
-  m_LocalScale: {x: 134.47, y: 134.47, z: 134.47}
+  m_LocalPosition: {x: 0.082026, y: -0.14, z: 1.0974}
+  m_LocalScale: {x: 178.4417, y: 178.4417, z: 178.4417}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1118607965}
@@ -1342,7 +1342,7 @@ GameObject:
   - component: {fileID: 3469287836637068760}
   - component: {fileID: 1711813856063719698}
   - component: {fileID: 1055364504}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: lowerfloor_greybox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1412,11 +1412,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88b6a0fb5b7f3ce4ab4b3aae4f04c883, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 8711077707305970091, guid: b1fd334cef8612e43ab5cf26b990703c, type: 3}
+  playerPrefab: {fileID: 5466036055436188, guid: 50342b0b820bfc245a6abebed3f8a96f, type: 3}
   playerSpawnPoints:
   - {fileID: 1118607965}
   - {fileID: 26709576}
-  gamePlayingTimerMax: 5
+  gamePlayingTimerMax: 90
 --- !u!114 &6409621665276144765
 MonoBehaviour:
   m_ObjectHideFlags: 0
