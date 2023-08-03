@@ -19,6 +19,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private List<Transform> playerSpawnPoints;
     private NetworkVariable<State> state = new NetworkVariable<State>(State.WaitingToStart);
     private NetworkVariable<float> waitingToStartTimer = new NetworkVariable<float>(1f);
     private NetworkVariable<float> countdownTimer = new NetworkVariable<float>(3f);
@@ -49,7 +50,7 @@ public class GameManager : NetworkBehaviour
     {
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            GameObject player = Instantiate(playerPrefab);
+            GameObject player = Instantiate(playerPrefab, playerSpawnPoints[(int)clientId]);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         }
     }
