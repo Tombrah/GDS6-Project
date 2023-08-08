@@ -1412,11 +1412,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88b6a0fb5b7f3ce4ab4b3aae4f04c883, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 5466036055436188, guid: 50342b0b820bfc245a6abebed3f8a96f, type: 3}
+  playerPrefab: {fileID: 5466036055436188, guid: d4923962652d62f4f9d7345abca3dde5, type: 3}
   playerSpawnPoints:
   - {fileID: 1118607965}
   - {fileID: 26709576}
-  gamePlayingTimerMax: 90
+  gamePlayingTimerMax: 30
+  roundResetTimerMax: 10
 --- !u!114 &6409621665276144765
 MonoBehaviour:
   m_ObjectHideFlags: 0

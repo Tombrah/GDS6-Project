@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Cinemachine;
 
 public class PlayerMovement : NetworkBehaviour
 {
@@ -35,28 +36,36 @@ public class PlayerMovement : NetworkBehaviour
     public float checkRadius = 0.4f;
     public LayerMask groundLayer;
 
-    [SerializeField] private List<Color32> characterColours;
+    [SerializeField] private List<Color> characterColours;
 
-    private Camera cam;
+    [SerializeField] private CinemachineFreeLook freeLookCamera;
+    [SerializeField] private AudioListener listener;
     private CharacterController controller;
 
-
+    public string[] roles = { "Cop", "Robber" };
 
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
 
         controller = GetComponent<CharacterController>();
-        cam = GetComponentInChildren<Camera>();
 
         controller.height = playerHeight;
     }
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner)
+        AssignRole(roles[(int)OwnerClientId]);
+
+        if (IsOwner)
         {
-            cam.enabled = false;
+            listener.enabled = true;
+            freeLookCamera.Priority = 1;
+        }
+        else
+        {
+            listener.enabled = false;
+            freeLookCamera.Priority = 0;
             this.enabled = false;
         }
     }
@@ -70,7 +79,6 @@ public class PlayerMovement : NetworkBehaviour
 
         isGrounded = Physics.Raycast(transform.position, Vector3.down, controller.height / 2 + 0.5f);
 
-        MouseLook();
         PlayerMove();
 
         if (isGrounded)
@@ -92,18 +100,6 @@ public class PlayerMovement : NetworkBehaviour
             StartCoroutine(PlayerDash());
         }
 
-    }
-
-    private void MouseLook()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
-
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-        transform.Rotate(Vector3.up * mouseX);
-        cam.transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
     }
 
     private void PlayerMove()
@@ -146,6 +142,29 @@ public class PlayerMovement : NetworkBehaviour
             controller.Move(transform.forward * dashSpeed * Time.deltaTime);
 
             yield return null;
+        }
+    }
+
+    public void AssignRole(string role)
+    {
+        if (role == "Cop")
+        {
+            transform.position = GameManager.Instance.playerSpawnPoints[0].position;
+            transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
+
+            Material mat = new Material(gameObject.GetComponent<Renderer>().material);
+            mat.SetColor("_DiffuseColour", characterColours[0]);
+            gameObject.GetComponent<Renderer>().material = mat;
+        }
+
+        if (role == "Robber")
+        {
+            transform.position = GameManager.Instance.playerSpawnPoints[1].position;
+            transform.rotation = GameManager.Instance.playerSpawnPoints[1].rotation;
+
+            Material mat = new Material(gameObject.GetComponent<Renderer>().material);
+            mat.SetColor("_DiffuseColour", characterColours[1]);
+            gameObject.GetComponent<Renderer>().material = mat;
         }
     }
 }

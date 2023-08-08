@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2689280531766198431}
   - component: {fileID: -4498047789665310803}
   m_Layer: 0
-  m_Name: MainPlayer
+  m_Name: MainPlayer 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,10 +66,9 @@ GameObject:
   - component: {fileID: 3952812315906914792}
   - component: {fileID: 5428506460973330591}
   - component: {fileID: 7454760699432383562}
-  - component: {fileID: 375502869829004021}
-  - component: {fileID: 2109064031368002358}
+  - component: {fileID: 7740719307630510103}
+  - component: {fileID: 5669093681610623774}
   - component: {fileID: 3759280084232581872}
-  - component: {fileID: 1029382357832660016}
   m_Layer: 0
   m_Name: PlayerObj
   m_TagString: Untagged
@@ -166,34 +165,33 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &375502869829004021
-Rigidbody:
+--- !u!143 &7740719307630510103
+CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 186314152681155720}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 1
-  m_Constraints: 80
-  m_CollisionDetection: 1
---- !u!114 &2109064031368002358
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5669093681610623774
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -202,24 +200,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 186314152681155720}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 190aacb42cfffc14f9866f19cfe0e349, type: 3}
+  m_Script: {fileID: 11500000, guid: ead72d17dca869e4f8e543d0e93903cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 7
-  groundDrag: 5
-  jumpForce: 12
-  jumpCooldown: 0.25
-  airMultiplier: 0.4
-  walkSpeed: 0
-  sprintSpeed: 0
-  jumpKey: 32
-  playerHeight: 1
-  whatIsGround:
+  walkSpeed: 5
+  runSpeed: 8
+  crouchSpeed: 3
+  jumpForce: 5
+  gravity: -9.81
+  mouseSensitivity: 50
+  crouchHeight: 1
+  playerHeight: 2
+  crouchRate: 0.1
+  dashSpeed: 10
+  dashTime: 0.5
+  dashCooldown: 1.5
+  checkRadius: 0.4
+  groundLayer:
     serializedVersion: 2
-    m_Bits: 8
-  orientation: {fileID: 3668755112442453146}
+    m_Bits: 0
+  characterColours:
+  - {r: 0.9433962, g: 0.63102996, b: 0.30704877, a: 0}
+  - {r: 0.44001427, g: 0.9056604, b: 0.79727054, a: 0}
   freeLookCamera: {fileID: 7965495215328775800}
   listener: {fileID: 8799900385261682498}
+  roles:
+  - Cop
+  - Robber
 --- !u!114 &3759280084232581872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -250,18 +257,6 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &1029382357832660016
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 186314152681155720}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3419049895626090109
 GameObject:
   m_ObjectHideFlags: 3
@@ -287,7 +282,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3419049895626090109}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14326225, y: 0.000000008514446, z: -0.0000000012325124, w: 0.98968476}
+  m_LocalRotation: {x: 0.14326225, y: -0.000000008514446, z: 0.0000000012325124, w: 0.98968476}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -487,7 +482,7 @@ MonoBehaviour:
   orientation: {fileID: 3668755112442453146}
   player: {fileID: 3876721378378234808}
   playerObj: {fileID: 3876721378378234808}
-  rb: {fileID: 375502869829004021}
+  rb: {fileID: 0}
   rotationSpeed: 7
   combatLookAt: {fileID: 0}
   thirdPersonCam: {fileID: 0}
@@ -561,7 +556,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4273574180158285475}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.18910751, y: -0.000000008447955, z: 0.0000000016269276, w: 0.9819564}
+  m_LocalRotation: {x: 0.18910751, y: 0.0000000084479606, z: -0.0000000016269286, w: 0.9819564}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -669,7 +664,7 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 3876721378378234808}
+  m_LookAt: {fileID: 3668755112442453146}
   m_Follow: {fileID: 3876721378378234808}
   m_CommonLens: 1
   m_Lens:

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 using Unity.Netcode;
 using TMPro;
 
@@ -36,7 +37,8 @@ public class PlayerMovementTutorial : NetworkBehaviour
 
     Rigidbody rb;
 
-    public Transform spawnPoint;
+    [SerializeField] private CinemachineFreeLook freeLookCamera;
+    [SerializeField] private AudioListener listener;
 
     private void Start()
     {
@@ -48,8 +50,18 @@ public class PlayerMovementTutorial : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner)
+        transform.position = GameManager.Instance.playerSpawnPoints[(int)OwnerClientId].position;
+        transform.rotation = GameManager.Instance.playerSpawnPoints[(int)OwnerClientId].rotation;
+
+        if (IsOwner)
         {
+            listener.enabled = true;
+            freeLookCamera.Priority = 1;
+        }
+        else
+        {
+            listener.enabled = false;
+            freeLookCamera.Priority = 0;
             this.enabled = false;
         }
     }
@@ -61,7 +73,7 @@ public class PlayerMovementTutorial : NetworkBehaviour
             return;
         }
         // ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight / 2 + 0.5f);
 
         MyInput();
         SpeedControl();

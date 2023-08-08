@@ -15,17 +15,23 @@ public class GameManager : NetworkBehaviour
         WaitingToStart,
         CountdownToStart,
         GamePlaying,
+        RoundResetting,
         GameEnded
     }
 
     [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private List<Transform> playerSpawnPoints;
+    public List<Transform> playerSpawnPoints;
     private NetworkVariable<State> state = new NetworkVariable<State>(State.WaitingToStart);
+    private NetworkVariable<int> round = new NetworkVariable<int>(0);
     private NetworkVariable<float> waitingToStartTimer = new NetworkVariable<float>(1f);
     private NetworkVariable<float> countdownTimer = new NetworkVariable<float>(3f);
     private NetworkVariable<float> gamePlayingTimer = new NetworkVariable<float>(0f);
+    private NetworkVariable<float> roundResetTimer = new NetworkVariable<float>(0f);
     [Tooltip("In-game timer in seconds")]
     [SerializeField] private float gamePlayingTimerMax = 90f;
+    [SerializeField] private float roundResetTimerMax = 10f;
+
+    private bool callOnce;
 
     private void Awake()
     {
@@ -38,6 +44,7 @@ public class GameManager : NetworkBehaviour
         if (IsServer)
         {
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+            round.Value = 0;
         }
     }
 
@@ -50,9 +57,8 @@ public class GameManager : NetworkBehaviour
     {
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            GameObject player = Instantiate(playerPrefab, playerSpawnPoints[(int)clientId].position, playerSpawnPoints[(int)clientId].rotation);
+            GameObject player = Instantiate(playerPrefab);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-            player.GetComponentInChildren<PlayerMovementTutorial>().spawnPoint = playerSpawnPoints[(int)clientId];
         }
     }
 
@@ -79,13 +85,26 @@ public class GameManager : NetworkBehaviour
                 {
                     state.Value = State.GamePlaying;
                     gamePlayingTimer.Value = gamePlayingTimerMax;
+                    round.Value++;
                 }
                 break;
             case State.GamePlaying:
                 gamePlayingTimer.Value -= Time.deltaTime;
                 if (gamePlayingTimer.Value < 0f)
                 {
-                    state.Value = State.GameEnded;
+                    state.Value = State.RoundResetting;
+                    roundResetTimer.Value = roundResetTimerMax;
+                    callOnce = false;
+                }
+                break;
+            case State.RoundResetting:
+                roundResetTimer.Value -= Time.deltaTime;
+                if (roundResetTimer.Value < 0f)
+                {
+                    if (round.Value == 4) state.Value = State.GameEnded;
+
+                    ResetRound();
+                    state.Value = State.WaitingToStart;
                 }
                 break;
             case State.GameEnded:
@@ -115,5 +134,15 @@ public class GameManager : NetworkBehaviour
     public float GetGameTimer()
     {
         return gamePlayingTimer.Value;
+    }
+
+    private void ResetRound()
+    {
+        if (!callOnce)
+        {
+            Debug.Log("Round Reset!");
+
+            callOnce = true;
+        }
     }
 }
