@@ -76,7 +76,7 @@ public class GameManager : NetworkBehaviour
                 if (waitingToStartTimer.Value < 0f)
                 {
                     state.Value = State.CountdownToStart;
-                    Debug.Log("Waiting Finished");
+                    countdownTimer.Value = 3f;
                 }
                 break;
             case State.CountdownToStart:
@@ -101,8 +101,11 @@ public class GameManager : NetworkBehaviour
                 roundResetTimer.Value -= Time.deltaTime;
                 if (roundResetTimer.Value < 0f)
                 {
-                    if (round.Value == 4) state.Value = State.GameEnded;
-
+                    if (round.Value == 4)
+                    {
+                        state.Value = State.GameEnded;
+                        break;
+                    }
                     ResetRound();
                     state.Value = State.WaitingToStart;
                 }

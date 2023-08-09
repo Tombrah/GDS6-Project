@@ -218,8 +218,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   orientation: {fileID: 3668755112442453146}
+  characterColours:
+  - {r: 0.4988875, g: 0.9528302, b: 0.92176163, a: 0}
+  - {r: 0.9528302, g: 0.67193645, b: 0.3460751, a: 0}
   freeLookCamera: {fileID: 7965495215328775800}
   listener: {fileID: 8799900385261682498}
+  roles:
+  - Cop
+  - Robber
 --- !u!114 &3759280084232581872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -561,7 +567,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4273574180158285475}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.18910751, y: -0.000000008447955, z: 0.0000000016269276, w: 0.9819564}
+  m_LocalRotation: {x: 0.18910751, y: 0.0000000084479606, z: -0.0000000016269286, w: 0.9819564}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

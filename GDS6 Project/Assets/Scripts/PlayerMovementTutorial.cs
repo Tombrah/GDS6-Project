@@ -37,8 +37,12 @@ public class PlayerMovementTutorial : NetworkBehaviour
 
     Rigidbody rb;
 
+    [SerializeField] private List<Color> characterColours;
+
     [SerializeField] private CinemachineFreeLook freeLookCamera;
     [SerializeField] private AudioListener listener;
+
+    public string[] roles = { "Cop", "Robber" };
 
     private void Start()
     {
@@ -50,8 +54,7 @@ public class PlayerMovementTutorial : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        transform.position = GameManager.Instance.playerSpawnPoints[(int)OwnerClientId].position;
-        transform.rotation = GameManager.Instance.playerSpawnPoints[(int)OwnerClientId].rotation;
+        AssignRole(roles[(int)OwnerClientId]);
 
         if (IsOwner)
         {
@@ -146,5 +149,28 @@ public class PlayerMovementTutorial : NetworkBehaviour
     private void ResetJump()
     {
         readyToJump = true;
+    }
+
+    public void AssignRole(string role)
+    {
+        if (role == "Cop")
+        {
+            transform.position = GameManager.Instance.playerSpawnPoints[0].position;
+            transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
+
+            Material mat = new Material(gameObject.GetComponent<Renderer>().material);
+            mat.SetColor("_DiffuseColour", characterColours[0]);
+            gameObject.GetComponent<Renderer>().material = mat;
+        }
+
+        if (role == "Robber")
+        {
+            transform.position = GameManager.Instance.playerSpawnPoints[1].position;
+            transform.rotation = GameManager.Instance.playerSpawnPoints[1].rotation;
+
+            Material mat = new Material(gameObject.GetComponent<Renderer>().material);
+            mat.SetColor("_DiffuseColour", characterColours[1]);
+            gameObject.GetComponent<Renderer>().material = mat;
+        }
     }
 }
