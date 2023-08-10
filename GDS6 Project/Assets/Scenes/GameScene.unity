@@ -1416,7 +1416,8 @@ MonoBehaviour:
   playerSpawnPoints:
   - {fileID: 1118607965}
   - {fileID: 26709576}
-  gamePlayingTimerMax: 90
+  gamePlayingTimerMax: 3
+  roundResetTimerMax: 1
 --- !u!114 &6409621665276144765
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 using Unity.Netcode;
 using TMPro;
 
@@ -36,7 +37,12 @@ public class PlayerMovementTutorial : NetworkBehaviour
 
     Rigidbody rb;
 
-    public Transform spawnPoint;
+    [SerializeField] private List<Color> characterColours;
+
+    [SerializeField] private CinemachineFreeLook freeLookCamera;
+    [SerializeField] private AudioListener listener;
+
+    public string[] roles = { "Cop", "Robber" };
 
     private void Start()
     {
@@ -48,8 +54,17 @@ public class PlayerMovementTutorial : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner)
+        AssignRole(roles[(int)OwnerClientId]);
+
+        if (IsOwner)
         {
+            listener.enabled = true;
+            freeLookCamera.Priority = 1;
+        }
+        else
+        {
+            listener.enabled = false;
+            freeLookCamera.Priority = 0;
             this.enabled = false;
         }
     }
@@ -61,7 +76,7 @@ public class PlayerMovementTutorial : NetworkBehaviour
             return;
         }
         // ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight / 2 + 0.5f);
 
         MyInput();
         SpeedControl();
@@ -134,5 +149,28 @@ public class PlayerMovementTutorial : NetworkBehaviour
     private void ResetJump()
     {
         readyToJump = true;
+    }
+
+    public void AssignRole(string role)
+    {
+        if (role == "Cop")
+        {
+            transform.position = GameManager.Instance.playerSpawnPoints[0].position;
+            transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
+
+            Material mat = new Material(gameObject.GetComponent<Renderer>().material);
+            mat.SetColor("_DiffuseColour", characterColours[0]);
+            gameObject.GetComponent<Renderer>().material = mat;
+        }
+
+        if (role == "Robber")
+        {
+            transform.position = GameManager.Instance.playerSpawnPoints[1].position;
+            transform.rotation = GameManager.Instance.playerSpawnPoints[1].rotation;
+
+            Material mat = new Material(gameObject.GetComponent<Renderer>().material);
+            mat.SetColor("_DiffuseColour", characterColours[1]);
+            gameObject.GetComponent<Renderer>().material = mat;
+        }
     }
 }
