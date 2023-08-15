@@ -44,6 +44,13 @@ public class PlayerMovementTutorial : NetworkBehaviour
 
     public string[] roles = { "Cop", "Robber" };
 
+    public enum Role
+    {
+        Cop,
+        Robber
+    }
+    public Role playerRole;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -54,7 +61,7 @@ public class PlayerMovementTutorial : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        AssignRole(roles[(int)OwnerClientId]);
+        //AssignRole(roles[(int)OwnerClientId]);
 
         if (IsOwner)
         {
@@ -151,26 +158,32 @@ public class PlayerMovementTutorial : NetworkBehaviour
         readyToJump = true;
     }
 
-    public void AssignRole(string role)
+    public void AssignRole(int roleId)
     {
-        if (role == "Cop")
+        switch ((Role)roleId)
         {
-            transform.position = GameManager.Instance.playerSpawnPoints[0].position;
-            transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
+            case Role.Cop:
+                playerRole = Role.Cop;
 
-            Material mat = new Material(gameObject.GetComponent<Renderer>().material);
-            mat.SetColor("_DiffuseColour", characterColours[0]);
-            gameObject.GetComponent<Renderer>().material = mat;
-        }
+                transform.position = GameManager.Instance.playerSpawnPoints[0].position;
+                transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
 
-        if (role == "Robber")
-        {
-            transform.position = GameManager.Instance.playerSpawnPoints[1].position;
-            transform.rotation = GameManager.Instance.playerSpawnPoints[1].rotation;
+                Material mat1 = new Material(gameObject.GetComponent<Renderer>().material);
+                mat1.SetColor("_DiffuseColour", characterColours[0]);
+                gameObject.GetComponent<Renderer>().material = mat1;
+                break;
+            case Role.Robber:
+                playerRole = Role.Robber;
 
-            Material mat = new Material(gameObject.GetComponent<Renderer>().material);
-            mat.SetColor("_DiffuseColour", characterColours[1]);
-            gameObject.GetComponent<Renderer>().material = mat;
+                transform.position = GameManager.Instance.playerSpawnPoints[1].position;
+                transform.rotation = GameManager.Instance.playerSpawnPoints[1].rotation;
+
+                Material mat2 = new Material(gameObject.GetComponent<Renderer>().material);
+                mat2.SetColor("_DiffuseColour", characterColours[1]);
+                gameObject.GetComponent<Renderer>().material = mat2;
+                break;
+            default:
+                break;
         }
     }
 }

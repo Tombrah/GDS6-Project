@@ -28,6 +28,7 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<float> gamePlayingTimer = new NetworkVariable<float>(0f);
     private NetworkVariable<float> roundResetTimer = new NetworkVariable<float>(0f);
     [Tooltip("In-game timer in seconds")]
+    [SerializeField] private int roundMax = 4;
     [SerializeField] private float gamePlayingTimerMax = 90f;
     [SerializeField] private float roundResetTimerMax = 10f;
 
@@ -55,10 +56,21 @@ public class GameManager : NetworkBehaviour
 
     private void SceneManager_OnLoadEventCompleted(string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
+        int roleId = Mathf.CeilToInt(UnityEngine.Random.Range(0, 2));
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            GameObject player = Instantiate(playerPrefab);
+            GameObject player = Instantiate(playerPrefab, playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+
+            AssignRoleClientRpc(roleId, new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            });
+
+            roleId = (roleId * -1) + 1;
         }
     }
 
@@ -101,7 +113,7 @@ public class GameManager : NetworkBehaviour
                 roundResetTimer.Value -= Time.deltaTime;
                 if (roundResetTimer.Value < 0f)
                 {
-                    if (round.Value == 4)
+                    if (round.Value == roundMax)
                     {
                         state.Value = State.GameEnded;
                         break;
@@ -143,9 +155,26 @@ public class GameManager : NetworkBehaviour
     {
         if (!callOnce)
         {
-            Debug.Log("Round Reset!");
+            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                PlayerMovementTutorial player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponentInChildren<PlayerMovementTutorial>();
+                AssignRoleClientRpc(((int)player.playerRole * -1) + 1, new ClientRpcParams
+                {
+                    Send = new ClientRpcSendParams
+                    {
+                        TargetClientIds = new ulong[] { clientId }
+                    }
+                });
+            };
 
             callOnce = true;
         }
+    }
+
+    [ClientRpc]
+    private void AssignRoleClientRpc(int roleId, ClientRpcParams clientRpcParams = default)
+    {
+        PlayerMovementTutorial player = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponentInChildren<PlayerMovementTutorial>();
+        player.AssignRole(roleId);
     }
 }
