@@ -33,6 +33,9 @@ public class PlayerMovementTutorial : NetworkBehaviour
     float horizontalInput;
     float verticalInput;
 
+    private bool canInteract = true;
+    [SerializeField] private float robTimer = 3;
+
     Vector3 moveDirection;
 
     Rigidbody rb;
@@ -82,6 +85,8 @@ public class PlayerMovementTutorial : NetworkBehaviour
         {
             return;
         }
+
+        RobInteraction();
         // ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight / 2 + 0.5f);
 
@@ -156,6 +161,36 @@ public class PlayerMovementTutorial : NetworkBehaviour
     private void ResetJump()
     {
         readyToJump = true;
+    }
+
+    private void RobInteraction()
+    {
+        if (canInteract && Input.GetKeyDown(KeyCode.E))
+        {
+            canInteract = false;
+            StartCoroutine(Interact());
+        }
+
+        if (Input.GetKeyUp(KeyCode.E))
+        {
+            canInteract = true;
+            StopCoroutine(Interact());
+        }
+    }
+
+    private IEnumerator Interact()
+    {
+        float percentage = 0;
+        while (percentage < 1)
+        {
+            percentage += Time.deltaTime / robTimer;
+            Debug.Log("Interacting...");
+            yield return new WaitForEndOfFrame();
+        }
+
+        canInteract = true;
+        Debug.Log("Robbing Successful");
+        yield return null;
     }
 
     public void AssignRole(int roleId)
