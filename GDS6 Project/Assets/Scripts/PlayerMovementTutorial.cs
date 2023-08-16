@@ -33,6 +33,9 @@ public class PlayerMovementTutorial : NetworkBehaviour
     float horizontalInput;
     float verticalInput;
 
+    private bool canInteract = true;
+    [SerializeField] private float robTimer = 3;
+
     Vector3 moveDirection;
 
     Rigidbody rb;
@@ -44,6 +47,13 @@ public class PlayerMovementTutorial : NetworkBehaviour
 
     public string[] roles = { "Cop", "Robber" };
 
+    public enum Role
+    {
+        Cop,
+        Robber
+    }
+    public Role playerRole;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -54,7 +64,7 @@ public class PlayerMovementTutorial : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        AssignRole(roles[(int)OwnerClientId]);
+        //AssignRole(roles[(int)OwnerClientId]);
 
         if (IsOwner)
         {
@@ -75,6 +85,8 @@ public class PlayerMovementTutorial : NetworkBehaviour
         {
             return;
         }
+
+        RobInteraction();
         // ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight / 2 + 0.5f);
 
@@ -151,26 +163,62 @@ public class PlayerMovementTutorial : NetworkBehaviour
         readyToJump = true;
     }
 
-    public void AssignRole(string role)
+    private void RobInteraction()
     {
-        if (role == "Cop")
+        if (canInteract && Input.GetKeyDown(KeyCode.E))
         {
-            transform.position = GameManager.Instance.playerSpawnPoints[0].position;
-            transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
-
-            Material mat = new Material(gameObject.GetComponent<Renderer>().material);
-            mat.SetColor("_DiffuseColour", characterColours[0]);
-            gameObject.GetComponent<Renderer>().material = mat;
+            canInteract = false;
+            StartCoroutine(Interact());
         }
 
-        if (role == "Robber")
+        if (Input.GetKeyUp(KeyCode.E))
         {
-            transform.position = GameManager.Instance.playerSpawnPoints[1].position;
-            transform.rotation = GameManager.Instance.playerSpawnPoints[1].rotation;
+            canInteract = true;
+            StopCoroutine(Interact());
+        }
+    }
 
-            Material mat = new Material(gameObject.GetComponent<Renderer>().material);
-            mat.SetColor("_DiffuseColour", characterColours[1]);
-            gameObject.GetComponent<Renderer>().material = mat;
+    private IEnumerator Interact()
+    {
+        float percentage = 0;
+        while (percentage < 1)
+        {
+            percentage += Time.deltaTime / robTimer;
+            Debug.Log("Interacting...");
+            yield return new WaitForEndOfFrame();
+        }
+
+        canInteract = true;
+        Debug.Log("Robbing Successful");
+        yield return null;
+    }
+
+    public void AssignRole(int roleId)
+    {
+        switch ((Role)roleId)
+        {
+            case Role.Cop:
+                playerRole = Role.Cop;
+
+                transform.position = GameManager.Instance.playerSpawnPoints[0].position;
+                transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
+
+                Material mat1 = new Material(gameObject.GetComponent<Renderer>().material);
+                mat1.SetColor("_DiffuseColour", characterColours[0]);
+                gameObject.GetComponent<Renderer>().material = mat1;
+                break;
+            case Role.Robber:
+                playerRole = Role.Robber;
+
+                transform.position = GameManager.Instance.playerSpawnPoints[1].position;
+                transform.rotation = GameManager.Instance.playerSpawnPoints[1].rotation;
+
+                Material mat2 = new Material(gameObject.GetComponent<Renderer>().material);
+                mat2.SetColor("_DiffuseColour", characterColours[1]);
+                gameObject.GetComponent<Renderer>().material = mat2;
+                break;
+            default:
+                break;
         }
     }
 }

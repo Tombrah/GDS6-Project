@@ -18,7 +18,6 @@ public class PlayerMovement : NetworkBehaviour
 
     [Header("Mouse")]
     public float mouseSensitivity = 50f;
-    private float xRotation = 0f;
 
     [Header("Crouching")]
     public float crouchHeight = 1f;
@@ -55,8 +54,7 @@ public class PlayerMovement : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        AssignRole(roles[(int)OwnerClientId]);
-
+        //AssignRole(roles[(int)OwnerClientId]);
         if (IsOwner)
         {
             listener.enabled = true;
