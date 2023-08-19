@@ -6,6 +6,8 @@ TagManager:
   tags:
   - LobbyUI
   - PlayerUI
+  - Cop
+  - Robber
   layers:
   - Default
   - TransparentFX

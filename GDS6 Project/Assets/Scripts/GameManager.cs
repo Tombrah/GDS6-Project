@@ -19,8 +19,9 @@ public class GameManager : NetworkBehaviour
         GameEnded
     }
 
-    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private Transform[] playerPrefabs;
     public List<Transform> playerSpawnPoints;
+
     private NetworkVariable<State> state = new NetworkVariable<State>(State.WaitingToStart);
     private NetworkVariable<int> round = new NetworkVariable<int>(0);
     private NetworkVariable<float> waitingToStartTimer = new NetworkVariable<float>(1f);
@@ -32,6 +33,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float gamePlayingTimerMax = 90f;
     [SerializeField] private float roundResetTimerMax = 10f;
 
+    private int roleId;
     private bool callOnce;
 
     private void Awake()
@@ -56,19 +58,11 @@ public class GameManager : NetworkBehaviour
 
     private void SceneManager_OnLoadEventCompleted(string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
-        int roleId = Mathf.CeilToInt(UnityEngine.Random.Range(0, 2));
+        roleId = Mathf.CeilToInt(UnityEngine.Random.Range(0, 2));
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            GameObject player = Instantiate(playerPrefab, playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
+            Transform player = Instantiate(playerPrefabs[roleId], playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-
-            AssignRoleClientRpc(roleId, new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = new ulong[] { clientId }
-                }
-            });
 
             roleId = (roleId * -1) + 1;
         }
@@ -111,6 +105,16 @@ public class GameManager : NetworkBehaviour
                 break;
             case State.RoundResetting:
                 roundResetTimer.Value -= Time.deltaTime;
+                if (!callOnce)
+                {
+                    foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+                    {
+                        NetworkObject player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+                        player.Despawn();
+                    }
+
+                    callOnce = true;
+                }
                 if (roundResetTimer.Value < 0f)
                 {
                     if (round.Value == roundMax)
@@ -136,6 +140,11 @@ public class GameManager : NetworkBehaviour
         return state.Value == State.GamePlaying;
     }
 
+    public bool IsRoundResetting()
+    {
+        return state.Value == State.RoundResetting;
+    }
+
     public bool IsGameOver()
     {
         return state.Value == State.GameEnded;
@@ -153,28 +162,17 @@ public class GameManager : NetworkBehaviour
 
     private void ResetRound()
     {
-        if (!callOnce)
+        if (NetworkManager.Singleton.ConnectedClientsIds.Count == 2)
         {
-            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
-            {
-                PlayerMovementTutorial player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponentInChildren<PlayerMovementTutorial>();
-                AssignRoleClientRpc(((int)player.playerRole * -1) + 1, new ClientRpcParams
-                {
-                    Send = new ClientRpcSendParams
-                    {
-                        TargetClientIds = new ulong[] { clientId }
-                    }
-                });
-            };
-
-            callOnce = true;
+            roleId = (roleId * -1) + 1;
         }
-    }
 
-    [ClientRpc]
-    private void AssignRoleClientRpc(int roleId, ClientRpcParams clientRpcParams = default)
-    {
-        PlayerMovementTutorial player = NetworkManager.Singleton.LocalClient.PlayerObject.GetComponentInChildren<PlayerMovementTutorial>();
-        player.AssignRole(roleId);
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            Transform player = Instantiate(playerPrefabs[roleId], playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
+            player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+
+            roleId = (roleId * -1) + 1;
+        }
     }
 }

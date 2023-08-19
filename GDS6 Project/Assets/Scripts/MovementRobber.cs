@@ -5,7 +5,7 @@ using Cinemachine;
 using Unity.Netcode;
 using TMPro;
 
-public class PlayerMovementTutorial : NetworkBehaviour
+public class MovementRobber : NetworkBehaviour
 {
     [Header("Movement")]
     public float moveSpeed;
@@ -40,19 +40,8 @@ public class PlayerMovementTutorial : NetworkBehaviour
 
     Rigidbody rb;
 
-    [SerializeField] private List<Color> characterColours;
-
     [SerializeField] private CinemachineFreeLook freeLookCamera;
     [SerializeField] private AudioListener listener;
-
-    public string[] roles = { "Cop", "Robber" };
-
-    public enum Role
-    {
-        Cop,
-        Robber
-    }
-    public Role playerRole;
 
     private void Start()
     {
@@ -64,7 +53,7 @@ public class PlayerMovementTutorial : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        //AssignRole(roles[(int)OwnerClientId]);
+        SetSpawn();
 
         if (IsOwner)
         {
@@ -193,32 +182,9 @@ public class PlayerMovementTutorial : NetworkBehaviour
         yield return null;
     }
 
-    public void AssignRole(int roleId)
+    private void SetSpawn()
     {
-        switch ((Role)roleId)
-        {
-            case Role.Cop:
-                playerRole = Role.Cop;
-
-                transform.position = GameManager.Instance.playerSpawnPoints[0].position;
-                transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
-
-                Material mat1 = new Material(gameObject.GetComponent<Renderer>().material);
-                mat1.SetColor("_DiffuseColour", characterColours[0]);
-                gameObject.GetComponent<Renderer>().material = mat1;
-                break;
-            case Role.Robber:
-                playerRole = Role.Robber;
-
-                transform.position = GameManager.Instance.playerSpawnPoints[1].position;
-                transform.rotation = GameManager.Instance.playerSpawnPoints[1].rotation;
-
-                Material mat2 = new Material(gameObject.GetComponent<Renderer>().material);
-                mat2.SetColor("_DiffuseColour", characterColours[1]);
-                gameObject.GetComponent<Renderer>().material = mat2;
-                break;
-            default:
-                break;
-        }
+        transform.position = GameManager.Instance.playerSpawnPoints[1].position;
+        transform.rotation = GameManager.Instance.playerSpawnPoints[1].rotation;
     }
 }
