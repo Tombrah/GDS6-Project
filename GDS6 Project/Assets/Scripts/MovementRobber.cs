@@ -33,7 +33,7 @@ public class MovementRobber : NetworkBehaviour
     float horizontalInput;
     float verticalInput;
 
-    private bool canInteract = true;
+    private bool canInteract = false;
     [SerializeField] private float robTimer = 3;
 
     Vector3 moveDirection;
@@ -43,13 +43,7 @@ public class MovementRobber : NetworkBehaviour
     [SerializeField] private CinemachineFreeLook freeLookCamera;
     [SerializeField] private AudioListener listener;
 
-    private void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;
-
-        readyToJump = true;
-    }
+    private GameObject robbingItem;
 
     public override void OnNetworkSpawn()
     {
@@ -66,6 +60,14 @@ public class MovementRobber : NetworkBehaviour
             freeLookCamera.Priority = 0;
             this.enabled = false;
         }
+    }
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.freezeRotation = true;
+
+        readyToJump = true;
     }
 
     private void Update()
@@ -156,13 +158,11 @@ public class MovementRobber : NetworkBehaviour
     {
         if (canInteract && Input.GetKeyDown(KeyCode.E))
         {
-            canInteract = false;
             StartCoroutine(Interact());
         }
 
         if (Input.GetKeyUp(KeyCode.E))
         {
-            canInteract = true;
             StopCoroutine(Interact());
         }
     }
@@ -177,7 +177,8 @@ public class MovementRobber : NetworkBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        canInteract = true;
+        DestroyItemServerRpc(robbingItem.GetComponent<NetworkObject>().NetworkObjectId);
+        canInteract = false;
         Debug.Log("Robbing Successful");
         yield return null;
     }
@@ -186,5 +187,31 @@ public class MovementRobber : NetworkBehaviour
     {
         transform.position = GameManager.Instance.playerSpawnPoints[1].position;
         transform.rotation = GameManager.Instance.playerSpawnPoints[1].rotation;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Collectable"))
+        {
+            Debug.Log("Can Interact");
+            canInteract = true;
+            robbingItem = other.gameObject;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Collectable"))
+        {
+            Debug.Log("Can't Interact");
+            canInteract = false;
+            robbingItem = null;
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DestroyItemServerRpc(ulong itemId)
+    {
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects[itemId].Despawn();
     }
 }
