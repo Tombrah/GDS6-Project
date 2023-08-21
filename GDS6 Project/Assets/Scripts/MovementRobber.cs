@@ -35,6 +35,7 @@ public class MovementRobber : NetworkBehaviour
 
     private bool canInteract = false;
     [SerializeField] private float robTimer = 3;
+    private GameObject robbingItem;
 
     Vector3 moveDirection;
 
@@ -43,7 +44,6 @@ public class MovementRobber : NetworkBehaviour
     [SerializeField] private CinemachineFreeLook freeLookCamera;
     [SerializeField] private AudioListener listener;
 
-    private GameObject robbingItem;
 
     public override void OnNetworkSpawn()
     {
@@ -65,6 +65,7 @@ public class MovementRobber : NetworkBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
         rb.freezeRotation = true;
 
         readyToJump = true;

@@ -40,13 +40,8 @@ public class MovementCop : NetworkBehaviour
     [SerializeField] private CinemachineFreeLook freeLookCamera;
     [SerializeField] private AudioListener listener;
 
-    private void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;
-
-        readyToJump = true;
-    }
+    private GameObject robber;
+    [SerializeField] private float catchRadius = 3;
 
     public override void OnNetworkSpawn()
     {
@@ -64,6 +59,16 @@ public class MovementCop : NetworkBehaviour
             this.enabled = false;
         }
     }
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+        rb.freezeRotation = true;
+
+        readyToJump = true;
+
+        robber = GameObject.FindGameObjectWithTag("Robber");
+    }
 
     private void Update()
     {
@@ -77,6 +82,8 @@ public class MovementCop : NetworkBehaviour
 
         MyInput();
         SpeedControl();
+
+        CatchRobber();
 
         // handle drag
         if (grounded)
@@ -152,5 +159,16 @@ public class MovementCop : NetworkBehaviour
     {
         transform.position = GameManager.Instance.playerSpawnPoints[0].position;
         transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
+    }
+
+    private void CatchRobber()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if ((transform.position - robber.transform.position).sqrMagnitude < catchRadius * catchRadius)
+            {
+                Debug.Log("Player Caught");
+            }
+        }
     }
 }

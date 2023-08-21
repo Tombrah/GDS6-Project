@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Multiplayer.Samples.Utilities.ClientAuthority;
 
 public class GameManager : NetworkBehaviour
 {

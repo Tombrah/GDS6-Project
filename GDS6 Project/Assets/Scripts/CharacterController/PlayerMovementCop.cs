@@ -4,7 +4,7 @@ using UnityEngine;
 using Unity.Netcode;
 using Cinemachine;
 
-public class PlayerMovement : NetworkBehaviour
+public class PlayerMovementCop : NetworkBehaviour
 {
     [Header("Movement")]
     public float walkSpeed = 5f;
@@ -31,17 +31,17 @@ public class PlayerMovement : NetworkBehaviour
     public float dashCooldown = 1.5f;
 
     [Header("Is Grounded")]
-    private bool isGrounded;
     public float checkRadius = 0.4f;
     public LayerMask groundLayer;
+    private bool isGrounded;
 
-    [SerializeField] private List<Color> characterColours;
-
+    [Header("")]
     [SerializeField] private CinemachineFreeLook freeLookCamera;
     [SerializeField] private AudioListener listener;
     private CharacterController controller;
 
-    public string[] roles = { "Cop", "Robber" };
+    private GameObject robber;
+    [SerializeField] private float catchRadius = 3;
 
     private void Awake()
     {
@@ -50,13 +50,17 @@ public class PlayerMovement : NetworkBehaviour
         controller = GetComponent<CharacterController>();
 
         controller.height = playerHeight;
+
+        controller.enabled = false;
     }
 
     public override void OnNetworkSpawn()
     {
-        //AssignRole(roles[(int)OwnerClientId]);
+        SetSpawn();
+
         if (IsOwner)
         {
+            controller.enabled = true;
             listener.enabled = true;
             freeLookCamera.Priority = 1;
         }
@@ -78,6 +82,7 @@ public class PlayerMovement : NetworkBehaviour
         isGrounded = Physics.Raycast(transform.position, Vector3.down, controller.height / 2 + 0.5f);
 
         PlayerMove();
+        CatchRobber();
 
         if (isGrounded)
         {
@@ -91,11 +96,6 @@ public class PlayerMovement : NetworkBehaviour
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -3f;
-        }
-
-        if (Input.GetMouseButtonDown(1) && controller.height == playerHeight)
-        {
-            StartCoroutine(PlayerDash());
         }
 
     }
@@ -132,37 +132,20 @@ public class PlayerMovement : NetworkBehaviour
         controller.height = Mathf.Clamp(controller.height, crouchHeight, playerHeight);
     }
 
-    IEnumerator PlayerDash()
+    private void SetSpawn()
     {
-        float startTime = Time.time;
-        while (Time.time < startTime + dashTime)
-        {
-            controller.Move(transform.forward * dashSpeed * Time.deltaTime);
-
-            yield return null;
-        }
+        transform.position = GameManager.Instance.playerSpawnPoints[0].position;
+        transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
     }
 
-    public void AssignRole(string role)
+    private void CatchRobber()
     {
-        if (role == "Cop")
+        if (Input.GetMouseButtonDown(0))
         {
-            transform.position = GameManager.Instance.playerSpawnPoints[0].position;
-            transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
-
-            Material mat = new Material(gameObject.GetComponent<Renderer>().material);
-            mat.SetColor("_DiffuseColour", characterColours[0]);
-            gameObject.GetComponent<Renderer>().material = mat;
-        }
-
-        if (role == "Robber")
-        {
-            transform.position = GameManager.Instance.playerSpawnPoints[1].position;
-            transform.rotation = GameManager.Instance.playerSpawnPoints[1].rotation;
-
-            Material mat = new Material(gameObject.GetComponent<Renderer>().material);
-            mat.SetColor("_DiffuseColour", characterColours[1]);
-            gameObject.GetComponent<Renderer>().material = mat;
+            if ((transform.position - robber.transform.position).sqrMagnitude < catchRadius * catchRadius)
+            {
+                Debug.Log("Player Caught");
+            }
         }
     }
 }
