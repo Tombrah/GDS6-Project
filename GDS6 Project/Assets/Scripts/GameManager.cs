@@ -23,6 +23,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private Transform[] playerPrefabs;
     public List<Transform> playerSpawnPoints;
     public List<Transform> respawnPoints;
+
+    [HideInInspector] public NetworkList<int> playerScores;
  
     private NetworkVariable<State> state = new NetworkVariable<State>(State.WaitingToStart);
     private NetworkVariable<int> round = new NetworkVariable<int>(0);
@@ -41,6 +43,8 @@ public class GameManager : NetworkBehaviour
     private void Awake()
     {
         Instance = this;
+
+        playerScores = new NetworkList<int>();
     }
 
     public override void OnNetworkSpawn()
@@ -63,6 +67,8 @@ public class GameManager : NetworkBehaviour
         roleId = Mathf.CeilToInt(UnityEngine.Random.Range(0, 2));
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
+            playerScores.Add(0);
+
             Transform player = Instantiate(playerPrefabs[roleId], playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
 
@@ -176,5 +182,12 @@ public class GameManager : NetworkBehaviour
 
             roleId = (roleId * -1) + 1;
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdatePlayerScoresServerRpc(ulong clientId, int score)
+    {
+        int oldScore = playerScores[(int)clientId];
+        playerScores[(int)clientId] = oldScore + score;
     }
 }

@@ -166,6 +166,7 @@ public class MovementCop : NetworkBehaviour
             if ((transform.position - robber.transform.position).sqrMagnitude < catchRadius * catchRadius)
             {
                 CatchRobberServerRpc(robber.GetComponent<NetworkObject>().OwnerClientId);
+                GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, 20);
             }
         }
     }

@@ -68,8 +68,6 @@ public class MovementRobber : NetworkBehaviour
         rb.freezeRotation = true;
 
         readyToJump = true;
-
-        cop = GameObject.FindGameObjectWithTag("Cop");
     }
 
     private void Update()
@@ -187,7 +185,11 @@ public class MovementRobber : NetworkBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        DestroyItemServerRpc(robbingItem.GetComponent<NetworkObject>().NetworkObjectId);
+        if (robbingItem != null)
+        {
+            DestroyItemServerRpc(robbingItem.GetComponent<NetworkObject>().NetworkObjectId);
+            GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, 100);
+        }
         chargeWheel.SetActive(false);
         canInteract = false;
         Debug.Log("Robbing Successful");
@@ -223,6 +225,8 @@ public class MovementRobber : NetworkBehaviour
 
     public void Respawn()
     {
+        cop = GameObject.FindGameObjectWithTag("Cop");
+
         int index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
         while (Vector3.Distance(cop.transform.position, GameManager.Instance.respawnPoints[index].position) < 5f)
         {
