@@ -44,10 +44,13 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Smoothness: 500
+    - _ToonRampOffset: 0.5
+    - _ToonRampSmoothness: 0
     m_Colors:
     - _DiffuseColour: {r: 1, g: 0.5681358, b: 0.2117647, a: 0}
     - _FresnelColour: {r: 0, g: 0, b: 0, a: 0}
     - _SpecularColour: {r: 0.9339623, g: 0.9339623, b: 0.9339623, a: 1}
+    - _ToonRampTinting: {r: 0.5, g: 0.5, b: 0.5, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &5443028573198730019
 MonoBehaviour:
