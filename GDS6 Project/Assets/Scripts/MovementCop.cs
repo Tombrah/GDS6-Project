@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Unity.Netcode;
-using TMPro;
+using Unity.Netcode.Components;
 
 public class MovementCop : NetworkBehaviour
 {
     [Header("Movement")]
     public float moveSpeed;
-
     public float groundDrag;
-
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
-    bool readyToJump;
 
-    [HideInInspector] public float walkSpeed;
-    [HideInInspector] public float sprintSpeed;
+    private float walkSpeed;
+    private float sprintSpeed;
+    private bool readyToJump;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -26,19 +24,18 @@ public class MovementCop : NetworkBehaviour
     [Header("Ground Check")]
     public float playerHeight;
     public LayerMask whatIsGround;
-    bool grounded;
-
     public Transform orientation;
+    private bool grounded;
 
-    float horizontalInput;
-    float verticalInput;
-
-    Vector3 moveDirection;
-
-    Rigidbody rb;
-
+    [Header("")]
     [SerializeField] private CinemachineFreeLook freeLookCamera;
     [SerializeField] private AudioListener listener;
+
+    private Rigidbody rb;
+    private Vector3 moveDirection;
+
+    private float horizontalInput;
+    private float verticalInput;
 
     private GameObject robber;
     [SerializeField] private float catchRadius = 3;
@@ -61,7 +58,8 @@ public class MovementCop : NetworkBehaviour
     }
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = gameObject.AddComponent<Rigidbody>();
+        gameObject.AddComponent<NetworkRigidbody>();
         rb.isKinematic = false;
         rb.freezeRotation = true;
 

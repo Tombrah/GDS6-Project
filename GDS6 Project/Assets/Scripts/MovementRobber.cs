@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Unity.Netcode;
-using TMPro;
+using Unity.Netcode.Components;
 
 public class MovementRobber : NetworkBehaviour
 {
     [Header("Movement")]
     public float moveSpeed;
-
     public float groundDrag;
-
     public float jumpForce;
     public float jumpCooldown;
     public float airMultiplier;
-    bool readyToJump;
 
-    [HideInInspector] public float walkSpeed;
-    [HideInInspector] public float sprintSpeed;
+    private float walkSpeed;
+    private float sprintSpeed;
+    private bool readyToJump;
 
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
@@ -26,24 +24,22 @@ public class MovementRobber : NetworkBehaviour
     [Header("Ground Check")]
     public float playerHeight;
     public LayerMask whatIsGround;
-    bool grounded;
-
     public Transform orientation;
+    private bool isGrounded;
 
-    float horizontalInput;
-    float verticalInput;
+    [Header("")]
+    [SerializeField] private CinemachineFreeLook freeLookCamera;
+    [SerializeField] private AudioListener listener;
+
+    private Rigidbody rb;
+    private Vector3 moveDirection;
+
+    private float horizontalInput;
+    private float verticalInput;
 
     private bool canInteract = false;
     [SerializeField] private float robTimer = 3;
     private GameObject robbingItem;
-
-    Vector3 moveDirection;
-
-    Rigidbody rb;
-
-    [SerializeField] private CinemachineFreeLook freeLookCamera;
-    [SerializeField] private AudioListener listener;
-
 
     public override void OnNetworkSpawn()
     {
@@ -64,7 +60,8 @@ public class MovementRobber : NetworkBehaviour
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = gameObject.AddComponent<Rigidbody>();
+        gameObject.AddComponent<NetworkRigidbody>();
         rb.isKinematic = false;
         rb.freezeRotation = true;
 
@@ -80,13 +77,13 @@ public class MovementRobber : NetworkBehaviour
 
         RobInteraction();
         // ground check
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight / 2 + 0.5f);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, playerHeight / 2 + 0.5f);
 
         MyInput();
         SpeedControl();
 
         // handle drag
-        if (grounded)
+        if (isGrounded)
             rb.drag = groundDrag;
         else
             rb.drag = 0;
@@ -107,7 +104,7 @@ public class MovementRobber : NetworkBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         // when to jump
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
+        if(Input.GetKey(jumpKey) && readyToJump && isGrounded)
         {
             readyToJump = false;
 
@@ -123,11 +120,11 @@ public class MovementRobber : NetworkBehaviour
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
         // on ground
-        if(grounded)
+        if(isGrounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
         // in air
-        else if(!grounded)
+        else if(!isGrounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
     }
 
