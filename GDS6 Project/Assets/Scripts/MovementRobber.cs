@@ -30,6 +30,7 @@ public class MovementRobber : NetworkBehaviour
     [Header("")]
     [SerializeField] private CinemachineFreeLook freeLookCamera;
     [SerializeField] private AudioListener listener;
+    [SerializeField] private GameObject chargeWheel;
 
     private Rigidbody rb;
     private Vector3 moveDirection;
@@ -37,6 +38,7 @@ public class MovementRobber : NetworkBehaviour
     private float horizontalInput;
     private float verticalInput;
 
+    private GameObject cop;
     private bool canInteract = false;
     [SerializeField] private float robTimer = 3;
     private GameObject robbingItem;
@@ -66,6 +68,8 @@ public class MovementRobber : NetworkBehaviour
         rb.freezeRotation = true;
 
         readyToJump = true;
+
+        cop = GameObject.FindGameObjectWithTag("Cop");
     }
 
     private void Update()
@@ -156,26 +160,35 @@ public class MovementRobber : NetworkBehaviour
     {
         if (canInteract && Input.GetKeyDown(KeyCode.E))
         {
+            chargeWheel.SetActive(true);
             StartCoroutine(Interact());
         }
 
         if (Input.GetKeyUp(KeyCode.E))
         {
+            chargeWheel.SetActive(false);
             StopCoroutine(Interact());
         }
     }
 
     private IEnumerator Interact()
     {
+        Renderer wheelRenderer = chargeWheel.GetComponent<Renderer>();
+
         float percentage = 0;
         while (percentage < 1)
         {
+            rb.velocity = Vector3.zero;
+            chargeWheel.transform.LookAt(listener.transform);
+
+            wheelRenderer.material.SetFloat("_Percentage", percentage);
             percentage += Time.deltaTime / robTimer;
             Debug.Log("Interacting...");
             yield return new WaitForEndOfFrame();
         }
 
         DestroyItemServerRpc(robbingItem.GetComponent<NetworkObject>().NetworkObjectId);
+        chargeWheel.SetActive(false);
         canInteract = false;
         Debug.Log("Robbing Successful");
         yield return null;
@@ -202,9 +215,22 @@ public class MovementRobber : NetworkBehaviour
         if (other.CompareTag("Collectable"))
         {
             Debug.Log("Can't Interact");
+            StopCoroutine(Interact());
             canInteract = false;
             robbingItem = null;
         }
+    }
+
+    public void Respawn()
+    {
+        int index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
+        while (Vector3.Distance(cop.transform.position, GameManager.Instance.respawnPoints[index].position) < 5f)
+        {
+            index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
+        }
+
+        transform.position = GameManager.Instance.respawnPoints[index].position;
+        transform.rotation = GameManager.Instance.respawnPoints[index].rotation;
     }
 
     [ServerRpc(RequireOwnership = false)]

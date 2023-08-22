@@ -165,8 +165,14 @@ public class MovementCop : NetworkBehaviour
         {
             if ((transform.position - robber.transform.position).sqrMagnitude < catchRadius * catchRadius)
             {
-                Debug.Log("Player Caught");
+                CatchRobberServerRpc(robber.GetComponent<NetworkObject>().OwnerClientId);
             }
         }
+    }
+
+    [ServerRpc]
+    private void CatchRobberServerRpc(ulong clientId)
+    {
+        NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<MovementRobber>().Respawn();
     }
 }

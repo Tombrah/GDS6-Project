@@ -22,7 +22,8 @@ public class GameManager : NetworkBehaviour
 
     [SerializeField] private Transform[] playerPrefabs;
     public List<Transform> playerSpawnPoints;
-
+    public List<Transform> respawnPoints;
+ 
     private NetworkVariable<State> state = new NetworkVariable<State>(State.WaitingToStart);
     private NetworkVariable<int> round = new NetworkVariable<int>(0);
     private NetworkVariable<float> waitingToStartTimer = new NetworkVariable<float>(1f);
