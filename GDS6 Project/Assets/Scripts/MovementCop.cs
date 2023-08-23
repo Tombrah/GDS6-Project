@@ -45,20 +45,17 @@ public class MovementCop : NetworkBehaviour
     {
         SetSpawn();
 
-        if (IsOwner && Input.GetMouseButtonUp(1))
+        if (IsOwner)
         {
             listener.enabled = true;
             freeLookCamera.Priority = 1;
-        }
-        else if (IsOwner && Input.GetMouseButtonDown(1))
-        {
-            listener.enabled = true;
-            CombatCamera.Priority = 2;
+            CombatCamera.Priority = 1;
         }
         else
         {
             listener.enabled = false;
             freeLookCamera.Priority = 0;
+            CombatCamera.Priority = 0;
             this.enabled = false;
         }
     }
