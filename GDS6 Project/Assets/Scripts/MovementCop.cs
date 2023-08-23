@@ -29,6 +29,7 @@ public class MovementCop : NetworkBehaviour
 
     [Header("")]
     [SerializeField] private CinemachineFreeLook freeLookCamera;
+    [SerializeField] private CinemachineFreeLook CombatCamera;
     [SerializeField] private AudioListener listener;
 
     private Rigidbody rb;
@@ -44,10 +45,15 @@ public class MovementCop : NetworkBehaviour
     {
         SetSpawn();
 
-        if (IsOwner)
+        if (IsOwner && Input.GetMouseButtonUp(1))
         {
             listener.enabled = true;
             freeLookCamera.Priority = 1;
+        }
+        else if (IsOwner && Input.GetMouseButtonDown(1))
+        {
+            listener.enabled = true;
+            CombatCamera.Priority = 2;
         }
         else
         {
