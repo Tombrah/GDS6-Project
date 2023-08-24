@@ -179,6 +179,6 @@ public class MovementCop : NetworkBehaviour
     [ServerRpc]
     private void CatchRobberServerRpc(ulong clientId)
     {
-        NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<MovementRobber>().Respawn();
+        NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<MovementRobber>().RespawnPlayerClientRpc();
     }
 }
