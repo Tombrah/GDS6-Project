@@ -34,6 +34,7 @@ public class GameManager : NetworkBehaviour
     private NetworkVariable<float> roundResetTimer = new NetworkVariable<float>(0f);
     [Tooltip("In-game timer in seconds")]
     [SerializeField] private int roundMax = 4;
+    [SerializeField] private float countdownTimerMax = 3f;
     [SerializeField] private float gamePlayingTimerMax = 90f;
     [SerializeField] private float roundResetTimerMax = 10f;
 
@@ -90,7 +91,7 @@ public class GameManager : NetworkBehaviour
                 if (waitingToStartTimer.Value < 0f)
                 {
                     state.Value = State.CountdownToStart;
-                    countdownTimer.Value = 3f;
+                    countdownTimer.Value = countdownTimerMax;
                 }
                 break;
             case State.CountdownToStart:

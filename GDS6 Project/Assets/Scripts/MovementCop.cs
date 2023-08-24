@@ -50,6 +50,8 @@ public class MovementCop : NetworkBehaviour
             listener.enabled = true;
             freeLookCamera.Priority = 1;
             CombatCamera.Priority = 1;
+
+            InstructionsUI.Instance.SetText("Left click near the robber to catch them!");
         }
         else
         {
@@ -164,7 +166,7 @@ public class MovementCop : NetworkBehaviour
 
     private void CatchRobber()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && robber != null)
         {
             if ((transform.position - robber.transform.position).sqrMagnitude < catchRadius * catchRadius)
             {

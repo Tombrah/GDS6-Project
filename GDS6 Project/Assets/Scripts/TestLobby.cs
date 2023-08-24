@@ -107,7 +107,11 @@ public class TestLobby : MonoBehaviour
     {
         try
         {
-            string lobbyName = nameInput.text;
+            string lobbyName = "My Lobby";
+            if (nameInput.text != "")
+            {
+                lobbyName = nameInput.text;
+            }
             int maxPlayers = 2;
             CreateLobbyOptions lobbyOptions = new CreateLobbyOptions
             {

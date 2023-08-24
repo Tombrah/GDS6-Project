@@ -43,7 +43,7 @@ Material:
     - _LightingCutoff: 0
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Smoothness: 500
+    - _Smoothness: 2000
     m_Colors:
     - _DiffuseColour: {r: 0.2117647, g: 1, b: 0.89504224, a: 0}
     - _FresnelColour: {r: 0, g: 0, b: 0, a: 0}
