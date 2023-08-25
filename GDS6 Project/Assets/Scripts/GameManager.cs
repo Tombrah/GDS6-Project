@@ -25,6 +25,7 @@ public class GameManager : NetworkBehaviour
     public List<Transform> respawnPoints;
 
     [HideInInspector] public NetworkList<int> playerScores;
+    private Dictionary<ulong, bool> playerReadyDictionary;
  
     private NetworkVariable<State> state = new NetworkVariable<State>(State.WaitingToStart);
     private NetworkVariable<int> round = new NetworkVariable<int>(0);
@@ -46,6 +47,8 @@ public class GameManager : NetworkBehaviour
         Instance = this;
 
         playerScores = new NetworkList<int>();
+
+        playerReadyDictionary = new Dictionary<ulong, bool>();
     }
 
     public override void OnNetworkSpawn()
@@ -53,9 +56,10 @@ public class GameManager : NetworkBehaviour
         state.OnValueChanged += State_OnValueChanged;
         if (IsServer)
         {
-            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
+            //NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
             round.Value = 0;
         }
+        SetPlayerReadyServerRpc();
     }
 
     private void State_OnValueChanged(State previousValue, State newValue)
@@ -87,12 +91,6 @@ public class GameManager : NetworkBehaviour
         switch (state.Value)
         {
             case State.WaitingToStart:
-                waitingToStartTimer.Value -= Time.deltaTime;
-                if (waitingToStartTimer.Value < 0f)
-                {
-                    state.Value = State.CountdownToStart;
-                    countdownTimer.Value = countdownTimerMax;
-                }
                 break;
             case State.CountdownToStart:
                 countdownTimer.Value -= Time.deltaTime;
@@ -182,6 +180,39 @@ public class GameManager : NetworkBehaviour
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
 
             roleId = (roleId * -1) + 1;
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetPlayerReadyServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playerReadyDictionary[serverRpcParams.Receive.SenderClientId] = true;
+
+        bool allClientsReady = true;
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (!playerReadyDictionary.ContainsKey(clientId) || !playerReadyDictionary[clientId])
+            {
+                allClientsReady = false;
+                break;
+            }
+
+        }
+
+        if (allClientsReady)
+        {
+            roleId = Mathf.CeilToInt(UnityEngine.Random.Range(0, 2));
+            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                playerScores.Add(0);
+
+                Transform player = Instantiate(playerPrefabs[roleId], playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
+                player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+
+                roleId = (roleId * -1) + 1;
+            }
+            state.Value = State.CountdownToStart;
+            countdownTimer.Value = countdownTimerMax;
         }
     }
 

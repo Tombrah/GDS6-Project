@@ -166,8 +166,12 @@ public class MovementCop : NetworkBehaviour
 
     private void CatchRobber()
     {
-        if (Input.GetMouseButtonDown(0) && robber != null)
+        if (Input.GetMouseButtonDown(0))
         {
+            if (robber == null)
+            {
+                robber = GameObject.FindGameObjectWithTag("Robber");
+            }
             if ((transform.position - robber.transform.position).sqrMagnitude < catchRadius * catchRadius)
             {
                 CatchRobberServerRpc(robber.GetComponent<NetworkObject>().OwnerClientId);

@@ -236,23 +236,6 @@ public class MovementRobber : NetworkBehaviour
         }
     }
 
-    public void Respawn()
-    {
-        if (cop == null)
-        {
-            cop = GameObject.FindGameObjectWithTag("Cop");
-        }
-
-        int index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
-        while (Vector3.Distance(cop.transform.position, GameManager.Instance.respawnPoints[index].position) < 15f)
-        {
-            index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
-        }
-
-        transform.position = GameManager.Instance.respawnPoints[index].position;
-        transform.rotation = GameManager.Instance.respawnPoints[index].rotation;
-    }
-
     [ServerRpc(RequireOwnership = false)]
     private void DestroyItemServerRpc(ulong itemId)
     {
