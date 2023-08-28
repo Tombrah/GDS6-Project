@@ -12,8 +12,10 @@ using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using TMPro;
 
-public class TestLobby : MonoBehaviour
+public class LobbyManager : NetworkBehaviour
 {
+    public static LobbyManager Instance { get; private set; }
+
     private Lobby hostLobby;
     private Lobby joinedLobby;
     private float heartbeatTimer;
@@ -27,10 +29,21 @@ public class TestLobby : MonoBehaviour
     [SerializeField] private TMP_InputField nameInput;
     [SerializeField] private TMP_Text lobbyNameText;
 
+    private bool isLocalPlayerReady = false;
+    private Dictionary<ulong, bool> playerReadyDictionary;
+    private NetworkVariable<float> countdownTimer = new NetworkVariable<float>(4f);
+    private Coroutine co;
+
     private bool isJoining;
     private bool isHost;
 
     private string playerName;
+
+    private void Awake()
+    {
+        Instance = this;
+        playerReadyDictionary = new Dictionary<ulong, bool>();
+    }
 
     private async void Start()
     {
@@ -247,12 +260,57 @@ public class TestLobby : MonoBehaviour
         return player.Data["PlayerName"].Value;
     }
 
+    public void ToggleReadyState()
+    {
+        isLocalPlayerReady = !isLocalPlayerReady;
+        SetPlayerReadyServerRpc(isLocalPlayerReady);
+    }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetPlayerReadyServerRpc(bool readyState, ServerRpcParams serverRpcParams = default)
+    {
+        playerReadyDictionary[serverRpcParams.Receive.SenderClientId] = readyState;
+
+        bool allClientsReady = true;
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (!playerReadyDictionary.ContainsKey(clientId) || !playerReadyDictionary[clientId])
+            {
+                if (co != null) StopCoroutine(co);
+                countdownTimer.Value = 4;
+                allClientsReady = false;
+                break;
+            }
+
+        }
+
+        if (allClientsReady)
+        {
+            countdownTimer.Value = 3;
+            co = StartCoroutine(StartCountdown());
+        }
+    }
+
+    private IEnumerator StartCountdown()
+    {
+        while (countdownTimer.Value > 0)
+        {
+            countdownTimer.Value -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        StartGame();
+    }
+
+    public float GetCountdownTimer()
+    {
+        return countdownTimer.Value;
+    }
+
     public void StartGame()
     {
-        if (isHost)
-        {
-            Loader.LoadNetwork(Loader.Scene.GameScene);
-        }
+        Loader.LoadNetwork(Loader.Scene.GameScene);
     }
 
     public async void CreateRelay()
