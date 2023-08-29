@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
+using Unity.Netcode.Components;
+using Cinemachine;
 
 
-public class PlayerMovement : MonoBehaviour
+public class UpdatedRobberMovement : NetworkBehaviour
 {
     [Header("Movement")]
     private float moveSpeed;
@@ -29,8 +32,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
-    public KeyCode crouchKey = KeyCode.C;
-    public KeyCode shootKey = KeyCode.Mouse0;
+    public KeyCode crouchKey = KeyCode.LeftControl;
 
     [Header("Ground Check")]
     public float playerheight;
@@ -42,12 +44,16 @@ public class PlayerMovement : MonoBehaviour
     private RaycastHit slopeHit;
     private bool exitingSlope;
 
-    [Header("Shooting")]
-    [SerializeField] private Transform BulletProjectile;
-    [SerializeField] private Transform BulletProjectileTra;
+    [Header("")]
     [SerializeField] private GameObject TPSCamera;
-    public float ShootCD;
-    private bool canShoot;
+    [SerializeField] private CinemachineFreeLook freeLookCamera;
+    [SerializeField] private GameObject chargeWheel;
+
+    private GameObject cop;
+    private bool canInteract = false;
+    [SerializeField] private float robTimer = 3;
+    private GameObject robbingItem;
+    private Coroutine coroutine;
 
     public Transform orientation;
 
@@ -70,23 +76,57 @@ public class PlayerMovement : MonoBehaviour
 
     public bool dashing;
 
+    public override void OnNetworkSpawn()
+    {
+        SetSpawn();
+
+        if (IsOwner)
+        {
+            TPSCamera.GetComponent<AudioListener>().enabled = true;
+            freeLookCamera.Priority = 1;
+
+            InstructionsUI.Instance.SetText("Left click near the robber to catch them!");
+        }
+        else
+        {
+            TPSCamera.GetComponent<AudioListener>().enabled = false;
+            freeLookCamera.Priority = 0;
+            this.enabled = false;
+        }
+    }
+
+    private void SetSpawn()
+    {
+        transform.position = GameManager.Instance.playerSpawnPoints[1].position;
+        transform.rotation = GameManager.Instance.playerSpawnPoints[1].rotation;
+    }
+
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = gameObject.AddComponent<Rigidbody>();
+        gameObject.AddComponent<NetworkRigidbody>();
+        rb.isKinematic = false;
         rb.freezeRotation = true;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
         readyToJump = true;
-        canShoot = true;
 
         startYScale = transform.localScale.y;
     }
 
     private void Update()
     {
+        if (!GameManager.Instance.IsGamePlaying())
+        {
+            return;
+        }
+
         MyInput();
         SpeedControl();
         StateHandler();
-        ;
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.2f, whatIsGround);
+
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.5f);
 
         if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
         {
@@ -100,6 +140,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!GameManager.Instance.IsGamePlaying())
+        {
+            return;
+        }
+
         MovePlayer();
     }
 
@@ -127,26 +172,6 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
         }
-
-        if (Input.GetKey(shootKey) && canShoot)
-        {
-            Vector3 position = TPSCamera.transform.position + TPSCamera.transform.forward * 30f;
-            Vector3 aimDir = (position - BulletProjectileTra.position).normalized;
-            Instantiate(BulletProjectile, BulletProjectileTra.position, Quaternion.LookRotation(aimDir, Vector3.up));
-            StartCoroutine(ShootReset());
-        }
-    }
-
-    private IEnumerator ShootReset()
-    {
-        canShoot = false;
-        float percentage = 0;
-        while (percentage < 1)
-        {
-            percentage += Time.deltaTime / ShootCD;
-            yield return new WaitForEndOfFrame();
-        }
-        canShoot = true;
     }
 
     private float desiredMoveSpeed;
@@ -322,4 +347,99 @@ public class PlayerMovement : MonoBehaviour
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
+
+    private void RobInteraction()
+    {
+        if (canInteract && Input.GetKeyDown(KeyCode.E))
+        {
+            chargeWheel.SetActive(true);
+            coroutine = StartCoroutine(Interact());
+        }
+
+        if (Input.GetKeyUp(KeyCode.E))
+        {
+            chargeWheel.SetActive(false);
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+            }
+        }
+    }
+
+    private IEnumerator Interact()
+    {
+        Renderer wheelRenderer = chargeWheel.GetComponent<Renderer>();
+
+        float percentage = 0;
+        while (percentage < 1)
+        {
+            rb.velocity = Vector3.zero;
+            chargeWheel.transform.LookAt(TPSCamera.transform);
+
+            wheelRenderer.material.SetFloat("_Percentage", percentage);
+            percentage += Time.deltaTime / robTimer;
+            Debug.Log("Interacting...");
+            yield return new WaitForEndOfFrame();
+        }
+
+        if (robbingItem != null)
+        {
+            DestroyItemServerRpc(robbingItem.GetComponent<NetworkObject>().NetworkObjectId);
+            GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, 100);
+        }
+        chargeWheel.SetActive(false);
+        canInteract = false;
+        Debug.Log("Robbing Successful");
+        yield return null;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Collectable"))
+        {
+            Debug.Log("Can Interact");
+            canInteract = true;
+            robbingItem = other.gameObject;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Collectable"))
+        {
+            Debug.Log("Can't Interact");
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+            }
+            chargeWheel.SetActive(false);
+            canInteract = false;
+            robbingItem = null;
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DestroyItemServerRpc(ulong itemId)
+    {
+        NetworkManager.Singleton.SpawnManager.SpawnedObjects[itemId].Despawn();
+    }
+
+    [ClientRpc]
+    public void RespawnPlayerClientRpc()
+    {
+        if (cop == null)
+        {
+            cop = GameObject.FindGameObjectWithTag("Cop");
+        }
+
+        int index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
+        while (Vector3.Distance(cop.transform.position, GameManager.Instance.respawnPoints[index].position) < 15f)
+        {
+            index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
+        }
+
+        transform.position = GameManager.Instance.respawnPoints[index].position;
+        transform.rotation = GameManager.Instance.respawnPoints[index].rotation;
+    }
 }
+

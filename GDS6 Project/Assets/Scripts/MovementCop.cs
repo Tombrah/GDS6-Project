@@ -67,6 +67,7 @@ public class MovementCop : NetworkBehaviour
         gameObject.AddComponent<NetworkRigidbody>();
         rb.isKinematic = false;
         rb.freezeRotation = true;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
 
         readyToJump = true;
 
@@ -160,8 +161,8 @@ public class MovementCop : NetworkBehaviour
 
     private void SetSpawn()
     {
-        transform.position = GameManager.Instance.playerSpawnPoints[0].position;
-        transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
+        transform.parent.position = GameManager.Instance.playerSpawnPoints[0].position;
+        transform.parent.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
     }
 
     private void CatchRobber()

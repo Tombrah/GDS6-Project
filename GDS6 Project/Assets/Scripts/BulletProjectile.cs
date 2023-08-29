@@ -23,7 +23,6 @@ public class BulletProjectile : MonoBehaviour
         if(!other.CompareTag("Player"))
         {
             Destroy(gameObject);
-        }
-        
+        }    
     }
 }
