@@ -85,7 +85,7 @@ public class UpdatedCopMovement : NetworkBehaviour
             freeLookCamera.Priority = 1;
             combatCamera.Priority = 1;
 
-            InstructionsUI.Instance.SetText("Left click near the robber to catch them!");
+            InstructionsUI.Instance.SetText("Press E near the robber to catch them!");
         }
         else
         {
@@ -380,6 +380,6 @@ public class UpdatedCopMovement : NetworkBehaviour
     [ServerRpc]
     private void CatchRobberServerRpc(ulong clientId)
     {
-        NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<MovementRobber>().RespawnPlayerClientRpc();
+        NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<UpdatedRobberMovement>().RespawnPlayerClientRpc();
     }
 }

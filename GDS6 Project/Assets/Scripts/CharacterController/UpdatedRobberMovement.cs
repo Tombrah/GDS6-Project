@@ -85,7 +85,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
             TPSCamera.GetComponent<AudioListener>().enabled = true;
             freeLookCamera.Priority = 1;
 
-            InstructionsUI.Instance.SetText("Left click near the robber to catch them!");
+            InstructionsUI.Instance.SetText("Hold E near objects to steal them!");
         }
         else
         {
