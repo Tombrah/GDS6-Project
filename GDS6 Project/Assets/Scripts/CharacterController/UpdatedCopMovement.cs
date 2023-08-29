@@ -127,6 +127,8 @@ public class UpdatedCopMovement : NetworkBehaviour
         MyInput();
         SpeedControl();
         StateHandler();
+
+        CatchRobber();
         
         grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.5f);
 
@@ -361,7 +363,7 @@ public class UpdatedCopMovement : NetworkBehaviour
 
     private void CatchRobber()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             if (robber == null)
             {

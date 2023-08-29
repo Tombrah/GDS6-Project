@@ -122,6 +122,8 @@ public class UpdatedRobberMovement : NetworkBehaviour
             return;
         }
 
+        RobInteraction();
+
         MyInput();
         SpeedControl();
         StateHandler();
