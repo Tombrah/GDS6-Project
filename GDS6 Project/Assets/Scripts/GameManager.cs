@@ -130,7 +130,8 @@ public class GameManager : NetworkBehaviour
                         break;
                     }
                     ResetRound();
-                    state.Value = State.WaitingToStart;
+                    state.Value = State.CountdownToStart;
+                    countdownTimer.Value = countdownTimerMax;
                 }
                 break;
             case State.GameEnded:
