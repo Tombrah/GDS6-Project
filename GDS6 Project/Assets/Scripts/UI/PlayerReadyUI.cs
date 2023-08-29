@@ -13,7 +13,7 @@ public class PlayerReadyUI : MonoBehaviour
     {
         readyButton.onClick.AddListener(() =>
         {
-            LobbyManager.Instance.ToggleReadyState();
+            LobbyManager.Instance.UpdatePlayerReady();
             readyText.SetActive(!readyText.gameObject.activeSelf);
             unreadyText.SetActive(!unreadyText.gameObject.activeSelf);
         });

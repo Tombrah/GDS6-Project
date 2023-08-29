@@ -12,7 +12,7 @@ using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using TMPro;
 
-public class LobbyManager : NetworkBehaviour
+public class LobbyManager : MonoBehaviour
 {
     public static LobbyManager Instance { get; private set; }
 
@@ -31,11 +31,13 @@ public class LobbyManager : NetworkBehaviour
 
     private bool isLocalPlayerReady = false;
     private Dictionary<ulong, bool> playerReadyDictionary;
-    private NetworkVariable<float> countdownTimer = new NetworkVariable<float>(4f);
+    private float countdownTimer = 4f;
     private Coroutine co;
 
     private bool isJoining;
     private bool isHost;
+    private bool allPlayersReady = false;
+    private bool canRun = true;
 
     private string playerName;
 
@@ -64,6 +66,12 @@ public class LobbyManager : NetworkBehaviour
     {
         HandleHeartbeat();
         HandleLobbyUpdate();
+
+        if (allPlayersReady && canRun)
+        {
+            canRun = false;
+            co = StartCoroutine(StartCountdown());
+        }
     }
 
     private async void HandleHeartbeat()
@@ -112,6 +120,19 @@ public class LobbyManager : NetworkBehaviour
                 }
 
                 previousPlayerCount = joinedLobby.Players.Count;
+            }
+
+            allPlayersReady = true;
+            foreach (Player player in joinedLobby.Players)
+            {
+                if (GetPlayerReadyState(player) != "Ready")
+                {
+                    if (co != null) StopCoroutine(co);
+                    countdownTimer = 4;
+                    allPlayersReady = false;
+                    canRun = true;
+                    break;
+                }
             }
         }
     }
@@ -249,7 +270,8 @@ public class LobbyManager : NetworkBehaviour
         {
             Data = new Dictionary<string, PlayerDataObject>
             {
-                { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName) }
+                { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName) },
+                { "ReadyState", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "Unready") }
             }
         };
     }
@@ -260,43 +282,44 @@ public class LobbyManager : NetworkBehaviour
         return player.Data["PlayerName"].Value;
     }
 
-    public void ToggleReadyState()
+    private string GetPlayerReadyState(Player player)
     {
-        isLocalPlayerReady = !isLocalPlayerReady;
-        SetPlayerReadyServerRpc(isLocalPlayerReady);
+        return player.Data["ReadyState"].Value;
     }
 
-
-    [ServerRpc(RequireOwnership = false)]
-    public void SetPlayerReadyServerRpc(bool readyState, ServerRpcParams serverRpcParams = default)
+    public async void UpdatePlayerReady()
     {
-        playerReadyDictionary[serverRpcParams.Receive.SenderClientId] = readyState;
-
-        bool allClientsReady = true;
-        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        try
         {
-            if (!playerReadyDictionary.ContainsKey(clientId) || !playerReadyDictionary[clientId])
+            isLocalPlayerReady = !isLocalPlayerReady;
+            string readyState;
+            if (isLocalPlayerReady)
             {
-                if (co != null) StopCoroutine(co);
-                countdownTimer.Value = 4;
-                allClientsReady = false;
-                break;
+                readyState = "Ready";
             }
-
+            else
+            {
+                readyState = "Unready";
+            }
+            await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
+            {
+                Data = new Dictionary<string, PlayerDataObject>
+                {
+                    { "ReadyState", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, readyState) }
+                }
+            });
         }
-
-        if (allClientsReady)
+        catch (LobbyServiceException e)
         {
-            countdownTimer.Value = 3;
-            co = StartCoroutine(StartCountdown());
+            Debug.Log(e);
         }
     }
 
     private IEnumerator StartCountdown()
     {
-        while (countdownTimer.Value > 0)
+        while (countdownTimer > 0)
         {
-            countdownTimer.Value -= Time.deltaTime;
+            countdownTimer -= Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
 
@@ -305,12 +328,15 @@ public class LobbyManager : NetworkBehaviour
 
     public float GetCountdownTimer()
     {
-        return countdownTimer.Value;
+        return countdownTimer;
     }
 
     public void StartGame()
     {
-        Loader.LoadNetwork(Loader.Scene.GameScene);
+        if (isHost)
+        {
+            Loader.LoadNetwork(Loader.Scene.GameScene);
+        }
     }
 
     public async void CreateRelay()
@@ -330,9 +356,9 @@ public class LobbyManager : NetworkBehaviour
             Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
             {
                 Data = new Dictionary<string, DataObject>
-                    {
-                        { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
-                    }
+                {
+                    { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
+                }
             });
         }
         catch (RelayServiceException e)
