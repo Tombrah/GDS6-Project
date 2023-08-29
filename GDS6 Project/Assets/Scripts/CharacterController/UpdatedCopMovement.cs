@@ -92,6 +92,7 @@ public class UpdatedCopMovement : NetworkBehaviour
             TPSCamera.GetComponent<AudioListener>().enabled = false;
             freeLookCamera.Priority = 0;
             combatCamera.Priority = 0;
+            TPSCamera.GetComponent<ThirdPersonCam>().enabled = false;
             this.enabled = false;
         }
     }
