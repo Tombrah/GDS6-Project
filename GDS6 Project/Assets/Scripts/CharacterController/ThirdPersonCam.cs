@@ -37,8 +37,11 @@ public class ThirdPersonCam : MonoBehaviour
             return;
         }
         // switch styles
-        if (Input.GetMouseButtonUp(1)) SwitchCameraStyle(CameraStyle.Basic);
-        if (Input.GetMouseButtonDown(1)) SwitchCameraStyle(CameraStyle.Combat);
+        if (combatCam != null)
+        {
+            if (Input.GetMouseButtonUp(1)) SwitchCameraStyle(CameraStyle.Basic);
+            if (Input.GetMouseButtonDown(1)) SwitchCameraStyle(CameraStyle.Combat);
+        }
 
         // rotate orientation
         Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
@@ -52,7 +55,7 @@ public class ThirdPersonCam : MonoBehaviour
             Vector3 inputDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
             if (inputDir != Vector3.zero)
-                playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized, Time.deltaTime * rotationSpeed);
+                playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized,Time.fixedDeltaTime * rotationSpeed);
         }
 
         else if(currentStyle == CameraStyle.Combat)

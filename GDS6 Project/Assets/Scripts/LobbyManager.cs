@@ -12,8 +12,10 @@ using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using TMPro;
 
-public class TestLobby : MonoBehaviour
+public class LobbyManager : MonoBehaviour
 {
+    public static LobbyManager Instance { get; private set; }
+
     private Lobby hostLobby;
     private Lobby joinedLobby;
     private float heartbeatTimer;
@@ -24,13 +26,27 @@ public class TestLobby : MonoBehaviour
     [SerializeField] private GameObject lobbyPrefab;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform container;
-    [SerializeField] private TMP_InputField nameInput;
+    [SerializeField] private TMP_InputField lobbyNameInput;
     [SerializeField] private TMP_Text lobbyNameText;
+    [SerializeField] private TMP_InputField playerNameInput;
+
+    private bool isLocalPlayerReady = false;
+    private Dictionary<ulong, bool> playerReadyDictionary;
+    private float countdownTimer = 4f;
+    private Coroutine co;
 
     private bool isJoining;
     private bool isHost;
+    private bool allPlayersReady = false;
+    private bool canRun = true;
 
-    private string playerName;
+    public string playerName;
+
+    private void Awake()
+    {
+        Instance = this;
+        playerReadyDictionary = new Dictionary<ulong, bool>();
+    }
 
     private async void Start()
     {
@@ -43,7 +59,8 @@ public class TestLobby : MonoBehaviour
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-        playerName = "Tombrah" + Mathf.RoundToInt(Random.Range(0, 100));
+        playerName = "PlayerName" + Mathf.RoundToInt(Random.Range(0, 100));
+        playerNameInput.text = playerName;
         Debug.Log(playerName);
     }
 
@@ -51,6 +68,12 @@ public class TestLobby : MonoBehaviour
     {
         HandleHeartbeat();
         HandleLobbyUpdate();
+
+        if (allPlayersReady && canRun)
+        {
+            canRun = false;
+            co = StartCoroutine(StartCountdown());
+        }
     }
 
     private async void HandleHeartbeat()
@@ -100,6 +123,19 @@ public class TestLobby : MonoBehaviour
 
                 previousPlayerCount = joinedLobby.Players.Count;
             }
+
+            allPlayersReady = true;
+            foreach (Player player in joinedLobby.Players)
+            {
+                if (GetPlayerReadyState(player) != "Ready")
+                {
+                    if (co != null) StopCoroutine(co);
+                    countdownTimer = 4;
+                    allPlayersReady = false;
+                    canRun = true;
+                    break;
+                }
+            }
         }
     }
 
@@ -107,8 +143,18 @@ public class TestLobby : MonoBehaviour
     {
         try
         {
-            string lobbyName = nameInput.text;
+            string lobbyName = "My Lobby";
+            if (lobbyNameInput.text != "")
+            {
+                lobbyName = lobbyNameInput.text;
+            }
             int maxPlayers = 2;
+            if (playerNameInput.text != "")
+            {
+                playerName = playerNameInput.text;
+            }
+            playerNameInput.gameObject.SetActive(false);
+
             CreateLobbyOptions lobbyOptions = new CreateLobbyOptions
             {
                 IsPrivate = false,
@@ -132,6 +178,7 @@ public class TestLobby : MonoBehaviour
             lobbyNameText.text = lobbyName;
 
             CreateRelay();
+            //PlayerData.Instance.UpdatePlayerNameServerRpc(playerName);
 
             Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + " " + lobby.Id + " " + lobby.LobbyCode);
         }
@@ -192,6 +239,12 @@ public class TestLobby : MonoBehaviour
         
         try
         {
+            if (playerNameInput.text != "")
+            {
+                playerName = playerNameInput.text;
+            }
+            playerNameInput.gameObject.SetActive(false);
+
             JoinLobbyByIdOptions joinLobbyOptions = new JoinLobbyByIdOptions
             {
                 Player = GetPlayer()
@@ -202,6 +255,7 @@ public class TestLobby : MonoBehaviour
             joinedLobby = lobby;
 
             JoinRelay(joinedLobby.Data["RelayCode"].Value);
+            //PlayerData.Instance.UpdatePlayerNameServerRpc(playerName);
 
             Debug.Log("Joined Lobby!");
         }
@@ -232,7 +286,8 @@ public class TestLobby : MonoBehaviour
         {
             Data = new Dictionary<string, PlayerDataObject>
             {
-                { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName) }
+                { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName) },
+                { "ReadyState", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "Unready") }
             }
         };
     }
@@ -241,6 +296,55 @@ public class TestLobby : MonoBehaviour
     private string GetPlayerName(Player player)
     {
         return player.Data["PlayerName"].Value;
+    }
+
+    private string GetPlayerReadyState(Player player)
+    {
+        return player.Data["ReadyState"].Value;
+    }
+
+    public async void UpdatePlayerReady()
+    {
+        try
+        {
+            isLocalPlayerReady = !isLocalPlayerReady;
+            string readyState;
+            if (isLocalPlayerReady)
+            {
+                readyState = "Ready";
+            }
+            else
+            {
+                readyState = "Unready";
+            }
+            await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
+            {
+                Data = new Dictionary<string, PlayerDataObject>
+                {
+                    { "ReadyState", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, readyState) }
+                }
+            });
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+
+    private IEnumerator StartCountdown()
+    {
+        while (countdownTimer > 0)
+        {
+            countdownTimer -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        StartGame();
+    }
+
+    public float GetCountdownTimer()
+    {
+        return countdownTimer;
     }
 
     public void StartGame()
@@ -268,9 +372,9 @@ public class TestLobby : MonoBehaviour
             Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
             {
                 Data = new Dictionary<string, DataObject>
-                    {
-                        { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
-                    }
+                {
+                    { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
+                }
             });
         }
         catch (RelayServiceException e)

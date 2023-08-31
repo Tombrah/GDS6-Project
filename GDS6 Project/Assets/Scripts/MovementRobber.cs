@@ -43,6 +43,7 @@ public class MovementRobber : NetworkBehaviour
     private bool canInteract = false;
     [SerializeField] private float robTimer = 3;
     private GameObject robbingItem;
+    private Coroutine coroutine;
 
     public override void OnNetworkSpawn()
     {
@@ -53,6 +54,8 @@ public class MovementRobber : NetworkBehaviour
             listener.enabled = true;
             freeLookCamera.Priority = 1;
             CombatCamera.Priority = 1;
+
+            InstructionsUI.Instance.SetText("Hold E near objects to steal them!");
         }
         else
         {
@@ -162,13 +165,16 @@ public class MovementRobber : NetworkBehaviour
         if (canInteract && Input.GetKeyDown(KeyCode.E))
         {
             chargeWheel.SetActive(true);
-            StartCoroutine(Interact());
+            coroutine = StartCoroutine(Interact());
         }
 
         if (Input.GetKeyUp(KeyCode.E))
         {
             chargeWheel.SetActive(false);
-            StopCoroutine(Interact());
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+            }
         }
     }
 
@@ -220,29 +226,37 @@ public class MovementRobber : NetworkBehaviour
         if (other.CompareTag("Collectable"))
         {
             Debug.Log("Can't Interact");
-            StopCoroutine(Interact());
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+            }
+            chargeWheel.SetActive(false);
             canInteract = false;
             robbingItem = null;
         }
-    }
-
-    public void Respawn()
-    {
-        cop = GameObject.FindGameObjectWithTag("Cop");
-
-        int index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
-        while (Vector3.Distance(cop.transform.position, GameManager.Instance.respawnPoints[index].position) < 5f)
-        {
-            index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
-        }
-
-        transform.position = GameManager.Instance.respawnPoints[index].position;
-        transform.rotation = GameManager.Instance.respawnPoints[index].rotation;
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void DestroyItemServerRpc(ulong itemId)
     {
         NetworkManager.Singleton.SpawnManager.SpawnedObjects[itemId].Despawn();
+    }
+
+    [ClientRpc]
+    public void RespawnPlayerClientRpc()
+    {
+        if (cop == null)
+        {
+            cop = GameObject.FindGameObjectWithTag("Cop");
+        }
+
+        int index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
+        while (Vector3.Distance(cop.transform.position, GameManager.Instance.respawnPoints[index].position) < 15f)
+        {
+            index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
+        }
+
+        transform.position = GameManager.Instance.respawnPoints[index].position;
+        transform.rotation = GameManager.Instance.respawnPoints[index].rotation;
     }
 }

@@ -10,11 +10,11 @@ public class LobbyPrefab : MonoBehaviour
     [SerializeField] private TMP_Text lobbyName;
     [SerializeField] private TMP_Text lobbyPlayers;
 
-    private TestLobby testLobby;
+    private LobbyManager testLobby;
 
     private Lobby lobby;
 
-    public void Initialise(TestLobby testLobby, Lobby lobby)
+    public void Initialise(LobbyManager testLobby, Lobby lobby)
     {
         this.testLobby = testLobby;
         this.lobby = lobby;

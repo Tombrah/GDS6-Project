@@ -50,6 +50,8 @@ public class MovementCop : NetworkBehaviour
             listener.enabled = true;
             freeLookCamera.Priority = 1;
             CombatCamera.Priority = 1;
+
+            InstructionsUI.Instance.SetText("Left click near the robber to catch them!");
         }
         else
         {
@@ -65,6 +67,7 @@ public class MovementCop : NetworkBehaviour
         gameObject.AddComponent<NetworkRigidbody>();
         rb.isKinematic = false;
         rb.freezeRotation = true;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
 
         readyToJump = true;
 
@@ -158,14 +161,18 @@ public class MovementCop : NetworkBehaviour
 
     private void SetSpawn()
     {
-        transform.position = GameManager.Instance.playerSpawnPoints[0].position;
-        transform.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
+        transform.parent.position = GameManager.Instance.playerSpawnPoints[0].position;
+        transform.parent.rotation = GameManager.Instance.playerSpawnPoints[0].rotation;
     }
 
     private void CatchRobber()
     {
         if (Input.GetMouseButtonDown(0))
         {
+            if (robber == null)
+            {
+                robber = GameObject.FindGameObjectWithTag("Robber");
+            }
             if ((transform.position - robber.transform.position).sqrMagnitude < catchRadius * catchRadius)
             {
                 CatchRobberServerRpc(robber.GetComponent<NetworkObject>().OwnerClientId);
@@ -177,6 +184,6 @@ public class MovementCop : NetworkBehaviour
     [ServerRpc]
     private void CatchRobberServerRpc(ulong clientId)
     {
-        NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<MovementRobber>().Respawn();
+        NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<MovementRobber>().RespawnPlayerClientRpc();
     }
 }
