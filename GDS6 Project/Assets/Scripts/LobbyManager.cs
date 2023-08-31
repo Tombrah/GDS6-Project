@@ -40,7 +40,7 @@ public class LobbyManager : MonoBehaviour
     private bool allPlayersReady = false;
     private bool canRun = true;
 
-    private string playerName;
+    public string playerName;
 
     private void Awake()
     {
@@ -178,7 +178,7 @@ public class LobbyManager : MonoBehaviour
             lobbyNameText.text = lobbyName;
 
             CreateRelay();
-            PlayerData.Instance.UpdatePlayerNameServerRpc(playerName);
+            //PlayerData.Instance.UpdatePlayerNameServerRpc(playerName);
 
             Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + " " + lobby.Id + " " + lobby.LobbyCode);
         }
@@ -255,7 +255,7 @@ public class LobbyManager : MonoBehaviour
             joinedLobby = lobby;
 
             JoinRelay(joinedLobby.Data["RelayCode"].Value);
-            PlayerData.Instance.UpdatePlayerNameServerRpc(playerName);
+            //PlayerData.Instance.UpdatePlayerNameServerRpc(playerName);
 
             Debug.Log("Joined Lobby!");
         }

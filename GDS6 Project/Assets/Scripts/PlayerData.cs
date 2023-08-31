@@ -18,7 +18,12 @@ public class PlayerData : NetworkBehaviour
         playerNames = new Dictionary<ulong, string>();
     }
 
-    [ServerRpc]
+    public override void OnNetworkSpawn()
+    {
+        UpdatePlayerNameServerRpc(LobbyManager.Instance.playerName);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
     public void UpdatePlayerNameServerRpc(string playerName, ServerRpcParams serverRpcParams = default)
     {
         playerNames[serverRpcParams.Receive.SenderClientId] = playerName;
