@@ -56,7 +56,6 @@ public class GameManager : NetworkBehaviour
         state.OnValueChanged += State_OnValueChanged;
         if (IsServer)
         {
-            //NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneManager_OnLoadEventCompleted;
             round.Value = 0;
         }
         SetPlayerReadyServerRpc();
@@ -66,21 +65,6 @@ public class GameManager : NetworkBehaviour
     {
         OnStateChanged?.Invoke(this, EventArgs.Empty);
     }
-
-    private void SceneManager_OnLoadEventCompleted(string sceneName, UnityEngine.SceneManagement.LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
-    {
-        roleId = Mathf.CeilToInt(UnityEngine.Random.Range(0, 2));
-        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
-        {
-            playerScores.Add(0);
-
-            Transform player = Instantiate(playerPrefabs[roleId], playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
-            player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-
-            roleId = (roleId * -1) + 1;
-        }
-    }
-
     private void Update()
     {
         if (!IsServer)
@@ -220,6 +204,16 @@ public class GameManager : NetworkBehaviour
             }
             RobbingManager.Instance.RespawnAllItems();
 
+            int index = 0;
+            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                if (PlayerData.Instance.GetPlayerNamesDictionary().ContainsKey(clientId))
+                {
+                    SetPlayerNameClientRpc(index, PlayerData.Instance.GetPlayerNamesDictionary()[clientId]);
+                    index++;
+                }
+            }
+
             state.Value = State.CountdownToStart;
             countdownTimer.Value = countdownTimerMax;
         }
@@ -232,4 +226,9 @@ public class GameManager : NetworkBehaviour
         playerScores[(int)clientId] = oldScore + score;
     }
 
+    [ClientRpc]
+    private void SetPlayerNameClientRpc(int index, string playerName)
+    {
+        RoundResetUI.Instance.SetPlayerName(index, playerName);
+    }
 }

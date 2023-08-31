@@ -1886,8 +1886,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 1115906984}
-  player1: {fileID: 1926541473}
-  player2: {fileID: 488044796}
   players:
   - {fileID: 1926541473}
   - {fileID: 488044796}
@@ -4823,7 +4821,7 @@ MonoBehaviour:
   - {fileID: 966606023}
   roundMax: 4
   countdownTimerMax: 5
-  gamePlayingTimerMax: 90
+  gamePlayingTimerMax: 10
   roundResetTimerMax: 10
 --- !u!4 &4606277790695176806
 Transform:

@@ -26,8 +26,9 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private GameObject lobbyPrefab;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private Transform container;
-    [SerializeField] private TMP_InputField nameInput;
+    [SerializeField] private TMP_InputField lobbyNameInput;
     [SerializeField] private TMP_Text lobbyNameText;
+    [SerializeField] private TMP_InputField playerNameInput;
 
     private bool isLocalPlayerReady = false;
     private Dictionary<ulong, bool> playerReadyDictionary;
@@ -58,7 +59,8 @@ public class LobbyManager : MonoBehaviour
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-        playerName = "Tombrah" + Mathf.RoundToInt(Random.Range(0, 100));
+        playerName = "PlayerName" + Mathf.RoundToInt(Random.Range(0, 100));
+        playerNameInput.text = playerName;
         Debug.Log(playerName);
     }
 
@@ -142,11 +144,17 @@ public class LobbyManager : MonoBehaviour
         try
         {
             string lobbyName = "My Lobby";
-            if (nameInput.text != "")
+            if (lobbyNameInput.text != "")
             {
-                lobbyName = nameInput.text;
+                lobbyName = lobbyNameInput.text;
             }
             int maxPlayers = 2;
+            if (playerNameInput.text != "")
+            {
+                playerName = playerNameInput.text;
+            }
+            playerNameInput.gameObject.SetActive(false);
+
             CreateLobbyOptions lobbyOptions = new CreateLobbyOptions
             {
                 IsPrivate = false,
@@ -170,6 +178,7 @@ public class LobbyManager : MonoBehaviour
             lobbyNameText.text = lobbyName;
 
             CreateRelay();
+            PlayerData.Instance.UpdatePlayerNameServerRpc(playerName);
 
             Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + " " + lobby.Id + " " + lobby.LobbyCode);
         }
@@ -230,6 +239,12 @@ public class LobbyManager : MonoBehaviour
         
         try
         {
+            if (playerNameInput.text != "")
+            {
+                playerName = playerNameInput.text;
+            }
+            playerNameInput.gameObject.SetActive(false);
+
             JoinLobbyByIdOptions joinLobbyOptions = new JoinLobbyByIdOptions
             {
                 Player = GetPlayer()
@@ -240,6 +255,7 @@ public class LobbyManager : MonoBehaviour
             joinedLobby = lobby;
 
             JoinRelay(joinedLobby.Data["RelayCode"].Value);
+            PlayerData.Instance.UpdatePlayerNameServerRpc(playerName);
 
             Debug.Log("Joined Lobby!");
         }
