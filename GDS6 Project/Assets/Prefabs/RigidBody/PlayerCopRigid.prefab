@@ -451,7 +451,7 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
-  maxSlopeAngle: 50
+  maxSlopeAngle: 70
   BulletProjectile: {fileID: 2682328040842111770, guid: 69202ca93e571334581bdd9cb2e73de1, type: 3}
   BulletProjectileTra: {fileID: 2141499478916762488}
   TPSCamera: {fileID: 213986846723911291}

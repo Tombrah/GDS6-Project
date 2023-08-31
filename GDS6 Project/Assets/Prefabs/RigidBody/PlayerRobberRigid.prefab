@@ -181,7 +181,7 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
-  maxSlopeAngle: 50
+  maxSlopeAngle: 70
   TPSCamera: {fileID: 5023941643218635899}
   freeLookCamera: {fileID: 7874037623889479846}
   chargeWheel: {fileID: 1290447125984051801}
