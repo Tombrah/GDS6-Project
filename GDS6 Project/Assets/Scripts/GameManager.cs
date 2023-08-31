@@ -130,6 +130,7 @@ public class GameManager : NetworkBehaviour
                         break;
                     }
                     ResetRound();
+                    RobbingManager.Instance.RespawnAllItems();
                     state.Value = State.CountdownToStart;
                     countdownTimer.Value = countdownTimerMax;
                 }
@@ -166,6 +167,11 @@ public class GameManager : NetworkBehaviour
     public float GetGameTimer()
     {
         return gamePlayingTimer.Value;
+    }
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdateGameTimerServerRpc(float reductionTime)
+    {
+        gamePlayingTimer.Value -= reductionTime;
     }
 
     private void ResetRound()
@@ -212,6 +218,8 @@ public class GameManager : NetworkBehaviour
 
                 roleId = (roleId * -1) + 1;
             }
+            RobbingManager.Instance.RespawnAllItems();
+
             state.Value = State.CountdownToStart;
             countdownTimer.Value = countdownTimerMax;
         }
@@ -223,4 +231,5 @@ public class GameManager : NetworkBehaviour
         int oldScore = playerScores[(int)clientId];
         playerScores[(int)clientId] = oldScore + score;
     }
+
 }

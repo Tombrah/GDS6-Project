@@ -54,6 +54,8 @@ public class UpdatedCopMovement : NetworkBehaviour
 
     private GameObject robber;
     [SerializeField] private float catchRadius = 3;
+    [SerializeField] private float onCatchTimeReduction = 3;
+    [SerializeField] private int catchPoints = 50;
 
     public Transform orientation;
 
@@ -93,6 +95,7 @@ public class UpdatedCopMovement : NetworkBehaviour
             freeLookCamera.Priority = 0;
             combatCamera.Priority = 0;
             TPSCamera.GetComponent<ThirdPersonCam>().enabled = false;
+            GetComponent<Flashlight>().enabled = false;
             this.enabled = false;
         }
     }
@@ -369,11 +372,18 @@ public class UpdatedCopMovement : NetworkBehaviour
             if (robber == null)
             {
                 robber = GameObject.FindGameObjectWithTag("Robber");
+                if (!robber)
+                {
+                    return;
+                }
             }
             if ((transform.position - robber.transform.position).sqrMagnitude < catchRadius * catchRadius)
             {
                 CatchRobberServerRpc(robber.GetComponent<NetworkObject>().OwnerClientId);
-                GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, 20);
+                GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, catchPoints);
+                GameManager.Instance.UpdateGameTimerServerRpc(onCatchTimeReduction);
+
+                Debug.Log("Capture Successful");
             }
         }
     }

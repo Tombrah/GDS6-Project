@@ -91,6 +91,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
         {
             TPSCamera.GetComponent<AudioListener>().enabled = false;
             freeLookCamera.Priority = 0;
+            GetComponent<Dashing>().enabled = false;
             this.enabled = false;
         }
     }
@@ -371,6 +372,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
     private IEnumerator Interact()
     {
         Renderer wheelRenderer = chargeWheel.GetComponent<Renderer>();
+        robTimer = robbingItem.GetComponent<RobbingItem>().robTimer;
 
         float percentage = 0;
         while (percentage < 1)
@@ -386,8 +388,9 @@ public class UpdatedRobberMovement : NetworkBehaviour
 
         if (robbingItem != null)
         {
-            DestroyItemServerRpc(robbingItem.GetComponent<NetworkObject>().NetworkObjectId);
-            GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, 100);
+            int points = robbingItem.GetComponent<RobbingItem>().points;
+            RobbingManager.Instance.UpdateItemStateServerRpc(RobbingManager.Instance.robbingItems.IndexOf(robbingItem), false);
+            GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, points);
         }
         chargeWheel.SetActive(false);
         canInteract = false;
@@ -420,12 +423,6 @@ public class UpdatedRobberMovement : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void DestroyItemServerRpc(ulong itemId)
-    {
-        NetworkManager.Singleton.SpawnManager.SpawnedObjects[itemId].Despawn();
-    }
-
     [ClientRpc]
     public void RespawnPlayerClientRpc()
     {
@@ -435,7 +432,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
         }
 
         int index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
-        while (Vector3.Distance(cop.transform.position, GameManager.Instance.respawnPoints[index].position) < 15f)
+        while (Vector3.Distance(cop.transform.position, GameManager.Instance.respawnPoints[index].position) < 30f)
         {
             index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
         }
