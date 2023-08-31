@@ -167,7 +167,7 @@ MonoBehaviour:
   walkSpeed: 7
   sprintSpeed: 12
   dashSpeed: 35
-  groundDrag: 5
+  groundDrag: 10
   dashSpeedChangeFactor: 50
   jumpForce: 20
   jumpCooldown: 0.25
@@ -181,7 +181,7 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
-  maxSlopeAngle: 70
+  maxSlopeAngle: 80
   TPSCamera: {fileID: 5023941643218635899}
   freeLookCamera: {fileID: 7874037623889479846}
   chargeWheel: {fileID: 1290447125984051801}
@@ -211,7 +211,7 @@ MonoBehaviour:
   disableGravity: 0
   resetVel: 1
   dashCd: 10
-  dashCdTimer: 1.5
+  dashCdTimer: 0
   dashKey: 113
 --- !u!114 &2934999102050147480
 MonoBehaviour:
@@ -255,7 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
+  GlobalObjectIdHash: 4095174154
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0

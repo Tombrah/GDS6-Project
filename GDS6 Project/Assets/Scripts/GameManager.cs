@@ -21,6 +21,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [SerializeField] private Transform[] playerPrefabs;
+    public List<GameObject> playerUIs;
     public List<Transform> playerSpawnPoints;
     public List<Transform> respawnPoints;
 
@@ -29,7 +30,6 @@ public class GameManager : NetworkBehaviour
  
     private NetworkVariable<State> state = new NetworkVariable<State>(State.WaitingToStart);
     private NetworkVariable<int> round = new NetworkVariable<int>(0);
-    private NetworkVariable<float> waitingToStartTimer = new NetworkVariable<float>(1f);
     private NetworkVariable<float> countdownTimer = new NetworkVariable<float>(3f);
     private NetworkVariable<float> gamePlayingTimer = new NetworkVariable<float>(0f);
     private NetworkVariable<float> roundResetTimer = new NetworkVariable<float>(0f);
@@ -65,6 +65,7 @@ public class GameManager : NetworkBehaviour
     {
         OnStateChanged?.Invoke(this, EventArgs.Empty);
     }
+
     private void Update()
     {
         if (!IsServer)

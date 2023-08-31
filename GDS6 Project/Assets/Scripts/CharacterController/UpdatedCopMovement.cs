@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using Cinemachine;
@@ -66,6 +67,9 @@ public class UpdatedCopMovement : NetworkBehaviour
 
     Rigidbody rb;
 
+    private GameObject copUI;
+    private Image progressImage;
+
     public MovementState state;
     public enum MovementState
     {
@@ -87,6 +91,10 @@ public class UpdatedCopMovement : NetworkBehaviour
             freeLookCamera.Priority = 1;
             combatCamera.Priority = 1;
 
+            copUI = GameManager.Instance.playerUIs[0];
+            progressImage = copUI.GetComponentInChildren<Image>();
+            copUI.SetActive(false);
+            GameManager.Instance.playerUIs[1].SetActive(false);
             InstructionsUI.Instance.SetText("Press E near the robber to catch them!");
         }
         else
@@ -109,6 +117,8 @@ public class UpdatedCopMovement : NetworkBehaviour
 
     private void Start()
     {
+        GameManager.Instance.OnStateChanged += Instance_OnStateChanged;
+
         rb = gameObject.AddComponent<Rigidbody>();
         gameObject.AddComponent<NetworkRigidbody>();
         rb.isKinematic = false;
@@ -120,6 +130,18 @@ public class UpdatedCopMovement : NetworkBehaviour
         canShoot = true;
 
         startYScale = transform.localScale.y;
+    }
+
+    private void Instance_OnStateChanged(object sender, System.EventArgs e)
+    {
+        if (GameManager.Instance.IsGamePlaying())
+        {
+            copUI.SetActive(true);
+        }
+        else
+        {
+            copUI.SetActive(false);
+        }
     }
 
     private void Update()
@@ -197,9 +219,11 @@ public class UpdatedCopMovement : NetworkBehaviour
         float percentage = 0;
         while (percentage < 1)
         {
+            progressImage.fillAmount = percentage;
             percentage += Time.deltaTime / ShootCD;
             yield return new WaitForEndOfFrame();
         }
+        progressImage.fillAmount = 1;
         canShoot = true;
     }
 

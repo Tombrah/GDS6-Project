@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using Cinemachine;
-
 
 public class UpdatedRobberMovement : NetworkBehaviour
 {
@@ -63,6 +63,10 @@ public class UpdatedRobberMovement : NetworkBehaviour
     Vector3 moveDirection;
 
     Rigidbody rb;
+    Dashing dashScript;
+
+    private GameObject robberUI;
+    private Image progressImage;
 
     public MovementState state;
     public enum MovementState
@@ -84,7 +88,11 @@ public class UpdatedRobberMovement : NetworkBehaviour
         {
             TPSCamera.GetComponent<AudioListener>().enabled = true;
             freeLookCamera.Priority = 1;
-
+            dashScript = GetComponent<Dashing>();
+            robberUI = GameManager.Instance.playerUIs[1];
+            progressImage = robberUI.GetComponentInChildren<Image>();
+            robberUI.SetActive(false);
+            GameManager.Instance.playerUIs[0].SetActive(false);
             InstructionsUI.Instance.SetText("Hold E near objects to steal them!");
         }
         else
@@ -105,6 +113,8 @@ public class UpdatedRobberMovement : NetworkBehaviour
 
     private void Start()
     {
+        GameManager.Instance.OnStateChanged += Instance_OnStateChanged;
+
         rb = gameObject.AddComponent<Rigidbody>();
         gameObject.AddComponent<NetworkRigidbody>();
         rb.isKinematic = false;
@@ -117,6 +127,18 @@ public class UpdatedRobberMovement : NetworkBehaviour
         startYScale = transform.localScale.y;
     }
 
+    private void Instance_OnStateChanged(object sender, System.EventArgs e)
+    {
+        if (GameManager.Instance.IsGamePlaying())
+        {
+            robberUI.SetActive(true);
+        }
+        else
+        {
+            robberUI.SetActive(false);
+        }
+    }
+
     private void Update()
     {
         if (!GameManager.Instance.IsGamePlaying())
@@ -124,6 +146,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
             return;
         }
 
+        SetDashProgress();
         RobInteraction();
 
         MyInput();
@@ -150,6 +173,14 @@ public class UpdatedRobberMovement : NetworkBehaviour
         }
 
         MovePlayer();
+    }
+
+    private void SetDashProgress()
+    {
+        float backPercentage = dashScript.dashCdTimer / dashScript.dashCd;
+        float percentage = Mathf.Clamp01(1 - backPercentage);
+
+        progressImage.fillAmount = percentage;
     }
 
     private void MyInput()
