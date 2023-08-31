@@ -351,7 +351,10 @@ public class LobbyManager : MonoBehaviour
     {
         if (isHost)
         {
-            Debug.Log(NetworkManager.Singleton.ConnectedClients);
+            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                Debug.Log(clientId);
+            }
             Loader.LoadNetwork(Loader.Scene.GameScene);
         }
     }
