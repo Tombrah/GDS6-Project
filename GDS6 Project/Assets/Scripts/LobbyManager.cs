@@ -351,6 +351,7 @@ public class LobbyManager : MonoBehaviour
     {
         if (isHost)
         {
+            Debug.Log(NetworkManager.Singleton.ConnectedClients);
             Loader.LoadNetwork(Loader.Scene.GameScene);
         }
     }
