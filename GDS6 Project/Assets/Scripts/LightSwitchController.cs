@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Unity.Netcode;
 
-public class LightSwitchController : MonoBehaviour
+public class LightSwitchController : NetworkBehaviour
 {
     [SerializeField] private bool isLightOn;
     [SerializeField] private UnityEvent lightOnEvent;
@@ -20,6 +21,17 @@ public class LightSwitchController : MonoBehaviour
             isLightOn = false;
             lightOffEvent.Invoke();
         }
+    }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void InteractSwitchServerRpc()
+    {
+        InteractSwitchClientRpc();
+    }
+
+    [ClientRpc]
+    private void InteractSwitchClientRpc()
+    {
+        InteractSwitch();
     }
 }

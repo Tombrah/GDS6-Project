@@ -92,6 +92,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
             TPSCamera.GetComponent<AudioListener>().enabled = false;
             freeLookCamera.Priority = 0;
             GetComponent<Dashing>().enabled = false;
+            GetComponentInChildren<LightSwitchRaycast>().enabled = false;
             this.enabled = false;
         }
     }

@@ -9,18 +9,24 @@ public class LightSwitchRaycast : MonoBehaviour
     [SerializeField] private int rayLength = 5;
     private LightSwitchController interactiveObj;
     [SerializeField] private Image crosshair;
+    [SerializeField] private LayerMask playerLayer;
 
     private void Update()
     {
+        if (!GameManager.Instance.IsGamePlaying())
+        {
+            return;
+        }
         Vector3 fwd = transform.TransformDirection(Vector3.forward);
 
-        if(Physics.Raycast(transform.position, fwd, out RaycastHit hit, rayLength))
+        if(Physics.Raycast(transform.position, fwd, out RaycastHit hit, rayLength, ~playerLayer))
         {
             var raycastObj = hit.collider.gameObject.GetComponent<LightSwitchController>();
             if(raycastObj != null)
             {
                 interactiveObj = raycastObj;
-                CrosshairChange(true);
+                Debug.Log("Object Found");
+                //CrosshairChange(true);
             }
             else
             {
@@ -36,7 +42,8 @@ public class LightSwitchRaycast : MonoBehaviour
         {
             if(Input.GetKeyDown(KeyCode.Mouse0))
             {
-                interactiveObj.InteractSwitch();
+                interactiveObj.InteractSwitchServerRpc();
+                Debug.Log("Clicking");
             }
         }
     }
@@ -45,7 +52,7 @@ public class LightSwitchRaycast : MonoBehaviour
     {
         if(interactiveObj != null)
         {
-            CrosshairChange(false);
+            //CrosshairChange(false);
             interactiveObj = null;
         }
     }

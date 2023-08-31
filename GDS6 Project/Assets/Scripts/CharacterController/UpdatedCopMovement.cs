@@ -95,6 +95,7 @@ public class UpdatedCopMovement : NetworkBehaviour
             freeLookCamera.Priority = 0;
             combatCamera.Priority = 0;
             TPSCamera.GetComponent<ThirdPersonCam>().enabled = false;
+            GetComponentInChildren<LightSwitchRaycast>().enabled = false;
             GetComponent<Flashlight>().enabled = false;
             this.enabled = false;
         }
