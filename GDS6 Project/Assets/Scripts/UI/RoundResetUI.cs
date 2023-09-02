@@ -61,7 +61,6 @@ public class RoundResetUI : MonoBehaviour
     {
         foreach (int score in GameManager.Instance.playerScores)
         {
-            Debug.Log(score);
             int index = GameManager.Instance.playerScores.IndexOf(score);
 
             float percentage = 0;

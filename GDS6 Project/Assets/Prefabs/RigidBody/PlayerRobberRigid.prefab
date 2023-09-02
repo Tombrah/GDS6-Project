@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 610284208702845694}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.1062768, y: 0.4835398, z: 0.059284464, w: 0.86682177}
+  m_LocalRotation: {x: -0.09790436, y: 0.48408952, z: 0.05461406, w: 0.8678072}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -114,11 +114,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8519019854721426914}
   - {fileID: 8278402134392539884}
   - {fileID: 2143749024631894075}
   - {fileID: 5437113734627876799}
   - {fileID: 7081514357117591509}
-  - {fileID: 8519019854721426914}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5300184853614894522
@@ -255,7 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4095174154
+  GlobalObjectIdHash: 951099334
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -407,7 +407,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2847229954797208076}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.076528415, y: 0.4848583, z: 0.042640414, w: 0.8701941}
+  m_LocalRotation: {x: -0.07766099, y: 0.48523045, z: 0.043321688, w: 0.86985254}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -967,8 +967,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5023941643218635899}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.12635474, y: 0.4820346, z: 0.07048457, w: 0.8641233}
-  m_LocalPosition: {x: -3.2544336, y: -4, z: 2.3732536}
+  m_LocalRotation: {x: 0.31295884, y: -0.0034164595, z: 0.0011122115, w: 0.94975996}
+  m_LocalPosition: {x: 0.43423766, y: 57.250954, z: -131.27608}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1005,11 +1005,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
-  far clip plane: 5000
-  field of view: 50
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60.000004
   orthographic: 0
-  orthographic size: 10
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1144,7 +1144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 569bf4e7462f8d4408b5c598659e1471, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayLength: 5
+  rayLength: 10
   crosshair: {fileID: 0}
   playerLayer:
     serializedVersion: 2
@@ -1345,7 +1345,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6556771706184207490}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.12635474, y: 0.48203456, z: 0.07048456, w: 0.86412334}
+  m_LocalRotation: {x: -0.1180074, y: 0.48269248, z: 0.06582816, w: 0.8653028}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

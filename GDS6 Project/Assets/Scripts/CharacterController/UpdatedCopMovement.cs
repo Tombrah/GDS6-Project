@@ -109,6 +109,15 @@ public class UpdatedCopMovement : NetworkBehaviour
         }
     }
 
+    public override void OnNetworkDespawn()
+    {
+        if (IsOwner)
+        {
+            copUI.SetActive(false);
+            GameManager.Instance.OnStateChanged -= Instance_OnStateChanged;
+        }
+    }
+
     private void SetSpawn()
     {
         transform.position = GameManager.Instance.playerSpawnPoints[0].position;

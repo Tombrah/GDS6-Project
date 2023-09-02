@@ -105,6 +105,15 @@ public class UpdatedRobberMovement : NetworkBehaviour
         }
     }
 
+    public override void OnNetworkDespawn()
+    {
+        if (IsOwner)
+        {
+            robberUI.SetActive(false);
+            GameManager.Instance.OnStateChanged -= Instance_OnStateChanged;
+        }
+    }
+
     private void SetSpawn()
     {
         transform.position = GameManager.Instance.playerSpawnPoints[1].position;
