@@ -90,10 +90,12 @@ public class UpdatedCopMovement : NetworkBehaviour
             TPSCamera.GetComponent<AudioListener>().enabled = true;
             freeLookCamera.Priority = 1;
             combatCamera.Priority = 1;
+            RobbingManager.Instance.SetPlayerCamera(TPSCamera);
 
             copUI = GameManager.Instance.playerUIs[0];
             progressImage = copUI.GetComponentInChildren<Image>();
             copUI.SetActive(false);
+
             GameManager.Instance.playerUIs[1].SetActive(false);
             InstructionsUI.Instance.SetText("Press E near the robber to catch them!");
         }
@@ -213,7 +215,7 @@ public class UpdatedCopMovement : NetworkBehaviour
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
         }
 
-        if (Input.GetKey(shootKey) && canShoot)
+        if (Input.GetKey(shootKey) && canShoot && TPSCamera.GetComponent<ThirdPersonCam>().currentStyle == ThirdPersonCam.CameraStyle.Combat)
         {
             Vector3 position = TPSCamera.transform.position + TPSCamera.transform.forward * 30f;
             Vector3 aimDir = (position - BulletProjectileTra.position).normalized;

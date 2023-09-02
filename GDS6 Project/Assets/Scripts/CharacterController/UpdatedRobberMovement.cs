@@ -88,10 +88,13 @@ public class UpdatedRobberMovement : NetworkBehaviour
         {
             TPSCamera.GetComponent<AudioListener>().enabled = true;
             freeLookCamera.Priority = 1;
+            RobbingManager.Instance.SetPlayerCamera(TPSCamera);
+
             dashScript = GetComponent<Dashing>();
             robberUI = GameManager.Instance.playerUIs[1];
             progressImage = robberUI.GetComponentInChildren<Image>();
             robberUI.SetActive(false);
+
             GameManager.Instance.playerUIs[0].SetActive(false);
             InstructionsUI.Instance.SetText("Hold E near objects to steal them!");
         }

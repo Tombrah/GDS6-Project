@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6536935091329509589}
   - component: {fileID: 2568967794991736042}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: MiddleRig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 4103449781753599098}
   - component: {fileID: 6291143515781018181}
   - component: {fileID: 7010366559753064812}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: PlayerCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -109,8 +109,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 213986846723911291}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.31295884, y: -0.0034164595, z: 0.0011122115, w: 0.94975996}
-  m_LocalPosition: {x: 0.43423766, y: 57.250954, z: -131.27608}
+  m_LocalRotation: {x: -0.13677877, y: 0.3226008, z: 0.04717168, w: 0.93541175}
+  m_LocalPosition: {x: -2.0821662, y: -4, z: 1.0629642}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -147,11 +147,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60.000004
+  near clip plane: 0.1
+  far clip plane: 5000
+  field of view: 50
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -286,11 +286,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 569bf4e7462f8d4408b5c598659e1471, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rayLength: 10
+  rayLength: 8
   crosshair: {fileID: 0}
   playerLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 4
 --- !u!1 &292295026692262565
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +307,7 @@ GameObject:
   - component: {fileID: 4045182098898448194}
   - component: {fileID: 8857836659455684453}
   - component: {fileID: 6953678053733445506}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: PlayerCopRigid
   m_TagString: Cop
   m_Icon: {fileID: 0}
@@ -523,7 +523,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3648792411206539892}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: Orientation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -557,7 +557,7 @@ GameObject:
   - component: {fileID: 543017346029377263}
   - component: {fileID: 7741365004347405215}
   - component: {fileID: 708558258309290332}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: Flashlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -676,7 +676,7 @@ GameObject:
   - component: {fileID: 5215719706135109758}
   - component: {fileID: 1631485956064303623}
   - component: {fileID: 310164990117224013}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -803,7 +803,7 @@ GameObject:
   - component: {fileID: 3213506254495629409}
   - component: {fileID: 2657857652341808889}
   - component: {fileID: 487846844014510319}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -929,7 +929,7 @@ GameObject:
   - component: {fileID: 8506781987164629481}
   - component: {fileID: 8732048721174505717}
   - component: {fileID: 5186965236279917715}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: FreeLook Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1099,7 +1099,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7576312922744350358}
   - component: {fileID: 4280927943107349696}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: TopRig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1178,7 +1178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5873275693722899556}
   - component: {fileID: 5125561038655324263}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: BottomRig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1193,7 +1193,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4242348034501291230}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.12774278, y: 0.3230411, z: 0.044055376, w: 0.93668854}
+  m_LocalRotation: {x: -0.13677876, y: 0.32260075, z: 0.04717167, w: 0.9354118}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1257,7 +1257,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1353707270843316320}
   - component: {fileID: 6785573524141422489}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: TopRig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1272,7 +1272,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4487867033561128280}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.08406787, y: 0.32473963, z: 0.02899297, w: 0.9416136}
+  m_LocalRotation: {x: -0.093153425, y: 0.3244446, z: 0.032126352, w: 0.9407582}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1335,7 +1335,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5703996595843221959}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: CombatLookAt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1366,7 +1366,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2141499478916762488}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: BulletTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1400,7 +1400,7 @@ GameObject:
   - component: {fileID: 5052503840453991139}
   - component: {fileID: 676308158085699707}
   - component: {fileID: 2850304553722686280}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1527,7 +1527,7 @@ GameObject:
   - component: {fileID: 5148486404877726553}
   - component: {fileID: 5411942670218224878}
   - component: {fileID: 8316357333000080404}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1652,7 +1652,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6677842102100089266}
   - component: {fileID: 2436377749391078174}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: MiddleRig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1667,7 +1667,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6860546306195794386}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.105981275, y: 0.32397607, z: 0.03655037, w: 0.9393996}
+  m_LocalRotation: {x: -0.11504443, y: 0.32360813, z: 0.03967602, w: 0.9383328}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1733,7 +1733,7 @@ GameObject:
   - component: {fileID: 5310155808595285306}
   - component: {fileID: 7073229184114979902}
   - component: {fileID: 7232362677397241725}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1860,7 +1860,7 @@ GameObject:
   - component: {fileID: 7604498742334210989}
   - component: {fileID: 1340890630241941472}
   - component: {fileID: 4853987796704267295}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1984,7 +1984,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3862588441574132644}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: CameraHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2019,7 +2019,7 @@ GameObject:
   m_Component:
   - component: {fileID: 560830065594422698}
   - component: {fileID: 2534247746040476788}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: BottomRig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2099,7 +2099,7 @@ GameObject:
   - component: {fileID: 5965105733304932648}
   - component: {fileID: 4000683200557375156}
   - component: {fileID: 3801084334368339385}
-  m_Layer: 6
+  m_Layer: 2
   m_Name: CombatCam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2309,7 +2309,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8149360131098853538, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -7281585704534236759, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -2317,7 +2317,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 41cb447e72394844aaf4dc49f82957ca, type: 2}
     - target: {fileID: -6755036778639205131, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -5573124179831232891, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -2325,7 +2325,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 41cb447e72394844aaf4dc49f82957ca, type: 2}
     - target: {fileID: -4351431027050139065, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -2675416609051990545, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -2333,11 +2333,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 41cb447e72394844aaf4dc49f82957ca, type: 2}
     - target: {fileID: 778784415915531423, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 812959687256647758, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Name
@@ -2345,7 +2345,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1250943401912443356, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -2357,11 +2357,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 41cb447e72394844aaf4dc49f82957ca, type: 2}
     - target: {fileID: 3835859681712534474, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5891652137255210888, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5973476342631726535, guid: 43279901bc44aaf4ba4d3dfad33d101c, type: 3}
       propertyPath: m_Materials.Array.data[0]

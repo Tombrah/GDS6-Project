@@ -10,6 +10,8 @@ public class RobbingManager : NetworkBehaviour
     public List<GameObject> robbingItems;
     [SerializeField] private int maxActiveItems = 5;
 
+    private GameObject playerCamera;
+
     private int activeCount;
 
     private void Awake()
@@ -68,4 +70,13 @@ public class RobbingManager : NetworkBehaviour
         robbingItems[itemIndex].SetActive(setActive);
     }
 
+    public void SetPlayerCamera(GameObject cam)
+    {
+        playerCamera = cam;
+    }
+
+    public GameObject GetPlayerCamera()
+    {
+        return playerCamera;
+    }
 }
