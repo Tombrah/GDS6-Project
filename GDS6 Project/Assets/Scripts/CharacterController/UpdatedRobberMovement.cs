@@ -430,6 +430,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
         if (robbingItem != null)
         {
             int points = robbingItem.GetComponent<RobbingItem>().points;
+            robbingItem.GetComponent<RobbingItem>().CreatePopup(TPSCamera);
             RobbingManager.Instance.UpdateItemStateServerRpc(RobbingManager.Instance.robbingItems.IndexOf(robbingItem), false);
             GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, points);
         }

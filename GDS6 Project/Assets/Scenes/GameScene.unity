@@ -347,6 +347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937398ecb58a413448c769402eb439db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
   points: 200
   robTimer: 5
 --- !u!135 &312687171
@@ -1022,6 +1023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937398ecb58a413448c769402eb439db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
   points: 100
   robTimer: 3
 --- !u!114 &582293581
@@ -1194,6 +1196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937398ecb58a413448c769402eb439db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
   points: 100
   robTimer: 3
 --- !u!135 &641389992
@@ -2181,6 +2184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937398ecb58a413448c769402eb439db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
   points: 100
   robTimer: 3
 --- !u!114 &1097681496
@@ -2562,6 +2566,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937398ecb58a413448c769402eb439db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
   points: 100
   robTimer: 3
 --- !u!135 &1305162708
@@ -3093,6 +3098,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937398ecb58a413448c769402eb439db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
   points: 200
   robTimer: 5
 --- !u!114 &1583789064
@@ -4326,6 +4332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937398ecb58a413448c769402eb439db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
   points: 200
   robTimer: 5
 --- !u!135 &2026323199
@@ -5682,7 +5689,7 @@ MonoBehaviour:
   - {fileID: 966606023}
   roundMax: 4
   countdownTimerMax: 5
-  gamePlayingTimerMax: 10
+  gamePlayingTimerMax: 30
   roundResetTimerMax: 10
 --- !u!23 &4732713579268836060
 MeshRenderer:
