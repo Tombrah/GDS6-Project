@@ -75,10 +75,12 @@ public class UpdatedRobberMovement : NetworkBehaviour
         sprinting,
         crouching,
         dashing,
-        air
+        air,
+        stunned
     }
 
     public bool dashing;
+    private bool stunned;
 
     public override void OnNetworkSpawn()
     {
@@ -251,6 +253,11 @@ public class UpdatedRobberMovement : NetworkBehaviour
         {
             state = MovementState.walking;
             desiredMoveSpeed = walkSpeed;
+        }
+        else if (stunned)
+        {
+            state = MovementState.stunned;
+            desiredMoveSpeed = 0;
         }
         //Air
         else
@@ -484,6 +491,26 @@ public class UpdatedRobberMovement : NetworkBehaviour
 
         transform.position = GameManager.Instance.respawnPoints[index].position;
         transform.rotation = GameManager.Instance.respawnPoints[index].rotation;
+    }
+
+    [ClientRpc]
+    public void GetTasedClientRpc(float stunTimer)
+    {
+        Debug.Log("I got stunned oh no!");
+        StartCoroutine(Stun(stunTimer));
+    }
+
+    private IEnumerator Stun(float stunTimer)
+    {
+        stunned = true;
+        float time = 0;
+        while (time < stunTimer)
+        {
+            time += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        stunned = false;
     }
 }
 

@@ -219,9 +219,16 @@ public class UpdatedCopMovement : NetworkBehaviour
         {
             Vector3 position = TPSCamera.transform.position + TPSCamera.transform.forward * 30f;
             Vector3 aimDir = (position - BulletProjectileTra.position).normalized;
-            Instantiate(BulletProjectile, BulletProjectileTra.position, Quaternion.LookRotation(aimDir, Vector3.up));
+            SpawnBulletServerRpc(aimDir);
             StartCoroutine(ShootReset());
         }
+    }
+
+    [ServerRpc]
+    private void SpawnBulletServerRpc(Vector3 aimDir, ServerRpcParams serverRpcParams = default)
+    {
+        Transform bullet = Instantiate(BulletProjectile, BulletProjectileTra.position, Quaternion.LookRotation(aimDir, Vector3.up));
+        bullet.gameObject.GetComponent<NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId, true);
     }
 
     private IEnumerator ShootReset()

@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class BulletProjectile : MonoBehaviour
+public class BulletProjectile : NetworkBehaviour
 {
     private Rigidbody bulletRigidbody;
+    [SerializeField] private float stunTimer;
 
     private void Awake()
     {
@@ -20,9 +22,27 @@ public class BulletProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(!other.CompareTag("Player"))
+        if (other.CompareTag("Robber"))
         {
-            Destroy(gameObject);
+            Debug.Log("Hit the robber");
+            StunRobberServerRpc(other.gameObject.GetComponent<NetworkObject>().OwnerClientId);
+            DespawnBulletServerRpc();
+        }
+        if(!other.CompareTag("Robber") || ! other.CompareTag("Cop"))
+        {
+            DespawnBulletServerRpc();
         }    
+    }
+
+    [ServerRpc]
+    private void StunRobberServerRpc(ulong clientId)
+    {
+        NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<UpdatedRobberMovement>().GetTasedClientRpc(stunTimer);
+    }
+
+    [ServerRpc]
+    private void DespawnBulletServerRpc()
+    {
+        gameObject.GetComponent<NetworkObject>().Despawn();
     }
 }
