@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 04204c2cfc3528c4d863101680558453
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Spicy Shrimp
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: c3fa83b4021e5f2408cfe0a5d3383fd9, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
