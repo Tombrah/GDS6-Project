@@ -161,7 +161,7 @@ public class LobbyManager : MonoBehaviour
                 Player = GetPlayer(),
                 Data = new Dictionary<string, DataObject>
                 {
-                    { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, "0") }
+                    { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, "0", DataObject.IndexOptions.S1) }
                 }
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, lobbyOptions);
@@ -197,7 +197,8 @@ public class LobbyManager : MonoBehaviour
                 Count = 25,
                 Filters = new List<QueryFilter>
                 {
-                    new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "0", QueryFilter.OpOptions.GT)
+                    new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "0", QueryFilter.OpOptions.GT),
+                    new QueryFilter(QueryFilter.FieldOptions.S1, "0", QueryFilter.OpOptions.NE)
                 },
                 Order = new List<QueryOrder>
                 {
@@ -219,18 +220,6 @@ public class LobbyManager : MonoBehaviour
 
             foreach(Lobby lobby in queryResponse.Results)
             {
-                if (lobby.Data["RelayCode"].Value == "0")
-                {
-                    if (lobby == queryResponse.Results[queryResponse.Results.Count - 1])
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-
                 GameObject lobbyInstance = Instantiate(lobbyPrefab, container);
                 LobbyPrefab lobbyPrefabScript = lobbyInstance.GetComponent<LobbyPrefab>();
             
