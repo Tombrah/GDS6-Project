@@ -224,11 +224,11 @@ public class UpdatedCopMovement : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void SpawnBulletServerRpc(Vector3 aimDir, ServerRpcParams serverRpcParams = default)
     {
         Transform bullet = Instantiate(BulletProjectile, BulletProjectileTra.position, Quaternion.LookRotation(aimDir, Vector3.up));
-        bullet.gameObject.GetComponent<NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId, true);
+        bullet.gameObject.GetComponent<NetworkObject>().SpawnWithOwnership(serverRpcParams.Receive.SenderClientId);
     }
 
     private IEnumerator ShootReset()

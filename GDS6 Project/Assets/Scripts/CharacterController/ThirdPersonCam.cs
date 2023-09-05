@@ -55,7 +55,7 @@ public class ThirdPersonCam : MonoBehaviour
             Vector3 inputDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
             if (inputDir != Vector3.zero)
-                playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized,Time.fixedDeltaTime * rotationSpeed);
+                playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized,Time.deltaTime * rotationSpeed);
         }
 
         else if(currentStyle == CameraStyle.Combat)

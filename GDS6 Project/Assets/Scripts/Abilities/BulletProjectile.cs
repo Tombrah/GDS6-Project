@@ -2,36 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 
 public class BulletProjectile : NetworkBehaviour
 {
-    private Rigidbody bulletRigidbody;
+    [SerializeField] private float speed = 100f;
     [SerializeField] private float stunTimer;
 
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
-        bulletRigidbody = GetComponent<Rigidbody>();
-        Destroy(gameObject, 0.5f);
+        if (!IsOwner)
+        {
+            this.enabled = false;
+        }
     }
 
     private void Start()
     {
-        float speed = 100f;
-        bulletRigidbody.velocity = transform.forward * speed;
+        DestroyBulletAfterSpawnServerRpc(1);
+    }
+
+    private void Update()
+    {
+        transform.position += speed * Time.deltaTime * transform.forward;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!IsOwner) return;
+
+        Debug.Log("Collided With: " + other.gameObject.name);
+
         if (other.CompareTag("Robber"))
         {
             Debug.Log("Hit the robber");
             StunRobberServerRpc(other.gameObject.GetComponent<NetworkObject>().OwnerClientId);
-            DespawnBulletServerRpc();
+            DestroyBulletServerRpc();
         }
-        if(!other.CompareTag("Robber") || ! other.CompareTag("Cop"))
-        {
-            DespawnBulletServerRpc();
-        }    
     }
 
     [ServerRpc]
@@ -41,8 +48,28 @@ public class BulletProjectile : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void DespawnBulletServerRpc()
+    private void DestroyBulletServerRpc()
     {
         gameObject.GetComponent<NetworkObject>().Despawn();
+        Destroy(gameObject);
+    }
+
+    [ServerRpc]
+    private void DestroyBulletAfterSpawnServerRpc(float destroyTimer)
+    {
+        DestroyBullet(destroyTimer);
+    }
+
+    private IEnumerator DestroyBullet(float destroyTimer)
+    {
+        float timeElapsed = 0;
+        while (timeElapsed < destroyTimer)
+        {
+            timeElapsed += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        gameObject.GetComponent<NetworkObject>().Despawn();
+        Destroy(gameObject);
     }
 }

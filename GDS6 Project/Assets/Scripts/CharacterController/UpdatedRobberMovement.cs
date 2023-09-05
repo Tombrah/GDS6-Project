@@ -496,6 +496,8 @@ public class UpdatedRobberMovement : NetworkBehaviour
     [ClientRpc]
     public void GetTasedClientRpc(float stunTimer)
     {
+        if (!IsOwner) return;
+
         Debug.Log("I got stunned oh no!");
         StartCoroutine(Stun(stunTimer));
     }
