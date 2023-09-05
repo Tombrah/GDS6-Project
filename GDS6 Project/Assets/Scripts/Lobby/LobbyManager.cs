@@ -99,10 +99,8 @@ public class LobbyManager : MonoBehaviour
             {
                 lobbyUpdateTimer = 1.1f;
 
-                Debug.Log("Updating Lobby with Id: " + joinedLobby.Id);
                 Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 joinedLobby = lobby;
-                Debug.Log("Updated Lobby with Id: " + joinedLobby.Id);
             }
 
             if (previousPlayerCount < joinedLobby.Players.Count)
@@ -219,13 +217,13 @@ public class LobbyManager : MonoBehaviour
                 DestroyImmediate(child.gameObject);
             }
 
-            for (int i = 0; i < queryResponse.Results.Count; i++)
+            foreach(Lobby lobby in queryResponse.Results)
             {
-                if (queryResponse.Results[i].Data["RelayCode"].Value == "0")
+                if (lobby.Data["RelayCode"].Value == "0")
                 {
-                    if (i == queryResponse.Results.Count - 1)
+                    if (lobby == queryResponse.Results[queryResponse.Results.Count - 1])
                     {
-                        break;
+                        return;
                     }
                     else
                     {
@@ -235,17 +233,9 @@ public class LobbyManager : MonoBehaviour
 
                 GameObject lobbyInstance = Instantiate(lobbyPrefab, container);
                 LobbyPrefab lobbyPrefabScript = lobbyInstance.GetComponent<LobbyPrefab>();
-
-                lobbyPrefabScript.Initialise(this, queryResponse.Results[i]);
+            
+                lobbyPrefabScript.Initialise(this, lobby);
             }
-
-            //foreach(Lobby lobby in queryResponse.Results)
-            //{
-            //    GameObject lobbyInstance = Instantiate(lobbyPrefab, container);
-            //    LobbyPrefab lobbyPrefabScript = lobbyInstance.GetComponent<LobbyPrefab>();
-            //
-            //    lobbyPrefabScript.Initialise(this, lobby);
-            //}
         }
         catch (LobbyServiceException e)
         {

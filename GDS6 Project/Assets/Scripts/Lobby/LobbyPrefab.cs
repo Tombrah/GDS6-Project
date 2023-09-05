@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
+using UnityEngine.UI;
 
 public class LobbyPrefab : MonoBehaviour
 {
