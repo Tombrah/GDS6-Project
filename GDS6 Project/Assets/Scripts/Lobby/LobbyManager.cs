@@ -161,7 +161,7 @@ public class LobbyManager : MonoBehaviour
                 Player = GetPlayer(),
                 Data = new Dictionary<string, DataObject>
                 {
-                    { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, "0", DataObject.IndexOptions.S1) }
+                    { "RelayCode", new DataObject(DataObject.VisibilityOptions.Public, "0", DataObject.IndexOptions.S1) }
                 }
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, lobbyOptions);
