@@ -19,7 +19,7 @@ public class LobbyManager : MonoBehaviour
     private Lobby hostLobby;
     private Lobby joinedLobby;
     private float heartbeatTimer;
-    private float lobbyUpdateTimer;
+    private float lobbyUpdateTimer = -1;
     private int previousPlayerCount = 0;
 
     [SerializeField] private Transform lobbyList;
@@ -99,8 +99,10 @@ public class LobbyManager : MonoBehaviour
             {
                 lobbyUpdateTimer = 1.1f;
 
+                Debug.Log("Updating Lobby with Id: " + joinedLobby.Id);
                 Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 joinedLobby = lobby;
+                Debug.Log("Updated Lobby with Id: " + joinedLobby.Id);
             }
 
             if (previousPlayerCount < joinedLobby.Players.Count)
@@ -217,13 +219,33 @@ public class LobbyManager : MonoBehaviour
                 DestroyImmediate(child.gameObject);
             }
 
-            foreach(Lobby lobby in queryResponse.Results)
+            for (int i = 0; i < queryResponse.Results.Count; i++)
             {
+                if (queryResponse.Results[i].Data["RelayCode"].Value == "0")
+                {
+                    if (i == queryResponse.Results.Count - 1)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
                 GameObject lobbyInstance = Instantiate(lobbyPrefab, container);
                 LobbyPrefab lobbyPrefabScript = lobbyInstance.GetComponent<LobbyPrefab>();
 
-                lobbyPrefabScript.Initialise(this, lobby);
+                lobbyPrefabScript.Initialise(this, queryResponse.Results[i]);
             }
+
+            //foreach(Lobby lobby in queryResponse.Results)
+            //{
+            //    GameObject lobbyInstance = Instantiate(lobbyPrefab, container);
+            //    LobbyPrefab lobbyPrefabScript = lobbyInstance.GetComponent<LobbyPrefab>();
+            //
+            //    lobbyPrefabScript.Initialise(this, lobby);
+            //}
         }
         catch (LobbyServiceException e)
         {
@@ -389,6 +411,7 @@ public class LobbyManager : MonoBehaviour
 
     public async void JoinRelay(string joinCode)
     {
+        Debug.Log("Join Code is: " + joinCode);
         try
         {
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
@@ -400,7 +423,7 @@ public class LobbyManager : MonoBehaviour
         }
         catch (RelayServiceException e)
         {
-            Debug.Log(e);
+            Debug.LogError(e);
         }
     }
 }
