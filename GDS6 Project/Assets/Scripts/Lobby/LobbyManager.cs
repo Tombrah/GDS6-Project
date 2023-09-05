@@ -378,7 +378,7 @@ public class LobbyManager : MonoBehaviour
             {
                 Data = new Dictionary<string, DataObject>
                 {
-                    { "RelayCode", new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
+                    { "RelayCode", new DataObject(DataObject.VisibilityOptions.Public, joinCode) }
                 }
             });
         }
