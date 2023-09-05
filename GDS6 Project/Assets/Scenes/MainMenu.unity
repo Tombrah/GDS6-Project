@@ -335,7 +335,7 @@ MonoBehaviour:
     stringToAffect: 
   fading:
     showParameters: 1
-    fadeSpeed: 150
+    fadeSpeed: 250
     listID: 0
     stringToAffect: 
   typewriter:

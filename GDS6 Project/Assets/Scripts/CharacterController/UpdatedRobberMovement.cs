@@ -99,6 +99,11 @@ public class UpdatedRobberMovement : NetworkBehaviour
 
             GameManager.Instance.playerUIs[0].SetActive(false);
             InstructionsUI.Instance.SetText("Hold E near objects to steal them!");
+
+            foreach (GameObject icon in RobbingManager.Instance.robbingItems)
+            {
+                icon.transform.GetChild(0).gameObject.SetActive(true);
+            }
         }
         else
         {

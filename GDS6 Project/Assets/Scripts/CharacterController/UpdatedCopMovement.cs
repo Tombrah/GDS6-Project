@@ -98,6 +98,11 @@ public class UpdatedCopMovement : NetworkBehaviour
 
             GameManager.Instance.playerUIs[1].SetActive(false);
             InstructionsUI.Instance.SetText("Press E near the robber to catch them!");
+
+            foreach (GameObject icon in RobbingManager.Instance.robbingItems)
+            {
+                icon.transform.GetChild(0).gameObject.SetActive(false);
+            }
         }
         else
         {
