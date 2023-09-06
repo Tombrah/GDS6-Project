@@ -32,7 +32,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
-    public KeyCode crouchKey = KeyCode.LeftControl;
+    public KeyCode crouchKey = KeyCode.C;
 
     [Header("Ground Check")]
     public float playerheight;
@@ -137,6 +137,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
         rb = gameObject.AddComponent<Rigidbody>();
         gameObject.AddComponent<NetworkRigidbody>();
         rb.isKinematic = false;
+        rb.useGravity = true;
         rb.freezeRotation = true;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
@@ -303,7 +304,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
         lastState = state;
 
         //turn off gravity
-        rb.useGravity = !OnSlope();
+
     }
 
     private float speedChangeFactor;
@@ -337,6 +338,11 @@ public class UpdatedRobberMovement : NetworkBehaviour
         if (OnSlope())
         {
             rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
+
+            if (rb.velocity.y > 0)
+            {
+                rb.AddForce(Vector3.down * 100f, ForceMode.Force);
+            }
         }
         else if (grounded)
         {
@@ -346,11 +352,9 @@ public class UpdatedRobberMovement : NetworkBehaviour
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
-            if (rb.velocity.y > 0)
-            {
-                rb.AddForce(Vector3.down * 100f, ForceMode.Force);
-            }
+
         }
+        rb.useGravity = !OnSlope();
     }
 
     private void SpeedControl()
@@ -393,7 +397,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
 
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerheight * 0.5f + 0.3f))
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerheight * 0.5f + 1f))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;

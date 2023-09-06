@@ -79,8 +79,6 @@ public class UpdatedCopMovement : NetworkBehaviour
         air
     }
 
-    public bool dashing;
-
     public override void OnNetworkSpawn()
     {
         SetSpawn();
@@ -138,6 +136,7 @@ public class UpdatedCopMovement : NetworkBehaviour
         rb = gameObject.AddComponent<Rigidbody>();
         gameObject.AddComponent<NetworkRigidbody>();
         rb.isKinematic = false;
+        rb.useGravity = true;
         rb.freezeRotation = true;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
@@ -309,7 +308,7 @@ public class UpdatedCopMovement : NetworkBehaviour
         lastState = state;
 
         //turn off gravity
-        rb.useGravity = !OnSlope();
+
     }
 
     private float speedChangeFactor;
@@ -343,6 +342,11 @@ public class UpdatedCopMovement : NetworkBehaviour
         if (OnSlope())
         {
             rb.AddForce(GetSlopeMoveDirection() * moveSpeed * 20f, ForceMode.Force);
+
+            if (rb.velocity.y > 0)
+            {
+                rb.AddForce(Vector3.down * 100f, ForceMode.Force);
+            }
         }
         else if (grounded)
         {
@@ -352,11 +356,9 @@ public class UpdatedCopMovement : NetworkBehaviour
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
-            if (rb.velocity.y > 0)
-            {
-                rb.AddForce(Vector3.down * 100f, ForceMode.Force);
-            }
+
         }
+        rb.useGravity = !OnSlope();
     }
 
     private void SpeedControl()
@@ -399,7 +401,7 @@ public class UpdatedCopMovement : NetworkBehaviour
 
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerheight * 0.5f + 0.3f))
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerheight * 0.5f + 1f))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
