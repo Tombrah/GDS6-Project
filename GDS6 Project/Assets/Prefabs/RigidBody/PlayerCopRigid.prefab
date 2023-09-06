@@ -404,7 +404,7 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2.319513
+  m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0.20188963, z: 0}
 --- !u!114 &1393953691561466263
@@ -451,7 +451,7 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
-  maxSlopeAngle: 10
+  maxSlopeAngle: 60
   BulletProjectile: {fileID: 2682328040842111770, guid: 69202ca93e571334581bdd9cb2e73de1, type: 3}
   BulletProjectileTra: {fileID: 2141499478916762488}
   TPSCamera: {fileID: 213986846723911291}
@@ -1272,7 +1272,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4487867033561128280}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.093153425, y: 0.3244446, z: 0.03212635, w: 0.9407582}
+  m_LocalRotation: {x: -0.093153425, y: 0.32444462, z: 0.03212635, w: 0.9407582}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
