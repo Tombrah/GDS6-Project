@@ -31,7 +31,7 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private TMP_InputField playerNameInput;
 
     private bool isLocalPlayerReady = false;
-    private Dictionary<ulong, bool> playerReadyDictionary;
+    [SerializeField] private GameObject readyButton;
     private float countdownTimer = 4f;
     private Coroutine co;
 
@@ -45,23 +45,25 @@ public class LobbyManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        playerReadyDictionary = new Dictionary<ulong, bool>();
     }
 
     private async void Start()
     {
-        await UnityServices.InitializeAsync();
-
-        AuthenticationService.Instance.SignedIn += () =>
+        if (UnityServices.State != ServicesInitializationState.Initialized)
         {
-            Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
-        };
+            await UnityServices.InitializeAsync();
 
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            AuthenticationService.Instance.SignedIn += () =>
+            {
+                Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
+            };
 
-        playerName = "PlayerName" + Mathf.RoundToInt(Random.Range(0, 100));
-        playerNameInput.text = playerName;
-        Debug.Log(playerName);
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+            playerName = "PlayerName" + Mathf.RoundToInt(Random.Range(0, 100));
+            playerNameInput.text = playerName;
+            Debug.Log(playerName);
+        }
     }
 
     private void Update()
@@ -257,6 +259,8 @@ public class LobbyManager : MonoBehaviour
 
             JoinRelay(joinedLobby.Data["RelayCode"].Value);
             //PlayerData.Instance.UpdatePlayerNameServerRpc(playerName);
+
+            readyButton.SetActive(true);
 
             Debug.Log("Joined Lobby!");
         }

@@ -2,10 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class GameOverUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text text;
+    [SerializeField] private Button mainMenuButton;
+
+    private void Awake()
+    {
+        mainMenuButton.onClick.AddListener(() =>{
+            Loader.Load(Loader.Scene.MainMenu);
+        });
+    }
 
     private void Start()
     {
@@ -29,6 +38,8 @@ public class GameOverUI : MonoBehaviour
     private void Show()
     {
         gameObject.SetActive(true);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     private void Hide()
