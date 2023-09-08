@@ -71,4 +71,4 @@ for the player characters.
 
 MULTIPLAYER utilizes unity services (Relay, Lobby, Netcode for gameObjects)
 
-1. 
+1. Quibli Anime Shaders and Tools (Toon Shader and Skybox)
