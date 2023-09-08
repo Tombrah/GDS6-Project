@@ -48,7 +48,7 @@ public class RoundResetUI : MonoBehaviour
     {
         cam.Priority = 10;
         gameObject.SetActive(true);
-        StartCoroutine(ShowPlayerScores());
+        StartCoroutine(ShowPlayerScores2());
     }
 
     private void Hide()
@@ -76,6 +76,25 @@ public class RoundResetUI : MonoBehaviour
             previousScore[index] = score;
         }
         yield return null;
+    }
+
+    private IEnumerator ShowPlayerScores2()
+    {
+        float percentage = 0;
+        while (percentage < 1)
+        {
+            playerScoreText[0].text = ((int)Mathf.Lerp(previousScore[0], GameManager.Instance.playerScores[0], percentage)).ToString();
+            playerScoreText[1].text = ((int)Mathf.Lerp(previousScore[1], GameManager.Instance.playerScores[1], percentage)).ToString();
+
+            percentage += Time.deltaTime / showcaseSpeed;
+            yield return new WaitForEndOfFrame();
+        }
+
+        playerScoreText[0].text = GameManager.Instance.playerScores[0].ToString();
+        playerScoreText[1].text = GameManager.Instance.playerScores[1].ToString();
+        previousScore[0] = GameManager.Instance.playerScores[0];
+        previousScore[1] = GameManager.Instance.playerScores[1];
+
     }
 
     public void SetPlayerName(int index, string playerName)

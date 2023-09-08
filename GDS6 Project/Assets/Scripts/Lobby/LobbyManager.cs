@@ -53,17 +53,11 @@ public class LobbyManager : MonoBehaviour
         {
             await UnityServices.InitializeAsync();
 
-            AuthenticationService.Instance.SignedIn += () =>
-            {
-                Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
-            };
-
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
-
-            playerName = "PlayerName" + Mathf.RoundToInt(Random.Range(0, 100));
-            playerNameInput.text = playerName;
-            Debug.Log(playerName);
         }
+        playerName = "PlayerName" + Mathf.RoundToInt(Random.Range(0, 100));
+        playerNameInput.text = playerName;
+        Debug.Log(playerName);
     }
 
     private void Update()
