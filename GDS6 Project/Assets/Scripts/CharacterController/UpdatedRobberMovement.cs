@@ -485,8 +485,10 @@ public class UpdatedRobberMovement : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RespawnPlayerClientRpc()
+    public void RespawnPlayerClientRpc(ClientRpcParams clientRpcParams)
     {
+        if (!IsOwner) return;
+
         if (cop == null)
         {
             cop = GameObject.FindGameObjectWithTag("Cop");
