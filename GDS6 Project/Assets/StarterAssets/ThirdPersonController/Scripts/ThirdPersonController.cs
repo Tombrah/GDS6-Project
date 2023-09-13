@@ -106,9 +106,12 @@ namespace StarterAssets
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
 
-        // UI
-        private GameObject copUi;
-        private Image progressImage;
+        [Header("Ui")]
+        public GameObject playerUi;
+        public GameObject instructionsUi;
+        
+        [SerializeField] private InputActionAsset inputActionAsset;
+        public bool stunned = false;
 
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
@@ -145,30 +148,34 @@ namespace StarterAssets
 
             if (IsOwner)
             {
+                Debug.Log("Owner Id is: " + OwnerClientId);
                 _controller.enabled = true;
+
                 _mainCamera.GetComponent<AudioListener>().enabled = true;
                 virtualCamera.Priority = 1;
 
                 RobbingManager.Instance.SetPlayerCamera(_mainCamera);
-                foreach (GameObject icon in RobbingManager.Instance.robbingItems)
-                {
-                    icon.transform.GetChild(0).gameObject.SetActive(false);
-                }
             }
-            else
-            {
-                this.enabled = false;
-            }
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            GameManager.Instance.OnStateChanged -= GameManager_OnStateChanged;
         }
 
         private void Start()
         {
+            if (!IsOwner) return;
+
+            GameManager.Instance.OnStateChanged += GameManager_OnStateChanged;
+
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
             _input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM 
             _playerInput = GetComponent<PlayerInput>();
+            _playerInput.actions = inputActionAsset;
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
@@ -180,6 +187,25 @@ namespace StarterAssets
             _fallTimeoutDelta = FallTimeout;
         }
 
+        private void GameManager_OnStateChanged(object sender, System.EventArgs e)
+        {
+            if (GameManager.Instance.IsGamePlaying())
+            {
+                playerUi.SetActive(true);
+                instructionsUi.SetActive(false);
+            }
+            else if (GameManager.Instance.IsCountdownActive())
+            {
+                playerUi.SetActive(false);
+                instructionsUi.SetActive(true);
+            }
+            else
+            {
+                playerUi.SetActive(false);
+                instructionsUi.SetActive(false);
+            }
+        }
+
         private void SetSpawn()
         {
             transform.parent.position = GameManager.Instance.playerSpawnPoints[spawnIndex].position;
@@ -188,6 +214,8 @@ namespace StarterAssets
 
         private void Update()
         {
+            if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return;
+
             _hasAnimator = TryGetComponent(out _animator);
 
             JumpAndGravity();
@@ -197,6 +225,8 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
+            if (!IsOwner) return;
+
             CameraRotation();
         }
 
@@ -298,6 +328,10 @@ namespace StarterAssets
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
             }
 
+            if (stunned)
+            {
+                _speed = 0;
+            }
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
@@ -315,7 +349,7 @@ namespace StarterAssets
 
         private void JumpAndGravity()
         {
-            if (Grounded)
+            if (Grounded && !stunned)
             {
                 // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;

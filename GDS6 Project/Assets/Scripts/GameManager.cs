@@ -170,6 +170,7 @@ public class GameManager : NetworkBehaviour
         {
             Transform player = Instantiate(playerPrefabs[roleId], playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+            player.GetComponent<NetworkObject>().ChangeOwnership(clientId);
 
             roleId = (roleId * -1) + 1;
         }
@@ -200,6 +201,7 @@ public class GameManager : NetworkBehaviour
 
                 Transform player = Instantiate(playerPrefabs[roleId], playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
                 player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+                player.GetComponent<NetworkObject>().ChangeOwnership(clientId);
 
                 roleId = (roleId * -1) + 1;
             }

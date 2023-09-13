@@ -9,6 +9,7 @@ TagManager:
   - Cop
   - Robber
   - Collectable
+  - CinemachineTarget
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
+  - Player
   - 
   - 
   - 
