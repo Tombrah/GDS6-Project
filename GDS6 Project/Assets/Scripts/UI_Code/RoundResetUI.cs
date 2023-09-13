@@ -84,16 +84,22 @@ public class RoundResetUI : MonoBehaviour
         while (percentage < 1)
         {
             playerScoreText[0].text = ((int)Mathf.Lerp(previousScore[0], GameManager.Instance.playerScores[0], percentage)).ToString();
-            playerScoreText[1].text = ((int)Mathf.Lerp(previousScore[1], GameManager.Instance.playerScores[1], percentage)).ToString();
+            if (GameManager.Instance.playerScores.Count == 2)
+            {
+                playerScoreText[1].text = ((int)Mathf.Lerp(previousScore[1], GameManager.Instance.playerScores[1], percentage)).ToString();
+            }
 
             percentage += Time.deltaTime / showcaseSpeed;
             yield return new WaitForEndOfFrame();
         }
 
         playerScoreText[0].text = GameManager.Instance.playerScores[0].ToString();
-        playerScoreText[1].text = GameManager.Instance.playerScores[1].ToString();
         previousScore[0] = GameManager.Instance.playerScores[0];
-        previousScore[1] = GameManager.Instance.playerScores[1];
+        if (GameManager.Instance.playerScores.Count == 2)
+        {
+            playerScoreText[1].text = GameManager.Instance.playerScores[1].ToString();
+            previousScore[1] = GameManager.Instance.playerScores[1];
+        }
 
     }
 

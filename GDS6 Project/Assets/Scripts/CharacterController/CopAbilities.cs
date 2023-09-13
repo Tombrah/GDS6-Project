@@ -1,12 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Unity.Netcode;
+using UnityEngine;
 
 public class CopAbilities : NetworkBehaviour
 {
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private Transform hand;
+    [SerializeField] private GameObject zapParticle;
     [SerializeField] private float catchRadius = 3;
     [SerializeField] private float onCatchTimeReduction = 3;
     [SerializeField] private int catchPoints = 50;
@@ -36,8 +35,17 @@ public class CopAbilities : NetworkBehaviour
 
             if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 100, ~layerMask))
             {
-                Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward);
-                Debug.DrawRay(hit.point, hit.point - hand.position);
+                Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward, Color.blue, 3f);
+                Debug.DrawRay(hit.point, hit.point - hand.position, Color.red, 3f);
+                Debug.Log("Hit " + hit.collider.gameObject.name);
+                GameObject particles = Instantiate(zapParticle, hit.point, Quaternion.identity);
+                Destroy(particles, 1.1f);
+
+                if (hit.collider.gameObject.CompareTag("Player"))
+                {
+                    var player = hit.transform.parent.GetComponent<NetworkObject>();
+                    StunRobberServerRpc(player.OwnerClientId);
+                }
             }
         }
     }
@@ -56,13 +64,48 @@ public class CopAbilities : NetworkBehaviour
     }
 
     [ServerRpc]
+    private void StunRobberServerRpc(ulong clientId)
+    {
+        var robberMovement = NetworkManager.Singleton.ConnectedClients[clientId]
+            .PlayerObject.GetComponentInChildren<StarterAssets.ThirdPersonController>();
+
+        if (robberMovement != null && !robberMovement.stunned.Value)
+        {
+            ClientRpcParams clientRpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            };
+
+            robberMovement.UpdateStunClientRpc(clientRpcParams);
+        }
+    }
+
+    [ServerRpc]
     private void CatchRobberServerRpc(ulong clientId, ServerRpcParams serverRpcParams = default)
     {
-        NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponentInChildren<RobberAbilities>().RespawnPlayerClientRpc();
+        var robberAbilities = NetworkManager.Singleton.ConnectedClients[clientId]
+            .PlayerObject.GetComponentInChildren<RobberAbilities>();
 
-        ulong ownerId = serverRpcParams.Receive.SenderClientId;
+        if (robberAbilities != null)
+        {
+            ClientRpcParams clientRpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { clientId }
+                }
+            };
+            Debug.Log("Sent Client Rpc");
+            robberAbilities.RespawnPlayerClientRpc(clientRpcParams);
+            Debug.Log("Client Rpc Finished");
 
-        GameManager.Instance.UpdatePlayerScoresServerRpc(ownerId, catchPoints);
-        GameManager.Instance.UpdateGameTimerServerRpc(onCatchTimeReduction);
+            ulong ownerId = serverRpcParams.Receive.SenderClientId;
+            GameManager.Instance.UpdatePlayerScoresServerRpc(ownerId, catchPoints);
+            GameManager.Instance.UpdateGameTimerServerRpc(onCatchTimeReduction);
+        }
+
     }
 }

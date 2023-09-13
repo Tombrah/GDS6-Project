@@ -99,7 +99,7 @@ public class RobberAbilities : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RespawnPlayerClientRpc()
+    public void RespawnPlayerClientRpc(ClientRpcParams clientRpcParams = default)
     {
         if (!IsOwner) return;
 
@@ -116,28 +116,28 @@ public class RobberAbilities : NetworkBehaviour
         transform.rotation = GameManager.Instance.respawnPoints[index].rotation;
     }
 
-    [ClientRpc]
-    public void GetTasedClientRpc(float stunTimer)
-    {
-        if (!IsOwner) return;
-
-        Debug.Log("I got stunned oh no!");
-        StartCoroutine(Stun(stunTimer));
-    }
-
-    private IEnumerator Stun(float stunTimer)
-    {
-        StarterAssets.ThirdPersonController controller = GetComponent<StarterAssets.ThirdPersonController>();
-
-        controller.stunned = true;
-
-        float time = 0;
-        while (time < stunTimer)
-        {
-            time += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-
-        controller.stunned = false;
-    }
+    //[ClientRpc]
+    //public void GetTasedClientRpc(float stunTimer)
+    //{
+    //    if (!IsOwner) return;
+    //
+    //    Debug.Log("I got stunned oh no!");
+    //    StartCoroutine(Stun(stunTimer));
+    //}
+    //
+    //private IEnumerator Stun(float stunTimer)
+    //{
+    //    StarterAssets.ThirdPersonController controller = GetComponent<StarterAssets.ThirdPersonController>();
+    //
+    //    controller.stunned = true;
+    //
+    //    float time = 0;
+    //    while (time < stunTimer)
+    //    {
+    //        time += Time.deltaTime;
+    //        yield return new WaitForEndOfFrame();
+    //    }
+    //
+    //    controller.stunned = false;
+    //}
 }

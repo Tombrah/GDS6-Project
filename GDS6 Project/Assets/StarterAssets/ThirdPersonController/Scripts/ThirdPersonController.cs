@@ -2,6 +2,7 @@
 using Unity.Netcode;
 using Cinemachine;
 using UnityEngine.UI;
+using System.Collections;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -111,7 +112,9 @@ namespace StarterAssets
         public GameObject instructionsUi;
         
         [SerializeField] private InputActionAsset inputActionAsset;
-        public bool stunned = false;
+        [SerializeField] private float stunTimer = 3f;
+        public NetworkVariable<bool> stunned = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        private bool triggerOnce = true;
 
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
@@ -218,6 +221,8 @@ namespace StarterAssets
 
             _hasAnimator = TryGetComponent(out _animator);
 
+            CheckStun();
+
             JumpAndGravity();
             GroundedCheck();
             Move();
@@ -228,6 +233,37 @@ namespace StarterAssets
             if (!IsOwner) return;
 
             CameraRotation();
+        }
+
+        private void CheckStun()
+        {
+            if (stunned.Value && triggerOnce)
+            {
+                StartCoroutine(ResetStun());
+                Debug.Log("Coroutine Started");
+            } 
+        }
+
+        private IEnumerator ResetStun()
+        {
+            triggerOnce = false;
+
+            yield return new WaitForSeconds(stunTimer);
+
+            stunned.Value = false;
+            triggerOnce = true;
+
+            Debug.Log("Player is no longer stunned");
+        }
+
+        [ClientRpc]
+        public void UpdateStunClientRpc(ClientRpcParams clientRpcParams = default)
+        {
+            if (!IsOwner) return;
+
+            stunned.Value = true;
+
+            Debug.Log("Stunned is currently " + stunned.Value);
         }
 
         private void AssignAnimationIDs()
@@ -328,7 +364,7 @@ namespace StarterAssets
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
             }
 
-            if (stunned)
+            if (stunned.Value)
             {
                 _speed = 0;
             }
@@ -349,7 +385,7 @@ namespace StarterAssets
 
         private void JumpAndGravity()
         {
-            if (Grounded && !stunned)
+            if (Grounded && !stunned.Value)
             {
                 // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;
