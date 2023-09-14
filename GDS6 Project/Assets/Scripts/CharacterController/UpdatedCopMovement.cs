@@ -430,8 +430,6 @@ public class UpdatedCopMovement : NetworkBehaviour
             if ((transform.position - robber.transform.position).sqrMagnitude < catchRadius * catchRadius)
             {
                 CatchRobberServerRpc(robber.GetComponent<NetworkObject>().OwnerClientId);
-                GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, catchPoints);
-                GameManager.Instance.UpdateGameTimerServerRpc(onCatchTimeReduction);
 
                 Debug.Log("Capture Successful");
             }
@@ -439,8 +437,20 @@ public class UpdatedCopMovement : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void CatchRobberServerRpc(ulong clientId)
+    private void CatchRobberServerRpc(ulong clientId, ServerRpcParams serverRpcParams = default)
     {
-        NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<UpdatedRobberMovement>().RespawnPlayerClientRpc();
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[]{clientId}
+            }
+        };
+        NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject.GetComponent<UpdatedRobberMovement>().RespawnPlayerClientRpc(clientRpcParams);
+
+        ulong ownerId = serverRpcParams.Receive.SenderClientId;
+
+        //GameManager.Instance.UpdatePlayerScoresServerRpc(ownerId, catchPoints);
+        //GameManager.Instance.UpdateGameTimerServerRpc(onCatchTimeReduction);
     }
 }

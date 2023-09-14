@@ -1,7 +1,7 @@
 Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated
 --platform=Windows
 --backend=burst-llvm-15
---target=X64_SSE2
+--target=AVX2
 --global-safety-checks-setting=Off
 --disable-safety-checks
 --meta-data-generation=False
@@ -52,6 +52,8 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --assembly-defines=Unity.RenderPipeline.Universal.ShaderLibrary;
 --assembly-defines=Unity.Timeline;
 --assembly-defines=Unity.Multiplayer.Tools.NetStatsMonitor.Implementation;
+--assembly-defines=Unity.InputSystem;
+--assembly-defines=Unity.InputSystem.ForUI;
 --assembly-defines=Unity.Multiplayer.Tools.Initialization;
 --assembly-defines=Unity.Multiplayer.Tools.Adapters;
 --assembly-defines=Unity.Services.Authentication;
@@ -94,6 +96,7 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --linker-options=PdbAltPath="GDS6 Project_Data/Plugins/x86_64/lib_burst_generated.pdb"
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\Burst
+--debug=Full
 --key-folder=C:/Program Files/Unity/2022.3.5f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport
 --decode-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Library\Burst
 --output=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated
@@ -104,7 +107,7 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --method=Unity.Jobs.IJobForExtensions+ForJobStruct`1[[UnityEngine.Rendering.Universal.TilingJob, Unity.RenderPipelines.Universal.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.Rendering.Universal.TilingJob&, Unity.RenderPipelines.Universal.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)--a6f5259e22ed809ef3937424c4bd686d
 --platform=Windows
 --backend=burst-llvm-15
---target=X64_SSE2
+--target=AVX2
 --global-safety-checks-setting=Off
 --meta-data-generation=False
 --dump=Function
@@ -153,6 +156,8 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --assembly-defines=Unity.RenderPipeline.Universal.ShaderLibrary;
 --assembly-defines=Unity.Timeline;
 --assembly-defines=Unity.Multiplayer.Tools.NetStatsMonitor.Implementation;
+--assembly-defines=Unity.InputSystem;
+--assembly-defines=Unity.InputSystem.ForUI;
 --assembly-defines=Unity.Multiplayer.Tools.Initialization;
 --assembly-defines=Unity.Multiplayer.Tools.Adapters;
 --assembly-defines=Unity.Services.Authentication;
@@ -195,6 +200,7 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --linker-options=PdbAltPath="GDS6 Project_Data/Plugins/x86_64/lib_burst_generated.pdb"
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\Burst
+--debug=Full
 --key-folder=C:/Program Files/Unity/2022.3.5f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport
 --decode-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Library\Burst
 --output=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated
@@ -287,7 +293,7 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --method=Unity.Networking.Transport.FragmentationPipelineStage, Unity.Networking.Transport, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Send(Unity.Networking.Transport.NetworkPipelineContext&, Unity.Networking.Transport, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Networking.Transport.InboundSendBuffer&, Unity.Networking.Transport, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|Unity.Networking.Transport.NetworkPipelineStage+Requests&, Unity.Networking.Transport, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)--3134d6572ef8ceff1d5057c9272f12fe
 --platform=Windows
 --backend=burst-llvm-15
---target=AVX2
+--target=X64_SSE2
 --global-safety-checks-setting=Off
 --disable-safety-checks
 --meta-data-generation=False
@@ -338,6 +344,8 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --assembly-defines=Unity.RenderPipeline.Universal.ShaderLibrary;
 --assembly-defines=Unity.Timeline;
 --assembly-defines=Unity.Multiplayer.Tools.NetStatsMonitor.Implementation;
+--assembly-defines=Unity.InputSystem;
+--assembly-defines=Unity.InputSystem.ForUI;
 --assembly-defines=Unity.Multiplayer.Tools.Initialization;
 --assembly-defines=Unity.Multiplayer.Tools.Adapters;
 --assembly-defines=Unity.Services.Authentication;
@@ -380,6 +388,7 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --linker-options=PdbAltPath="GDS6 Project_Data/Plugins/x86_64/lib_burst_generated.pdb"
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\Burst
+--debug=Full
 --key-folder=C:/Program Files/Unity/2022.3.5f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport
 --decode-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Library\Burst
 --output=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated
@@ -390,7 +399,7 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --method=Unity.Jobs.IJobForExtensions+ForJobStruct`1[[UnityEngine.Rendering.Universal.TilingJob, Unity.RenderPipelines.Universal.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.Rendering.Universal.TilingJob&, Unity.RenderPipelines.Universal.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)--a6f5259e22ed809ef3937424c4bd686d
 --platform=Windows
 --backend=burst-llvm-15
---target=AVX2
+--target=X64_SSE2
 --global-safety-checks-setting=Off
 --meta-data-generation=False
 --dump=Function
@@ -439,6 +448,8 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --assembly-defines=Unity.RenderPipeline.Universal.ShaderLibrary;
 --assembly-defines=Unity.Timeline;
 --assembly-defines=Unity.Multiplayer.Tools.NetStatsMonitor.Implementation;
+--assembly-defines=Unity.InputSystem;
+--assembly-defines=Unity.InputSystem.ForUI;
 --assembly-defines=Unity.Multiplayer.Tools.Initialization;
 --assembly-defines=Unity.Multiplayer.Tools.Adapters;
 --assembly-defines=Unity.Services.Authentication;
@@ -481,6 +492,7 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --linker-options=PdbAltPath="GDS6 Project_Data/Plugins/x86_64/lib_burst_generated.pdb"
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\Burst
+--debug=Full
 --key-folder=C:/Program Files/Unity/2022.3.5f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport
 --decode-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Library\Burst
 --output=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated

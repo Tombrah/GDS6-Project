@@ -170,6 +170,7 @@ public class GameManager : NetworkBehaviour
         {
             Transform player = Instantiate(playerPrefabs[roleId], playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+            player.GetComponent<NetworkObject>().ChangeOwnership(clientId);
 
             roleId = (roleId * -1) + 1;
         }
@@ -200,6 +201,7 @@ public class GameManager : NetworkBehaviour
 
                 Transform player = Instantiate(playerPrefabs[roleId], playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
                 player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+                player.GetComponent<NetworkObject>().ChangeOwnership(clientId);
 
                 roleId = (roleId * -1) + 1;
             }
@@ -221,10 +223,17 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void UpdatePlayerScoresServerRpc(ulong clientId, int score)
+    public void UpdatePlayerScoresServerRpc(ulong clientId, int score, bool isAdditive)
     {
-        int oldScore = playerScores[(int)clientId];
-        playerScores[(int)clientId] = oldScore + score;
+        if (isAdditive)
+        {
+            int oldScore = playerScores[(int)clientId];
+            playerScores[(int)clientId] = oldScore + score;
+        }
+        else
+        {
+            playerScores[(int)clientId] = score;
+        }
     }
 
     [ClientRpc]

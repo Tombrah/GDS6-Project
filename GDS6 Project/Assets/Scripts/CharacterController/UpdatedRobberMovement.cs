@@ -451,7 +451,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
             int points = robbingItem.GetComponent<RobbingItem>().points;
             robbingItem.GetComponent<RobbingItem>().CreatePopup(TPSCamera);
             RobbingManager.Instance.UpdateItemStateServerRpc(RobbingManager.Instance.robbingItems.IndexOf(robbingItem), false);
-            GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, points);
+            //GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, points);
         }
         chargeWheel.SetActive(false);
         canInteract = false;
@@ -485,8 +485,10 @@ public class UpdatedRobberMovement : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RespawnPlayerClientRpc()
+    public void RespawnPlayerClientRpc(ClientRpcParams clientRpcParams)
     {
+        if (!IsOwner) return;
+
         if (cop == null)
         {
             cop = GameObject.FindGameObjectWithTag("Cop");

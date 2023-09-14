@@ -197,7 +197,7 @@ public class MovementRobber : NetworkBehaviour
         if (robbingItem != null)
         {
             DestroyItemServerRpc(robbingItem.GetComponent<NetworkObject>().NetworkObjectId);
-            GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, 100);
+            //GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, 100);
         }
         chargeWheel.SetActive(false);
         canInteract = false;
