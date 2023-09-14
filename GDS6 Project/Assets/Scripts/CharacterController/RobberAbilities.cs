@@ -65,7 +65,7 @@ public class RobberAbilities : NetworkBehaviour
             int points = robbingItem.GetComponent<RobbingItem>().points;
             robbingItem.GetComponent<RobbingItem>().CreatePopup(playerCamera);
             RobbingManager.Instance.UpdateItemStateServerRpc(RobbingManager.Instance.robbingItems.IndexOf(robbingItem), false);
-            GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, points);
+            GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, points, true);
         }
         chargeWheel.SetActive(false);
         canInteract = false;

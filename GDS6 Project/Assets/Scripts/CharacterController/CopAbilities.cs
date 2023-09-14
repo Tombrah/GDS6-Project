@@ -7,8 +7,8 @@ public class CopAbilities : NetworkBehaviour
     [SerializeField] private Transform hand;
     [SerializeField] private GameObject zapParticle;
     [SerializeField] private float catchRadius = 3;
-    [SerializeField] private float onCatchTimeReduction = 3;
-    [SerializeField] private int catchPoints = 50;
+    //[SerializeField] private float onCatchTimeReduction = 3;
+    //[SerializeField] private int catchPoints = 50;
     [SerializeField] private float ShootCD;
 
     private GameObject robber;
@@ -21,6 +21,7 @@ public class CopAbilities : NetworkBehaviour
         if (robber == null)
         {
             robber = GameObject.FindWithTag("Robber");
+            Debug.Log("Found Robber GameObject");
         }
         CatchRobber();
         ShootTaser();
@@ -54,10 +55,10 @@ public class CopAbilities : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E) && robber != null)
         {
-            if ((transform.position - robber.transform.position).sqrMagnitude < catchRadius * catchRadius)
+            if ((transform.position - robber.transform.GetChild(0).transform.position).sqrMagnitude < catchRadius * catchRadius)
             {
                 CatchRobberServerRpc(robber.GetComponent<NetworkObject>().OwnerClientId);
-
+            
                 Debug.Log("Capture Successful");
             }
         }
@@ -98,13 +99,17 @@ public class CopAbilities : NetworkBehaviour
                     TargetClientIds = new ulong[] { clientId }
                 }
             };
-            Debug.Log("Sent Client Rpc");
             robberAbilities.RespawnPlayerClientRpc(clientRpcParams);
-            Debug.Log("Client Rpc Finished");
+
+            int robberFullScore = GameManager.Instance.playerScores[(int)clientId];
+
+            if (robberFullScore == 0) return;
+            int newCopScore = Mathf.CeilToInt(robberFullScore * 0.75f);
+            int newRobberScore = Mathf.CeilToInt(robberFullScore - newCopScore);
 
             ulong ownerId = serverRpcParams.Receive.SenderClientId;
-            GameManager.Instance.UpdatePlayerScoresServerRpc(ownerId, catchPoints);
-            GameManager.Instance.UpdateGameTimerServerRpc(onCatchTimeReduction);
+            GameManager.Instance.UpdatePlayerScoresServerRpc(ownerId, newCopScore, false);
+            GameManager.Instance.UpdatePlayerScoresServerRpc(clientId, newRobberScore, false);
         }
 
     }

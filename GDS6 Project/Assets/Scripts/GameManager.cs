@@ -223,10 +223,17 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void UpdatePlayerScoresServerRpc(ulong clientId, int score)
+    public void UpdatePlayerScoresServerRpc(ulong clientId, int score, bool isAdditive)
     {
-        int oldScore = playerScores[(int)clientId];
-        playerScores[(int)clientId] = oldScore + score;
+        if (isAdditive)
+        {
+            int oldScore = playerScores[(int)clientId];
+            playerScores[(int)clientId] = oldScore + score;
+        }
+        else
+        {
+            playerScores[(int)clientId] = score;
+        }
     }
 
     [ClientRpc]

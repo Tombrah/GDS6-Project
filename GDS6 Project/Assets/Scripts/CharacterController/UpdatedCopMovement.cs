@@ -450,7 +450,7 @@ public class UpdatedCopMovement : NetworkBehaviour
 
         ulong ownerId = serverRpcParams.Receive.SenderClientId;
 
-        GameManager.Instance.UpdatePlayerScoresServerRpc(ownerId, catchPoints);
-        GameManager.Instance.UpdateGameTimerServerRpc(onCatchTimeReduction);
+        //GameManager.Instance.UpdatePlayerScoresServerRpc(ownerId, catchPoints);
+        //GameManager.Instance.UpdateGameTimerServerRpc(onCatchTimeReduction);
     }
 }
