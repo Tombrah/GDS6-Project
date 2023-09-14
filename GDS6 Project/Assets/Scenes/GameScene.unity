@@ -131,6 +131,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (24)
@@ -188,6 +192,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (25)
@@ -255,6 +263,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (22)
@@ -312,6 +324,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (13)
@@ -369,6 +385,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (28)
@@ -640,6 +660,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (4)
@@ -834,6 +858,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (29)
@@ -1601,6 +1629,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (14)
@@ -2330,6 +2362,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (2)
@@ -2650,8 +2686,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.16981132, g: 0.2058319, b: 0.2264151, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 0.19891421, g: 0.24937701, b: 0.2830189, a: 1}
+  m_Intensity: 1.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -2868,6 +2904,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (15)
@@ -3031,6 +3071,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (30)
@@ -3088,6 +3132,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (23)
@@ -3145,6 +3193,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (17)
@@ -3606,6 +3658,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (27)
@@ -3673,6 +3729,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (19)
@@ -4187,6 +4247,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (21)
@@ -4481,6 +4545,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (10)
@@ -4796,6 +4864,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (9)
@@ -4853,6 +4925,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (6)
@@ -4910,6 +4986,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (7)
@@ -4967,6 +5047,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (1)
@@ -5343,6 +5427,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (3)
@@ -5648,6 +5736,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (18)
@@ -5955,6 +6047,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (12)
@@ -6022,6 +6118,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (16)
@@ -6162,6 +6262,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (20)
@@ -6920,6 +7024,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (26)
@@ -7207,6 +7315,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (11)
@@ -7715,6 +7827,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (8)
@@ -7772,6 +7888,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere (5)
@@ -9914,6 +10034,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2029078671}
     m_Modifications:
+    - target: {fileID: 1429415964151056275, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
+      propertyPath: m_Intensity
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8187246535686654203, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
       propertyPath: m_Name
       value: Sphere
