@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.UI;
 
 public class RobberAbilities : NetworkBehaviour
 {
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject chargeWheel;
-    [SerializeField] private float robTimer = 3;
+    [SerializeField] private GameObject quickTimeEvent;
+    [SerializeField] private float quickTimeFillSpeed = 2;
+    [SerializeField] private float robTimer = 1;
 
     private GameObject cop;
     private GameObject robbingItem;
@@ -29,47 +32,125 @@ public class RobberAbilities : NetworkBehaviour
     {
         if (canInteract && Input.GetKeyDown(KeyCode.E))
         {
-            chargeWheel.SetActive(true);
             coroutine = StartCoroutine(Interact());
         }
 
         if (Input.GetKeyUp(KeyCode.E))
         {
-            chargeWheel.SetActive(false);
+            if (robbingItem == null) return;
+
+            
             if (coroutine != null)
             {
                 StopCoroutine(coroutine);
             }
+            if (robbingItem.GetComponent<RobbingItem>().isQuickTime)
+            {
+                Transform fillMeter = quickTimeEvent.transform.GetChild(1);
+                Transform threshold = fillMeter.GetChild(0);
+                float thresholdHeightRangeMin = threshold.position.y - threshold.GetComponent<RectTransform>().rect.height / 2;
+                float thresholdHeightRangeMax = threshold.position.y + threshold.GetComponent<RectTransform>().rect.height / 2;
+
+                float percentageheight = CalculatePercentageHeight(fillMeter);
+                if (percentageheight >= thresholdHeightRangeMin && percentageheight <= thresholdHeightRangeMax)
+                {
+                    int points = robbingItem.GetComponent<RobbingItem>().points;
+                    robbingItem.GetComponent<RobbingItem>().CreatePopup(playerCamera);
+                    RobbingManager.Instance.UpdateItemStateServerRpc(RobbingManager.Instance.robbingItems.IndexOf(robbingItem), false);
+                    robbingItem = null;
+                    GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, points, true);
+
+                    canInteract = false;
+                    Debug.Log("Robbing Successful");
+                }
+                else
+                {
+                    robbingItem.GetComponent<RobbingItem>().CreatePopup(playerCamera, true);
+                    RobbingManager.Instance.UpdateItemStateServerRpc(RobbingManager.Instance.robbingItems.IndexOf(robbingItem), false);
+                    robbingItem = null;
+
+                    canInteract = false;
+                    Debug.Log("Failed Quick Time, Reason: Missed Target");
+                }
+            }
+
+            chargeWheel.SetActive(false);
+            quickTimeEvent.SetActive(false);
         }
+    }
+
+    private float CalculatePercentageHeight(Transform fillMeter)
+    {
+        float height = fillMeter.GetComponent<RectTransform>().rect.height;
+        return fillMeter.position.y + height / 2 - (height - (height * fillMeter.GetComponent<Image>().fillAmount));
     }
 
     private IEnumerator Interact()
     {
-        Renderer wheelRenderer = chargeWheel.GetComponent<Renderer>();
-        robTimer = robbingItem.GetComponent<RobbingItem>().robTimer;
+        bool isQuickTime = robbingItem.GetComponent<RobbingItem>().isQuickTime;
 
-        float percentage = 0;
-        while (percentage < 1)
+        if (isQuickTime)
         {
+            quickTimeEvent.SetActive(true);
 
-            chargeWheel.transform.LookAt(playerCamera.transform);
+            Transform fillMeter = quickTimeEvent.transform.GetChild(1);
+            Image meterImage = fillMeter.GetComponent<Image>();
+            Transform threshold = fillMeter.GetChild(0);
+            float thresholdHeightRangeMin = fillMeter.position.y + threshold.GetComponent<RectTransform>().rect.height / 2;
+            float thresholdHeightRangeMax = fillMeter.position.y + fillMeter.GetComponent<RectTransform>().rect.height / 2 - threshold.GetComponent<RectTransform>().rect.height / 2;
 
-            wheelRenderer.material.SetFloat("_Percentage", percentage);
-            percentage += Time.deltaTime / robTimer;
-            Debug.Log("Interacting...");
-            yield return new WaitForEndOfFrame();
-        }
+            threshold.position = new Vector3(threshold.position.x, Random.Range(thresholdHeightRangeMin, thresholdHeightRangeMax), threshold.position.z);
 
-        if (robbingItem != null)
-        {
-            int points = robbingItem.GetComponent<RobbingItem>().points;
-            robbingItem.GetComponent<RobbingItem>().CreatePopup(playerCamera);
+            float percentage = 0;
+            while (percentage < 1)
+            {
+                quickTimeEvent.transform.LookAt(playerCamera.transform);
+
+                meterImage.fillAmount = percentage;
+                percentage += Time.deltaTime / quickTimeFillSpeed;
+                yield return new WaitForEndOfFrame();
+            }
+
+            robbingItem.GetComponent<RobbingItem>().CreatePopup(playerCamera, true);
             RobbingManager.Instance.UpdateItemStateServerRpc(RobbingManager.Instance.robbingItems.IndexOf(robbingItem), false);
-            GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, points, true);
+
+            robbingItem = null;
+            quickTimeEvent.SetActive(false);
+            canInteract = false;
+            Debug.Log("Failed Quick Time, Reason: Didn't Let Go");
+            yield return null;
         }
-        chargeWheel.SetActive(false);
-        canInteract = false;
-        Debug.Log("Robbing Successful");
+        else
+        {
+            chargeWheel.SetActive(true);
+            Image wheelImage = chargeWheel.GetComponent<Image>();
+            robTimer = robbingItem.GetComponent<RobbingItem>().GetRobTimer();
+
+            float percentage = 0;
+            while (percentage < 1)
+            {
+
+                chargeWheel.transform.LookAt(playerCamera.transform);
+
+                wheelImage.fillAmount = percentage;
+                percentage += Time.deltaTime / robTimer;
+                Debug.Log("Interacting...");
+                yield return new WaitForEndOfFrame();
+            }
+
+            if (robbingItem != null)
+            {
+                int points = robbingItem.GetComponent<RobbingItem>().points;
+                robbingItem.GetComponent<RobbingItem>().CreatePopup(playerCamera);
+                RobbingManager.Instance.UpdateItemStateServerRpc(RobbingManager.Instance.robbingItems.IndexOf(robbingItem), false);
+                GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, points, true);
+            }
+
+            robbingItem = null;
+            chargeWheel.SetActive(false);
+            canInteract = false;
+            Debug.Log("Robbing Successful");
+        }
         yield return null;
     }
 
@@ -93,6 +174,7 @@ public class RobberAbilities : NetworkBehaviour
                 StopCoroutine(coroutine);
             }
             chargeWheel.SetActive(false);
+            quickTimeEvent.SetActive(false);
             canInteract = false;
             robbingItem = null;
         }

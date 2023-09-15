@@ -432,7 +432,7 @@ public class UpdatedRobberMovement : NetworkBehaviour
     private IEnumerator Interact()
     {
         Renderer wheelRenderer = chargeWheel.GetComponent<Renderer>();
-        robTimer = robbingItem.GetComponent<RobbingItem>().robTimer;
+        robTimer = robbingItem.GetComponent<RobbingItem>().GetRobTimer();
 
         float percentage = 0;
         while (percentage < 1)

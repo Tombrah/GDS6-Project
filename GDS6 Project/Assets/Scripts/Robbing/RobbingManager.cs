@@ -9,6 +9,9 @@ public class RobbingManager : NetworkBehaviour
 
     public List<GameObject> robbingItems;
     [SerializeField] private int maxActiveItems = 5;
+    [SerializeField] private bool isQuickTimeRandom = true;
+    [Range(0,1), Tooltip("Percentage chance of an object being a quick time event")]
+    [SerializeField] private float quickTimePercentage = 0.75f;
 
     private GameObject playerCamera;
 
@@ -67,7 +70,7 @@ public class RobbingManager : NetworkBehaviour
     [ClientRpc]
     private void UpdateItemStateClientRpc(int itemIndex, bool setActive)
     {
-        robbingItems[itemIndex].SetActive(setActive);
+        robbingItems[itemIndex].GetComponent<RobbingItem>().SetActiveState(setActive, isQuickTimeRandom,  1 - quickTimePercentage);
     }
 
     public void SetPlayerCamera(GameObject cam)

@@ -728,8 +728,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
+  isQuickTime: 0
   points: 200
-  robTimer: 5
 --- !u!135 &312687171
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2016,8 +2016,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
+  isQuickTime: 0
   points: 100
-  robTimer: 3
 --- !u!114 &582293581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2245,6 +2245,8 @@ MonoBehaviour:
   - {fileID: 1097681488}
   - {fileID: 641389988}
   maxActiveItems: 5
+  isQuickTimeRandom: 1
+  quickTimePercentage: 0.3
 --- !u!1 &641389988
 GameObject:
   m_ObjectHideFlags: 0
@@ -2316,8 +2318,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
+  isQuickTime: 0
   points: 100
-  robTimer: 3
 --- !u!135 &641389992
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3417,82 +3419,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c10b7ef851aae3041ab8f6ac98b92242, type: 3}
---- !u!1 &782628375
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 782628377}
-  - component: {fileID: 782628376}
-  m_Layer: 0
-  m_Name: InputManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &782628376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 782628375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 621567455fd1c4ceb811cc8a00b6a1a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_NotificationBehavior: 0
-  m_MaxPlayerCount: -1
-  m_AllowJoining: 1
-  m_JoinBehavior: 2
-  m_PlayerJoinedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_PlayerLeftEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_JoinAction:
-    m_UseReference: 0
-    m_Action:
-      m_Name: 
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 0}
-  m_PlayerPrefab: {fileID: 0}
-  m_SplitScreen: 0
-  m_MaintainAspectRatioInSplitScreen: 0
-  m_FixedNumberOfSplitScreens: -1
-  m_SplitScreenRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
---- !u!4 &782628377
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 782628375}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &791955007
 GameObject:
   m_ObjectHideFlags: 0
@@ -4614,8 +4540,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
+  isQuickTime: 0
   points: 100
-  robTimer: 3
 --- !u!114 &1097681496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5352,8 +5278,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
+  isQuickTime: 0
   points: 100
-  robTimer: 3
 --- !u!135 &1305162708
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6188,8 +6114,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
+  isQuickTime: 0
   points: 200
-  robTimer: 5
 --- !u!114 &1583789064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7756,8 +7682,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointPopup: {fileID: 2707937313322540848, guid: 2efc856a486f96d4595864bbc88e2245, type: 3}
+  isQuickTime: 0
   points: 200
-  robTimer: 5
 --- !u!135 &2026323199
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -11666,17 +11592,16 @@ SceneRoots:
   - {fileID: 705507995}
   - {fileID: 1728813328}
   - {fileID: 7240803892096575927}
+  - {fileID: 596797406}
   - {fileID: 320346811}
   - {fileID: 1751981849}
   - {fileID: 1655135746}
   - {fileID: 2041299862}
   - {fileID: 995493480}
-  - {fileID: 596797406}
   - {fileID: 2128774453}
   - {fileID: 543450653110844769}
   - {fileID: 650197730}
   - {fileID: 2029078671}
   - {fileID: 2085613200}
   - {fileID: 276483723}
-  - {fileID: 782628377}
   - {fileID: 1483507416}
