@@ -172,7 +172,7 @@ public class UpdatedCopMovement : NetworkBehaviour
 
         CatchRobber();
         
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.5f, whatIsGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 1f, whatIsGround);
 
         if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
         {
