@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 6044855834533770759}
   m_Layer: 0
   m_Name: RigidRobber
-  m_TagString: Untagged
+  m_TagString: Robber
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -118,7 +118,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1191411731587855040}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.17089318, y: 0.32066002, z: 0.05893689, w: 0.9297845}
+  m_LocalRotation: {x: -0.17089318, y: 0.32066002, z: 0.058936886, w: 0.9297845}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -260,9 +260,9 @@ GameObject:
   - component: {fileID: 3069573235476467154}
   - component: {fileID: 8335873000392161982}
   - component: {fileID: 1009408166557760063}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Player
-  m_TagString: Cop
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -332,7 +332,7 @@ MonoBehaviour:
   walkSpeed: 7
   sprintSpeed: 12
   dashSpeed: 35
-  groundDrag: 10
+  groundDrag: 0
   dashSpeedChangeFactor: 50
   jumpForce: 15
   jumpCooldown: 0.25
@@ -456,7 +456,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2854058977842062447}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.14918612, y: 0.32194597, z: 0.051450655, w: 0.93351334}
+  m_LocalRotation: {x: -0.14918613, y: 0.321946, z: 0.051450655, w: 0.93351334}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -519,7 +519,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 922193201765668676}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: CombatLookAt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1175,7 +1175,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8041412810592455621}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: Orientation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2250,7 +2250,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4358440510251464424}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: LookAt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2338,11 +2338,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 93f7196187433e84c8b57fab8dca5b32, type: 2}
     - target: {fileID: -3885598762526256765, guid: b460f737e670f924daf56e3452c93b4e, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3053987001122780409, guid: b460f737e670f924daf56e3452c93b4e, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -992206039578156267, guid: b460f737e670f924daf56e3452c93b4e, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -2350,19 +2350,19 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 93f7196187433e84c8b57fab8dca5b32, type: 2}
     - target: {fileID: -572289571126062609, guid: b460f737e670f924daf56e3452c93b4e, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -392246612498674214, guid: b460f737e670f924daf56e3452c93b4e, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 814676797156466927, guid: b460f737e670f924daf56e3452c93b4e, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 817472867379769641, guid: b460f737e670f924daf56e3452c93b4e, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b460f737e670f924daf56e3452c93b4e, type: 3}
       propertyPath: m_Name
@@ -2370,7 +2370,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b460f737e670f924daf56e3452c93b4e, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6860033201904345052, guid: b460f737e670f924daf56e3452c93b4e, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -2378,7 +2378,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 93f7196187433e84c8b57fab8dca5b32, type: 2}
     - target: {fileID: 7195632545470043344, guid: b460f737e670f924daf56e3452c93b4e, type: 3}
       propertyPath: m_Layer
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

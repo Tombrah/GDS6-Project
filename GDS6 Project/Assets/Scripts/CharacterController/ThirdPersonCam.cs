@@ -35,11 +35,6 @@ public class ThirdPersonCam : NetworkBehaviour
     {
         if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return; 
         // switch styles
-        if (combatCam != null)
-        {
-            if (Input.GetMouseButtonUp(1)) SwitchCameraStyle(CameraStyle.Basic);
-            if (Input.GetMouseButtonDown(1)) SwitchCameraStyle(CameraStyle.Combat);
-        }
 
         // rotate orientation
         Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
@@ -62,6 +57,15 @@ public class ThirdPersonCam : NetworkBehaviour
             orientation.forward = dirToCombatLookAt.normalized;
 
             playerObj.forward = dirToCombatLookAt.normalized;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (combatCam != null)
+        {
+            if (Input.GetMouseButtonUp(1)) SwitchCameraStyle(CameraStyle.Basic);
+            if (Input.GetMouseButtonDown(1)) SwitchCameraStyle(CameraStyle.Combat);
         }
     }
 
