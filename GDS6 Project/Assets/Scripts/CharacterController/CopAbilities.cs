@@ -68,7 +68,7 @@ public class CopAbilities : NetworkBehaviour
     private void StunRobberServerRpc(ulong clientId)
     {
         var robberMovement = NetworkManager.Singleton.ConnectedClients[clientId]
-            .PlayerObject.GetComponentInChildren<StarterAssets.ThirdPersonController>();
+            .PlayerObject.GetComponentInChildren<RigidCharacterController>();
 
         if (robberMovement != null && !robberMovement.stunned.Value)
         {

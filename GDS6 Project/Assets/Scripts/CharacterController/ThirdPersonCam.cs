@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class ThirdPersonCam : MonoBehaviour
+public class ThirdPersonCam : NetworkBehaviour
 {
     [Header("References")]
     public Transform orientation;
@@ -32,10 +33,7 @@ public class ThirdPersonCam : MonoBehaviour
 
     private void Update()
     {
-        if (!GameManager.Instance.IsGamePlaying())
-        {
-            return;
-        }
+        if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return; 
         // switch styles
         if (combatCam != null)
         {

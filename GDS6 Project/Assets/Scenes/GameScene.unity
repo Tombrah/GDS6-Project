@@ -10222,11 +10222,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefabs:
-  - {fileID: 2119775930974504096, guid: 98f618292a439964f9fb2eea4e4dedf7, type: 3}
-  - {fileID: 2119775930974504096, guid: 2aded115761c3eb46b3f8ac331eda70a, type: 3}
-  playerUIs:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 3172089579592740069, guid: 4c2eb525d5e107e48b4e6598b08b4818, type: 3}
+  - {fileID: 3172089579592740069, guid: 7c9d88556af1fb84180876b3b8863e4f, type: 3}
+  playerUIs: []
   playerSpawnPoints:
   - {fileID: 1655135746}
   - {fileID: 2041299862}

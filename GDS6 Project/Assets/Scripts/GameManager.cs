@@ -21,7 +21,6 @@ public class GameManager : NetworkBehaviour
     }
 
     [SerializeField] private Transform[] playerPrefabs;
-    public List<GameObject> playerUIs;
     public List<Transform> playerSpawnPoints;
     public List<Transform> respawnPoints;
 

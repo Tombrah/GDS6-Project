@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
+using UnityEngine.UI;
 
-public class Dashing : MonoBehaviour
+public class Dashing : NetworkBehaviour
 {
     [Header("References")]
     public Transform orientation;
     public Transform playerCam;
     private Rigidbody rb;
-    private UpdatedRobberMovement pm;
+    private RigidCharacterController pm;
 
     [Header("Dashing")]
     public float dashForce;
@@ -31,15 +33,13 @@ public class Dashing : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        pm = GetComponent<UpdatedRobberMovement>();
+        pm = GetComponent<RigidCharacterController>();
     }
 
     private void Update()
     {
-        if (!GameManager.Instance.IsGamePlaying())
-        {
-            return;
-        }
+        if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return;
+
         if(Input.GetKeyDown(dashKey))
         {
             Dash();
@@ -60,6 +60,7 @@ public class Dashing : MonoBehaviour
         else
         {
             dashCdTimer = dashCd;
+            StartCoroutine(SetDashUi());
         }
             pm.dashing = true;
 
@@ -82,6 +83,22 @@ public class Dashing : MonoBehaviour
         Invoke(nameof(DelayedDashForce), 0.025f);
 
         Invoke(nameof(ResetDash), dashDuration);
+    }
+
+    private IEnumerator SetDashUi()
+    {
+        float percentage = 0;
+        Image progress = pm.playerUi.GetComponentInChildren<Image>();
+
+        while (percentage < 1)
+        {
+            progress.fillAmount = percentage;
+            percentage += Time.deltaTime / dashCd;
+            yield return new WaitForEndOfFrame();
+        }
+
+        progress.fillAmount = 1;
+        yield return null;
     }
 
     private Vector3 delayedForceToApply;
