@@ -22,6 +22,10 @@ public class CopAbilities : NetworkBehaviour
         {
             robber = GameObject.FindWithTag("Robber");
             Debug.Log("Found Robber GameObject");
+            if (robber != null)
+            {
+                GetComponent<TrailFader>().SetTargetMaterial(robber.GetComponentInChildren<TrailRenderer>().material);
+            }
         }
         CatchRobber();
         ShootTaser();

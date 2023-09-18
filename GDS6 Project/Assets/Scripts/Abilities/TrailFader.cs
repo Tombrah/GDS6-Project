@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Netcode;
 
-public class TrailFader : MonoBehaviour
+public class TrailFader : NetworkBehaviour
 {
+    [HideInInspector]
     public Material targetMaterial;
     private bool isFading = false;
     private float fadeDuration = 1.0f;
@@ -12,6 +14,8 @@ public class TrailFader : MonoBehaviour
 
     private void Update()
     {
+        if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return; 
+
         if (Input.GetKeyDown(KeyCode.G) && !isFading)
         {
             StartFadeIn();
@@ -75,5 +79,10 @@ public class TrailFader : MonoBehaviour
         // Material is fully transparent after fading out.
         isVisible = false;
         isFading = false;
+    }
+
+    public void SetTargetMaterial(Material mat)
+    {
+        targetMaterial = mat;
     }
 }
