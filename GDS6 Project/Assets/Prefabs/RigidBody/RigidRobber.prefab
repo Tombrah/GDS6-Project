@@ -118,7 +118,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1191411731587855040}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.17089318, y: 0.32066002, z: 0.058936886, w: 0.9297845}
+  m_LocalRotation: {x: -0.17089318, y: 0.32066002, z: 0.05893689, w: 0.9297845}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -457,7 +457,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2854058977842062447}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.14918613, y: 0.321946, z: 0.051450655, w: 0.93351334}
+  m_LocalRotation: {x: -0.14918613, y: 0.32194602, z: 0.051450666, w: 0.93351334}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -814,8 +814,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3588167187675678929}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.31295884, y: -0.0034164595, z: 0.0011122115, w: 0.94975996}
-  m_LocalPosition: {x: 0.43423766, y: 55.730953, z: -132.57608}
+  m_LocalRotation: {x: -0.1924142, y: 0.3192067, z: 0.066358976, w: 0.92557025}
+  m_LocalPosition: {x: -2.0821662, y: -4, z: 1.062964}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -852,11 +852,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60.000004
+  near clip plane: 0.1
+  far clip plane: 5000
+  field of view: 50
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2551,7 +2551,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2885863114216029469}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 2a77a8e2ea0150c4e887c13aca7ee6eb, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
