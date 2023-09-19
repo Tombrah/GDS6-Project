@@ -64,8 +64,6 @@ public class RigidCharacterController : NetworkBehaviour
 
     [Header("UI")]
     public GameObject playerUi;
-    [SerializeField] private GameObject instructionsUi;
-    private Image progressImage;
 
     public MovementState state;
     public enum MovementState
@@ -137,17 +135,10 @@ public class RigidCharacterController : NetworkBehaviour
         if (GameManager.Instance.IsGamePlaying())
         {
             playerUi.SetActive(true);
-            instructionsUi.SetActive(false);
-        }
-        else if (GameManager.Instance.IsCountdownActive())
-        {
-            playerUi.SetActive(false);
-            instructionsUi.SetActive(true);
         }
         else
         {
             playerUi.SetActive(false);
-            instructionsUi.SetActive(false);
         }
     }
 

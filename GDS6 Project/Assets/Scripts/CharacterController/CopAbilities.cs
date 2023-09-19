@@ -1,5 +1,7 @@
-using Unity.Netcode;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using Unity.Netcode;
 
 public class CopAbilities : NetworkBehaviour
 {
@@ -9,7 +11,7 @@ public class CopAbilities : NetworkBehaviour
     [SerializeField] private float catchRadius = 3;
     //[SerializeField] private float onCatchTimeReduction = 3;
     //[SerializeField] private int catchPoints = 50;
-    [SerializeField] private float ShootCD;
+    [SerializeField] private float ShootCD = 5;
 
     private GameObject robber;
     private bool canShoot = true;
@@ -21,9 +23,9 @@ public class CopAbilities : NetworkBehaviour
         if (robber == null)
         {
             robber = GameObject.FindWithTag("Robber");
-            Debug.Log("Found Robber GameObject");
             if (robber != null)
             {
+                Debug.Log("Found Robber GameObject");
                 GetComponent<TrailFader>().SetTargetMaterial(robber.GetComponentInChildren<TrailRenderer>().material);
             }
         }
@@ -35,6 +37,7 @@ public class CopAbilities : NetworkBehaviour
     {
         if (canShoot && Input.GetMouseButtonDown(0))
         {
+            canShoot = false;
             RaycastHit hit;
             int layerMask = LayerMask.GetMask("Ignore Raycast");
 
@@ -52,7 +55,25 @@ public class CopAbilities : NetworkBehaviour
                     StunRobberServerRpc(player.OwnerClientId);
                 }
             }
+
+            StartCoroutine(ResetTaser());
         }
+    }
+
+    private IEnumerator ResetTaser()
+    {
+        float percentage = 0;
+        Image progress = GetComponent<RigidCharacterController>().playerUi.transform.GetChild(0).GetComponentInChildren<Image>();
+
+        while (percentage < 1)
+        {
+            progress.fillAmount = percentage;
+            percentage += Time.deltaTime / ShootCD;
+            yield return new WaitForEndOfFrame();
+        }
+
+        canShoot = true;
+        yield return null;
     }
 
     private void CatchRobber()

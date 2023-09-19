@@ -6,7 +6,7 @@ public class MainMenuUI : MonoBehaviour
 {
     private void Update()
     {
-        if (Input.anyKey)
+        if (Input.anyKeyDown)
         {
             Loader.Load(Loader.Scene.LobbyScene);
         }

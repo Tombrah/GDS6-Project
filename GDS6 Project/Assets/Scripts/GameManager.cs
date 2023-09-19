@@ -26,7 +26,8 @@ public class GameManager : NetworkBehaviour
 
     [HideInInspector] public NetworkList<int> playerScores;
     private Dictionary<ulong, bool> playerReadyDictionary;
- 
+    private Dictionary<ulong, bool> playerJoinDictionary;
+
     private NetworkVariable<State> state = new NetworkVariable<State>(State.WaitingToStart);
     private NetworkVariable<int> round = new NetworkVariable<int>(0);
     private NetworkVariable<float> countdownTimer = new NetworkVariable<float>(3f);
@@ -48,6 +49,7 @@ public class GameManager : NetworkBehaviour
         playerScores = new NetworkList<int>();
 
         playerReadyDictionary = new Dictionary<ulong, bool>();
+        playerJoinDictionary = new Dictionary<ulong, bool>();
     }
 
     public override void OnNetworkSpawn()
@@ -57,7 +59,7 @@ public class GameManager : NetworkBehaviour
         {
             round.Value = 0;
         }
-        SetPlayerReadyServerRpc();
+        PlayerJoinedServerRpc();
     }
 
     private void State_OnValueChanged(State previousValue, State newValue)
@@ -122,6 +124,10 @@ public class GameManager : NetworkBehaviour
             case State.GameEnded:
                 break;
         }
+    }
+    public bool IsWaitingToStart()
+    {
+        return state.Value == State.WaitingToStart;
     }
     public bool IsCountdownActive()
     {
@@ -222,6 +228,28 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
+    private void PlayerJoinedServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        playerJoinDictionary[serverRpcParams.Receive.SenderClientId] = true;
+
+        bool allClientsJoined = true;
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (!playerJoinDictionary.ContainsKey(clientId) || !playerJoinDictionary[clientId])
+            {
+                allClientsJoined = false;
+                break;
+            }
+
+        }
+
+        if (allClientsJoined)
+        {
+            CanSetReadyClientRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
     public void UpdatePlayerScoresServerRpc(ulong clientId, int score, bool isAdditive)
     {
         if (isAdditive)
@@ -233,6 +261,12 @@ public class GameManager : NetworkBehaviour
         {
             playerScores[(int)clientId] = score;
         }
+    }
+
+    [ClientRpc]
+    private void CanSetReadyClientRpc()
+    {
+        LoadingInformationUi.Instance.canInteract = true;
     }
 
     [ClientRpc]

@@ -96,7 +96,6 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --linker-options=PdbAltPath="GDS6 Project_Data/Plugins/x86_64/lib_burst_generated.pdb"
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\Burst
---debug=Full
 --key-folder=C:/Program Files/Unity/2022.3.5f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport
 --decode-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Library\Burst
 --output=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated
@@ -200,7 +199,6 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --linker-options=PdbAltPath="GDS6 Project_Data/Plugins/x86_64/lib_burst_generated.pdb"
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\Burst
---debug=Full
 --key-folder=C:/Program Files/Unity/2022.3.5f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport
 --decode-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Library\Burst
 --output=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated
@@ -388,7 +386,6 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --linker-options=PdbAltPath="GDS6 Project_Data/Plugins/x86_64/lib_burst_generated.pdb"
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\Burst
---debug=Full
 --key-folder=C:/Program Files/Unity/2022.3.5f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport
 --decode-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Library\Burst
 --output=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated
@@ -492,7 +489,6 @@ Library: C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOut
 --linker-options=PdbAltPath="GDS6 Project_Data/Plugins/x86_64/lib_burst_generated.pdb"
 --generate-link-xml=Temp\burst.link.xml
 --temp-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\Burst
---debug=Full
 --key-folder=C:/Program Files/Unity/2022.3.5f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport
 --decode-folder=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Library\Burst
 --output=C:\Users\benne\Documents\GitHub\GDS6-Project\GDS6 Project\Temp\BurstOutput\Data\Plugins\x86_64\lib_burst_generated
