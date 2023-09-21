@@ -16,13 +16,22 @@ public class CreateLobbyUi : MonoBehaviour
         createButton.onClick.AddListener(() =>
         {
             LobbyManager.Instance.CreateLobby(lobbyNameInput.text);
-            Hide();
         });
         backButton.onClick.AddListener(() =>
         {
             initialUi.SetActive(true);
             Hide();
         });
+    }
+
+    private void Start()
+    {
+        LobbyManager.Instance.OnCreateLobbyStarted += LobbyManager_OnCreateLobbyStarted;
+    }
+
+    private void LobbyManager_OnCreateLobbyStarted(object sender, System.EventArgs e)
+    {
+        Hide();
     }
 
     private void Show()

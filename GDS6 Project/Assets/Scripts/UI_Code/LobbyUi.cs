@@ -9,12 +9,20 @@ public class LobbyUi : MonoBehaviour
 {
     [SerializeField] private Button leaveButton;
     [SerializeField] private Button readyButton;
+    [SerializeField] private TextMeshProUGUI lobbyName;
+    [SerializeField] private TextMeshProUGUI countdownTimerText;
     [SerializeField] private Transform container;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject initialUi;
 
     private int previousPlayerCount = 0;
-    private bool isReady = false;
+
+    private Coroutine co;
+    private float countdownTimer = 3;
+    private bool callOnce = true;
+
+    private bool isLocalPlayerReady = false;
+    private Dictionary<ulong, bool> playerReadyDictionary;
 
     private void Awake()
     {
@@ -26,9 +34,8 @@ public class LobbyUi : MonoBehaviour
         });
         readyButton.onClick.AddListener(() =>
         {
-            LobbyManager.Instance.UpdatePlayerReady();
-            isReady = !isReady;
-            if (isReady)
+            isLocalPlayerReady = !isLocalPlayerReady;
+            if (isLocalPlayerReady)
             {
                 readyButton.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Unready";
             }
@@ -36,8 +43,14 @@ public class LobbyUi : MonoBehaviour
             {
                 readyButton.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
             }
+            LobbyManager.Instance.TogglePlayerReady(isLocalPlayerReady);
+            Debug.Log(isLocalPlayerReady);
         });
+
+        playerReadyDictionary = new Dictionary<ulong, bool>();
     }
+
+
 
     private void Start()
     {
@@ -50,11 +63,17 @@ public class LobbyUi : MonoBehaviour
     private void LobbyManager_OnCreateLobbyFinished(object sender, System.EventArgs e)
     {
         Show();
+        readyButton.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
+        isLocalPlayerReady = false;
+        lobbyName.text = LobbyManager.Instance.GetJoinedLobby().Name;
     }
 
     private void LobbyManager_OnJoinLobbyFinished(object sender, System.EventArgs e)
     {
         Show();
+        readyButton.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
+        isLocalPlayerReady = false;
+        lobbyName.text = LobbyManager.Instance.GetJoinedLobby().Name;
     }
 
     private void Update()
@@ -64,8 +83,51 @@ public class LobbyUi : MonoBehaviour
             UpdatePlayerList();
             previousPlayerCount = LobbyManager.Instance.GetPlayersInLobby().Count;
         }
+
+        bool allPlayersReady = true;
+        foreach (Player player in LobbyManager.Instance.GetPlayersInLobby())
+        {
+            if (player.Data["ReadyState"].Value == "Unready")
+            {
+                allPlayersReady = false;
+                if (co != null)
+                {
+                    StopCoroutine(co);
+                    leaveButton.gameObject.SetActive(true);
+                    countdownTimer = 3;
+                    callOnce = true;
+                }
+            }
+        }
+
+        if (allPlayersReady && callOnce)
+        {
+            callOnce = false;
+            co = StartCoroutine(StartCountdown());
+            leaveButton.gameObject.SetActive(false);
+        }
+
+        if (countdownTimer != 3)
+        {
+            countdownTimerText.text = Mathf.CeilToInt(countdownTimer).ToString();
+        }
+        else
+        {
+            countdownTimerText.text = "";
+        }
     }
 
+    private IEnumerator StartCountdown()
+    {
+        countdownTimer = 3;
+        while (countdownTimer > 0)
+        {
+            countdownTimer -= Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+
+        LobbyManager.Instance.StartGame();
+    }
 
     private void UpdatePlayerList()
     {
@@ -80,6 +142,7 @@ public class LobbyUi : MonoBehaviour
             prefab.GetComponent<PlayerPrefab>().SetName(player.Data["PlayerName"].Value);
         }
     }
+
     public void Show()
     {
         gameObject.SetActive(true);

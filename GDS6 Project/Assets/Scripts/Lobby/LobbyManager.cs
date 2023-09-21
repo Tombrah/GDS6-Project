@@ -29,20 +29,14 @@ public class LobbyManager : MonoBehaviour
         public List<Lobby> lobbyList;
     }
 
-    private Lobby hostLobby;
     private Lobby joinedLobby;
     private float heartbeatTimer;
     private float lobbyUpdateTimer = -1;
     private int previousPlayerCount = 0;
 
-    private bool isLocalPlayerReady = false;
-    private float countdownTimer = 4f;
-    private Coroutine co;
-
     private bool isHost;
-    private bool allPlayersReady = false;
-    private bool canRun = true;
 
+    public TMP_InputField playerNameInput;
     public string playerName;
 
     private void Awake()
@@ -66,24 +60,18 @@ public class LobbyManager : MonoBehaviour
     {
         HandleHeartbeat();
         HandleLobbyUpdate();
-
-        if (allPlayersReady && canRun)
-        {
-            canRun = false;
-            co = StartCoroutine(StartCountdown());
-        }
     }
 
     private async void HandleHeartbeat()
     {
-        if (hostLobby != null)
+        if (joinedLobby != null && isHost)
         {
             heartbeatTimer -= Time.deltaTime;
             if (heartbeatTimer < 0)
             {
                 heartbeatTimer = 15;
 
-                await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
+                await LobbyService.Instance.SendHeartbeatPingAsync(joinedLobby.Id);
             }
         }
     }
@@ -97,20 +85,16 @@ public class LobbyManager : MonoBehaviour
             {
                 lobbyUpdateTimer = 1.1f;
 
-                Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
-                joinedLobby = lobby;
-            }
+                if (joinedLobby == null) return;
 
-            allPlayersReady = true;
-            foreach (Player player in joinedLobby.Players)
-            {
-                if (GetPlayerReadyState(player) != "Ready")
+                try
                 {
-                    if (co != null) StopCoroutine(co);
-                    countdownTimer = 4;
-                    allPlayersReady = false;
-                    canRun = true;
-                    break;
+                    Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
+                    joinedLobby = lobby;
+                }
+                catch (LobbyServiceException e)
+                {
+                    Debug.Log(e);
                 }
             }
         }
@@ -118,6 +102,11 @@ public class LobbyManager : MonoBehaviour
 
     public async void CreateLobby(string lobbyName)
     {
+        if (playerNameInput.text == "")
+        {
+            MessageUi.Instance.ShowMessage("Must input a Name!", true);
+            return;
+        }
         OnCreateLobbyStarted?.Invoke(this, EventArgs.Empty);
         try
         {
@@ -136,8 +125,7 @@ public class LobbyManager : MonoBehaviour
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, lobbyOptions);
 
-            hostLobby = lobby;
-            joinedLobby = hostLobby;
+            joinedLobby = lobby;
 
             isHost = true;
 
@@ -187,9 +175,15 @@ public class LobbyManager : MonoBehaviour
 
     public async void JoinLobby(Lobby targetLobby)
     {
+        if (playerNameInput.text == "")
+        {
+            MessageUi.Instance.ShowMessage("Must input a Name!", true);
+            return;
+        }
         OnJoinLobbyStarted?.Invoke(this, EventArgs.Empty);
         try
         {
+            isHost = false;
             JoinLobbyByIdOptions joinLobbyOptions = new JoinLobbyByIdOptions
             {
                 Player = GetPlayer()
@@ -212,27 +206,22 @@ public class LobbyManager : MonoBehaviour
 
     public async void LeaveLobby()
     {
-        try
-        {
-            await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
-
-            joinedLobby = null;
-        }
-        catch (LobbyServiceException e)
-        {
-            Debug.Log(e);
-        }
-    }
-
-    public async void Deletelobby()
-    {
         if (joinedLobby != null)
         {
             try
             {
-                await LobbyService.Instance.DeleteLobbyAsync(joinedLobby.Id);
+                if (isHost)
+                {
+                    Deletelobby();
+                }
+                else
+                {
+                    NetworkManager.Singleton.Shutdown();
+                    await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
 
-                joinedLobby = null;
+                    joinedLobby = null;
+                }
+                isHost = false;
             }
             catch (LobbyServiceException e)
             {
@@ -241,14 +230,31 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
+    public async void Deletelobby()
+    {
+        try
+        {
+            NetworkManager.Singleton.Shutdown();
+            await LobbyService.Instance.DeleteLobbyAsync(joinedLobby.Id);
+
+            joinedLobby = null;
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+        
+    }
+
     private Player GetPlayer()
     {
+        playerName = playerNameInput.text;
         return new Player
         {
             Data = new Dictionary<string, PlayerDataObject>
             {
                 { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName) },
-                { "ReadyState", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "Unready") }
+                { "ReadyState", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Unready") }
             }
         };
     }
@@ -263,53 +269,9 @@ public class LobbyManager : MonoBehaviour
         return player.Data["PlayerName"].Value;
     }
 
-    private string GetPlayerReadyState(Player player)
+    public Lobby GetJoinedLobby()
     {
-        return player.Data["ReadyState"].Value;
-    }
-
-    public async void UpdatePlayerReady()
-    {
-        try
-        {
-            isLocalPlayerReady = !isLocalPlayerReady;
-            string readyState;
-            if (isLocalPlayerReady)
-            {
-                readyState = "Ready";
-            }
-            else
-            {
-                readyState = "Unready";
-            }
-            await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
-            {
-                Data = new Dictionary<string, PlayerDataObject>
-                {
-                    { "ReadyState", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, readyState) }
-                }
-            });
-        }
-        catch (LobbyServiceException e)
-        {
-            Debug.Log(e);
-        }
-    }
-
-    private IEnumerator StartCountdown()
-    {
-        while (countdownTimer > 0)
-        {
-            countdownTimer -= Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-
-        StartGame();
-    }
-
-    public float GetCountdownTimer()
-    {
-        return countdownTimer;
+        return joinedLobby;
     }
 
     public void StartGame()
@@ -322,6 +284,19 @@ public class LobbyManager : MonoBehaviour
             }
             Loader.LoadNetwork(Loader.Scene.GameScene);
         }
+    }
+
+    public async void TogglePlayerReady(bool isReady)
+    {
+        string readyState = isReady ? "Ready" : "Unready";
+
+        await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions 
+        {
+            Data = new Dictionary<string, PlayerDataObject>
+            {
+                { "ReadyState", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, readyState) }
+            }
+        });
     }
 
     public async void CreateRelay()
@@ -351,7 +326,6 @@ public class LobbyManager : MonoBehaviour
         catch (RelayServiceException e)
         {
             Debug.Log(e);
-            OnCreateLobbyFailed?.Invoke(this, EventArgs.Empty);
             Deletelobby();
         }
     }
@@ -373,7 +347,6 @@ public class LobbyManager : MonoBehaviour
         catch (RelayServiceException e)
         {
             Debug.LogError(e);
-            OnJoinLobbyFailed?.Invoke(this, EventArgs.Empty);
             LeaveLobby();
         }
     }

@@ -7,14 +7,21 @@ using UnityEngine.UI;
 public class ListLobbiesUi : MonoBehaviour
 {
     [SerializeField] private Button refreshButton;
+    [SerializeField] private Button backButton;
     [SerializeField] private Transform container;
     [SerializeField] private GameObject lobbyPrefab;
+    [SerializeField] private GameObject initialUi;
 
     private void Awake()
     {
         refreshButton.onClick.AddListener(() =>
         {
             LobbyManager.Instance.ListLobbies();
+        });
+        backButton.onClick.AddListener(() =>
+        {
+            initialUi.SetActive(true);
+            Hide();
         });
     }
     private void Start()

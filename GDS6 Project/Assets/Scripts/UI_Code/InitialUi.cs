@@ -7,6 +7,7 @@ public class InitialUi : MonoBehaviour
 {
     [SerializeField] private Button createLobbyButton;
     [SerializeField] private Button listLobbiesButton;
+    [SerializeField] private GameObject playerNameInput;
     [SerializeField] private GameObject createLobbyUi;
     [SerializeField] private GameObject listLobbiesUi;
 
@@ -33,6 +34,7 @@ public class InitialUi : MonoBehaviour
     private void Show()
     {
         gameObject.SetActive(true);
+        playerNameInput.SetActive(true);
     }
 
     private void Hide()

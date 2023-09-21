@@ -6,12 +6,16 @@ using TMPro;
 
 public class MessageUi : MonoBehaviour
 {
+    public static MessageUi Instance { get; private set; }
+
     [SerializeField] private TextMeshProUGUI messageText;
     [SerializeField] private Button closeButton;
     [SerializeField] private LobbyUi lobbyUi;
 
     private void Awake()
     {
+        Instance = this;
+
         closeButton.onClick.AddListener(Hide);
     }
 
@@ -41,8 +45,7 @@ public class MessageUi : MonoBehaviour
 
     private void LobbyManager_OnJoinLobbyFailed(object sender, System.EventArgs e)
     {
-        ShowMessage("Failed to join Lobby!");
-        closeButton.gameObject.SetActive(true);
+        ShowMessage("Failed to join Lobby!", true);
     }
 
     private void LobbyManager_OnJoinLobbyStarted(object sender, System.EventArgs e)
@@ -52,8 +55,7 @@ public class MessageUi : MonoBehaviour
 
     private void LobbyManager_OnCreateLobbyFailed(object sender, System.EventArgs e)
     {
-        ShowMessage("Failed to create Lobby!");
-        closeButton.gameObject.SetActive(true);
+        ShowMessage("Failed to create Lobby!", true);
     }
 
     private void LobbyManager_OnCreateLobbyStarted(object sender, System.EventArgs e)
@@ -61,10 +63,10 @@ public class MessageUi : MonoBehaviour
         ShowMessage("Creating Lobby...");
     }
 
-    private void ShowMessage(string message)
+    public void ShowMessage(string message, bool showButton = false)
     {
         Show();
-        closeButton.gameObject.SetActive(false);
+        closeButton.gameObject.SetActive(showButton);
         messageText.text = message;
     }
 
