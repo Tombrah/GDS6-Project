@@ -11,13 +11,15 @@ public class LobbyPrefab : MonoBehaviour
     [SerializeField] private TMP_Text lobbyName;
     [SerializeField] private TMP_Text lobbyPlayers;
 
-    private LobbyManager lobbyManager;
-
     private Lobby lobby;
 
-    public void Initialise(LobbyManager lobbyManager, Lobby lobby)
+    private void Awake()
     {
-        this.lobbyManager = lobbyManager;
+        GetComponentInChildren<Button>().onClick.AddListener(JoinLobby);
+    }
+
+    public void Initialise(Lobby lobby)
+    {
         this.lobby = lobby;
 
         lobbyName.text = lobby.Name;
@@ -26,6 +28,6 @@ public class LobbyPrefab : MonoBehaviour
 
     public void JoinLobby()
     {
-        lobbyManager.JoinLobby(lobby);
+        LobbyManager.Instance.JoinLobby(lobby);
     }
 }

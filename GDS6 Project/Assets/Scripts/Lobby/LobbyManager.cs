@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,26 +17,28 @@ public class LobbyManager : MonoBehaviour
 {
     public static LobbyManager Instance { get; private set; }
 
+    public event EventHandler OnCreateLobbyStarted;
+    public event EventHandler OnCreateLobbyFinished;
+    public event EventHandler OnCreateLobbyFailed;
+    public event EventHandler OnJoinLobbyStarted;
+    public event EventHandler OnJoinLobbyFinished;
+    public event EventHandler OnJoinLobbyFailed;
+    public event EventHandler<OnlobbyListChangedEventArgs> OnLobbyListChanged;
+    public class OnlobbyListChangedEventArgs : EventArgs
+    {
+        public List<Lobby> lobbyList;
+    }
+
     private Lobby hostLobby;
     private Lobby joinedLobby;
     private float heartbeatTimer;
     private float lobbyUpdateTimer = -1;
     private int previousPlayerCount = 0;
 
-    [SerializeField] private Transform lobbyList;
-    [SerializeField] private GameObject lobbyPrefab;
-    [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private Transform container;
-    [SerializeField] private TMP_InputField lobbyNameInput;
-    [SerializeField] private TMP_Text lobbyNameText;
-    [SerializeField] private TMP_InputField playerNameInput;
-
     private bool isLocalPlayerReady = false;
-    [SerializeField] private GameObject readyButton;
     private float countdownTimer = 4f;
     private Coroutine co;
 
-    private bool isJoining;
     private bool isHost;
     private bool allPlayersReady = false;
     private bool canRun = true;
@@ -55,9 +58,8 @@ public class LobbyManager : MonoBehaviour
 
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }
-        playerName = "PlayerName" + Mathf.RoundToInt(Random.Range(0, 100));
-        playerNameInput.text = playerName;
-        Debug.Log(playerName);
+
+        playerName = "PlayerName: " + UnityEngine.Random.Range(0, 100);
     }
 
     private void Update()
@@ -99,27 +101,6 @@ public class LobbyManager : MonoBehaviour
                 joinedLobby = lobby;
             }
 
-            if (previousPlayerCount < joinedLobby.Players.Count)
-            {
-                foreach (Transform child in container)
-                {
-                    if (child.CompareTag("PlayerUI"))
-                    {
-                        continue;
-                    }
-                    DestroyImmediate(child.gameObject);
-                }
-
-                foreach (Player player in joinedLobby.Players)
-                {
-                    GameObject playerInstance = Instantiate(playerPrefab, container);
-                    PlayerPrefab playerPrefabScript = playerInstance.GetComponent<PlayerPrefab>();
-                    playerPrefabScript.SetName(GetPlayerName(player));
-                }
-
-                previousPlayerCount = joinedLobby.Players.Count;
-            }
-
             allPlayersReady = true;
             foreach (Player player in joinedLobby.Players)
             {
@@ -135,21 +116,14 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
-    public async void CreateLobby()
+    public async void CreateLobby(string lobbyName)
     {
+        OnCreateLobbyStarted?.Invoke(this, EventArgs.Empty);
         try
         {
-            string lobbyName = "My Lobby";
-            if (lobbyNameInput.text != "")
-            {
-                lobbyName = lobbyNameInput.text;
-            }
+            if (lobbyName == "") lobbyName = "My Lobby!";
+
             int maxPlayers = 2;
-            if (playerNameInput.text != "")
-            {
-                playerName = playerNameInput.text;
-            }
-            playerNameInput.gameObject.SetActive(false);
 
             CreateLobbyOptions lobbyOptions = new CreateLobbyOptions
             {
@@ -167,20 +141,14 @@ public class LobbyManager : MonoBehaviour
 
             isHost = true;
 
-            GameObject playerInstance = Instantiate(playerPrefab, container);
-            PlayerPrefab playerPrefabScript = playerInstance.GetComponent<PlayerPrefab>();
-            playerPrefabScript.SetName(playerName);
-
-            lobbyNameText.text = lobbyName;
-
             CreateRelay();
-            //PlayerData.Instance.UpdatePlayerNameServerRpc(playerName);
 
             Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + " " + lobby.Id + " " + lobby.LobbyCode);
         }
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+            OnCreateLobbyFailed?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -204,23 +172,12 @@ public class LobbyManager : MonoBehaviour
             
             QueryResponse queryResponse = await Lobbies.Instance.QueryLobbiesAsync(queryLobbyOptions);
 
-            Debug.Log("Lobbies Found: " + queryResponse.Results.Count);
-            foreach (Transform child in container)
+            OnLobbyListChanged?.Invoke(this, new OnlobbyListChangedEventArgs
             {
-                if (child.CompareTag("LobbyUI"))
-                {
-                    continue;
-                }
-                DestroyImmediate(child.gameObject);
-            }
+                lobbyList = queryResponse.Results
+            });
 
-            foreach(Lobby lobby in queryResponse.Results)
-            {
-                GameObject lobbyInstance = Instantiate(lobbyPrefab, container);
-                LobbyPrefab lobbyPrefabScript = lobbyInstance.GetComponent<LobbyPrefab>();
-            
-                lobbyPrefabScript.Initialise(this, lobby);
-            }
+            Debug.Log("Lobbies Found: " + queryResponse.Results.Count);
         }
         catch (LobbyServiceException e)
         {
@@ -230,18 +187,9 @@ public class LobbyManager : MonoBehaviour
 
     public async void JoinLobby(Lobby targetLobby)
     {
-        if (isJoining) { return; }
-
-        isJoining = true;
-        
+        OnJoinLobbyStarted?.Invoke(this, EventArgs.Empty);
         try
         {
-            if (playerNameInput.text != "")
-            {
-                playerName = playerNameInput.text;
-            }
-            playerNameInput.gameObject.SetActive(false);
-
             JoinLobbyByIdOptions joinLobbyOptions = new JoinLobbyByIdOptions
             {
                 Player = GetPlayer()
@@ -252,19 +200,14 @@ public class LobbyManager : MonoBehaviour
             joinedLobby = lobby;
 
             JoinRelay(joinedLobby.Data["RelayCode"].Value);
-            //PlayerData.Instance.UpdatePlayerNameServerRpc(playerName);
-
-            readyButton.SetActive(true);
 
             Debug.Log("Joined Lobby!");
         }
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
-            isJoining = false;
+            OnJoinLobbyFailed?.Invoke(this, EventArgs.Empty);
         }
-
-        isJoining = false;
     }
 
     public async void LeaveLobby()
@@ -272,10 +215,29 @@ public class LobbyManager : MonoBehaviour
         try
         {
             await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
+
+            joinedLobby = null;
         }
         catch (LobbyServiceException e)
         {
             Debug.Log(e);
+        }
+    }
+
+    public async void Deletelobby()
+    {
+        if (joinedLobby != null)
+        {
+            try
+            {
+                await LobbyService.Instance.DeleteLobbyAsync(joinedLobby.Id);
+
+                joinedLobby = null;
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
         }
     }
 
@@ -291,6 +253,10 @@ public class LobbyManager : MonoBehaviour
         };
     }
 
+    public List<Player> GetPlayersInLobby()
+    {
+        return joinedLobby.Players;
+    }
 
     private string GetPlayerName(Player player)
     {
@@ -379,10 +345,14 @@ public class LobbyManager : MonoBehaviour
                     { "RelayCode", new DataObject(DataObject.VisibilityOptions.Public, joinCode, DataObject.IndexOptions.S1) }
                 }
             });
+
+            OnCreateLobbyFinished?.Invoke(this, EventArgs.Empty);
         }
         catch (RelayServiceException e)
         {
             Debug.Log(e);
+            OnCreateLobbyFailed?.Invoke(this, EventArgs.Empty);
+            Deletelobby();
         }
     }
 
@@ -397,10 +367,14 @@ public class LobbyManager : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartClient();
+
+            OnJoinLobbyFinished?.Invoke(this, EventArgs.Empty);
         }
         catch (RelayServiceException e)
         {
             Debug.LogError(e);
+            OnJoinLobbyFailed?.Invoke(this, EventArgs.Empty);
+            LeaveLobby();
         }
     }
 }
