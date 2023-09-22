@@ -47,9 +47,19 @@ public class LobbyManager : MonoBehaviour
     {
         if (UnityServices.State != ServicesInitializationState.Initialized)
         {
-            await UnityServices.InitializeAsync();
+            try
+            {
+                await UnityServices.InitializeAsync();
 
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+            catch (AuthenticationException e)
+            {
+                Debug.Log(e);
+                Debug.Log("Failed to sign in");
+                MessageUi.Instance.ShowMessage("Failed to sign in");
+                MessageUi.Instance.restart = true;
+            }
         }
     }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
 using TMPro;
+using Unity.Services.Authentication;
 
 public class MessageUi : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class MessageUi : MonoBehaviour
     [SerializeField] private GameObject initialUi;
     [SerializeField] private GameObject lobbyUi;
 
+    public bool restart = false;
     private bool sendBack;
 
     private void Awake()
@@ -22,6 +24,7 @@ public class MessageUi : MonoBehaviour
 
         closeButton.onClick.AddListener(() => 
         {
+            if (restart) Loader.Load(Loader.Scene.MainMenu);
             if (sendBack) initialUi.GetComponent<InitialUi>().Show();
             Hide();
         });
@@ -105,6 +108,9 @@ public class MessageUi : MonoBehaviour
 
     private void OnDestroy()
     {
-        NetworkManager.Singleton.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
+        }
     }
 }
