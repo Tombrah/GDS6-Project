@@ -32,9 +32,8 @@ public class LobbyManager : MonoBehaviour
     private Lobby joinedLobby;
     private float heartbeatTimer;
     private float lobbyUpdateTimer = -1;
-    private int previousPlayerCount = 0;
 
-    private bool isHost;
+    public bool isHost;
 
     public TMP_InputField playerNameInput;
     public string playerName;
@@ -52,8 +51,6 @@ public class LobbyManager : MonoBehaviour
 
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }
-
-        playerName = "PlayerName: " + UnityEngine.Random.Range(0, 100);
     }
 
     private void Update()
@@ -221,7 +218,6 @@ public class LobbyManager : MonoBehaviour
 
                     joinedLobby = null;
                 }
-                isHost = false;
             }
             catch (LobbyServiceException e)
             {

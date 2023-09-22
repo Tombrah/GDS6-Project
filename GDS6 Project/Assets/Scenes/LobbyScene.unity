@@ -784,7 +784,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   messageText: {fileID: 138892047}
   closeButton: {fileID: 2137485990}
-  lobbyUi: {fileID: 1745546830}
+  initialUi: {fileID: 1597950108}
+  lobbyUi: {fileID: 1745546828}
 --- !u!1 &221312616
 GameObject:
   m_ObjectHideFlags: 0
@@ -4910,6 +4911,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 786694972ba0aa54399c9f19737a9852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHost: 0
   playerNameInput: {fileID: 85917776}
   playerName: 
 --- !u!4 &2014528368

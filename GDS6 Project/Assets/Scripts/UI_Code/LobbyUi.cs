@@ -22,14 +22,13 @@ public class LobbyUi : MonoBehaviour
     private bool callOnce = true;
 
     private bool isLocalPlayerReady = false;
-    private Dictionary<ulong, bool> playerReadyDictionary;
 
     private void Awake()
     {
         leaveButton.onClick.AddListener(() =>
         {
             LobbyManager.Instance.LeaveLobby();
-            initialUi.SetActive(true);
+            initialUi.GetComponent<InitialUi>().Show();
             Hide();
         });
         readyButton.onClick.AddListener(() =>
@@ -46,8 +45,6 @@ public class LobbyUi : MonoBehaviour
             LobbyManager.Instance.TogglePlayerReady(isLocalPlayerReady);
             Debug.Log(isLocalPlayerReady);
         });
-
-        playerReadyDictionary = new Dictionary<ulong, bool>();
     }
 
 
@@ -63,17 +60,11 @@ public class LobbyUi : MonoBehaviour
     private void LobbyManager_OnCreateLobbyFinished(object sender, System.EventArgs e)
     {
         Show();
-        readyButton.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
-        isLocalPlayerReady = false;
-        lobbyName.text = LobbyManager.Instance.GetJoinedLobby().Name;
     }
 
     private void LobbyManager_OnJoinLobbyFinished(object sender, System.EventArgs e)
     {
         Show();
-        readyButton.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
-        isLocalPlayerReady = false;
-        lobbyName.text = LobbyManager.Instance.GetJoinedLobby().Name;
     }
 
     private void Update()
@@ -143,9 +134,13 @@ public class LobbyUi : MonoBehaviour
         }
     }
 
-    public void Show()
+    private void Show()
     {
         gameObject.SetActive(true);
+        readyButton.gameObject.GetComponentInChildren<TextMeshProUGUI>().text = "Ready";
+        isLocalPlayerReady = false;
+        lobbyName.text = LobbyManager.Instance.GetJoinedLobby().Name;
+        previousPlayerCount = 0;
     }
 
     private void Hide()

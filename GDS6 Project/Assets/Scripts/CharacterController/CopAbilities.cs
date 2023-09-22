@@ -134,7 +134,7 @@ public class CopAbilities : NetworkBehaviour
 
             ulong ownerId = serverRpcParams.Receive.SenderClientId;
             GameManager.Instance.UpdatePlayerScoresServerRpc(ownerId, newCopScore, false);
-            GameManager.Instance.UpdatePlayerScoresServerRpc(clientId, newRobberScore, false);
+            GameManager.Instance.UpdatePlayerScoresServerRpc(clientId, newRobberScore, true);
         }
 
     }

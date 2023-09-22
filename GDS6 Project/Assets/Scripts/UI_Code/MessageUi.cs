@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 using TMPro;
 
 public class MessageUi : MonoBehaviour
@@ -10,13 +11,20 @@ public class MessageUi : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI messageText;
     [SerializeField] private Button closeButton;
-    [SerializeField] private LobbyUi lobbyUi;
+    [SerializeField] private GameObject initialUi;
+    [SerializeField] private GameObject lobbyUi;
+
+    private bool sendBack;
 
     private void Awake()
     {
         Instance = this;
 
-        closeButton.onClick.AddListener(Hide);
+        closeButton.onClick.AddListener(() => 
+        {
+            if (sendBack) initialUi.GetComponent<InitialUi>().Show();
+            Hide();
+        });
     }
 
     private void Start()
@@ -28,24 +36,37 @@ public class MessageUi : MonoBehaviour
         LobbyManager.Instance.OnJoinLobbyFinished += LobbyManager_OnJoinLobbyFinished;
         LobbyManager.Instance.OnJoinLobbyFailed += LobbyManager_OnJoinLobbyFailed;
 
+        NetworkManager.Singleton.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+
         Hide();
+    }
+
+    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
+    {
+        if (clientId == NetworkManager.ServerClientId && !LobbyManager.Instance.isHost)
+        {
+            ShowMessage("Host disconnected", true);
+            sendBack = true;
+            lobbyUi.SetActive(false);
+        }
     }
 
     private void LobbyManager_OnJoinLobbyFinished(object sender, System.EventArgs e)
     {
-        lobbyUi.Show();
+        lobbyUi.SetActive(true);
         Hide();
     }
 
     private void LobbyManager_OnCreateLobbyFinished(object sender, System.EventArgs e)
     {
-        lobbyUi.Show();
+        lobbyUi.SetActive(true);
         Hide();
     }
 
     private void LobbyManager_OnJoinLobbyFailed(object sender, System.EventArgs e)
     {
         ShowMessage("Failed to join Lobby!", true);
+        sendBack = true;
     }
 
     private void LobbyManager_OnJoinLobbyStarted(object sender, System.EventArgs e)
@@ -56,6 +77,7 @@ public class MessageUi : MonoBehaviour
     private void LobbyManager_OnCreateLobbyFailed(object sender, System.EventArgs e)
     {
         ShowMessage("Failed to create Lobby!", true);
+        sendBack = true;
     }
 
     private void LobbyManager_OnCreateLobbyStarted(object sender, System.EventArgs e)
@@ -66,6 +88,7 @@ public class MessageUi : MonoBehaviour
     public void ShowMessage(string message, bool showButton = false)
     {
         Show();
+        sendBack = false;
         closeButton.gameObject.SetActive(showButton);
         messageText.text = message;
     }
@@ -78,5 +101,10 @@ public class MessageUi : MonoBehaviour
     private void Hide()
     {
         gameObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        NetworkManager.Singleton.OnClientDisconnectCallback -= NetworkManager_OnClientDisconnectCallback;
     }
 }

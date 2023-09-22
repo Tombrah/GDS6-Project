@@ -31,7 +31,7 @@ public class InitialUi : MonoBehaviour
         Show();
     }
 
-    private void Show()
+    public void Show()
     {
         gameObject.SetActive(true);
         playerNameInput.SetActive(true);
