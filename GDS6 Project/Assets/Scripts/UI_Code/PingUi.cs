@@ -26,6 +26,6 @@ public class PingUi : NetworkBehaviour
 
     private void SetPing()
     {
-        text.text = NetworkManager.Singleton.NetworkConfig.NetworkTransport.GetCurrentRtt(NetworkManager.Singleton.LocalClientId).ToString();
+        text.text = Mathf.CeilToInt(NetworkManager.Singleton.LocalTime.TimeAsFloat - NetworkManager.Singleton.ServerTime.TimeAsFloat).ToString();
     }
 }

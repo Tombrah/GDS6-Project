@@ -87,7 +87,7 @@ public class RigidCharacterController : NetworkBehaviour
         if (IsOwner)
         {
             TPSCamera.GetComponent<AudioListener>().enabled = true;
-            freeLookCamera.Priority = 1;
+            freeLookCamera.Priority = 2;
             if (combatCam != null)
             {
                 combatCam.Priority = 1;

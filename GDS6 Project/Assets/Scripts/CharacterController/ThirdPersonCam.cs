@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Cinemachine;
 
 public class ThirdPersonCam : NetworkBehaviour
 {
@@ -55,23 +56,23 @@ public class ThirdPersonCam : NetworkBehaviour
             if (inputDir != Vector3.zero)
                 playerObj.forward = Vector3.Slerp(playerObj.forward, inputDir.normalized,Time.deltaTime * rotationSpeed);
         }
+    }
 
-        else if(currentStyle == CameraStyle.Combat)
+    private void FixedUpdate()
+    {
+        if (currentStyle == CameraStyle.Combat)
         {
             Vector3 dirToCombatLookAt = combatLookAt.position - new Vector3(transform.position.x, combatLookAt.position.y, transform.position.z);
-            orientation.forward = dirToCombatLookAt.normalized;
+            orientation.forward = dirToCombatLookAt;
 
-            playerObj.forward = dirToCombatLookAt.normalized;
+            playerObj.forward = dirToCombatLookAt;
         }
     }
 
     private void SwitchCameraStyle(CameraStyle newStyle)
     {
-        combatCam.SetActive(false);
-        thirdPersonCam.SetActive(false);
-
-        if (newStyle == CameraStyle.Basic) thirdPersonCam.SetActive(true);
-        if (newStyle == CameraStyle.Combat) combatCam.SetActive(true);
+        thirdPersonCam.GetComponent<CinemachineFreeLook>().Priority = newStyle == CameraStyle.Basic ? 2 : 1;
+        combatCam.GetComponent<CinemachineFreeLook>().Priority = newStyle == CameraStyle.Combat ? 2 : 1;
 
         currentStyle = newStyle;
     }

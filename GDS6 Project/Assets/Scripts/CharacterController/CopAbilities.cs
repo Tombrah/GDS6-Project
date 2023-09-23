@@ -41,7 +41,7 @@ public class CopAbilities : NetworkBehaviour
             RaycastHit hit;
             int layerMask = LayerMask.GetMask("Ignore Raycast");
 
-            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 100, ~layerMask))
+            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 20, ~layerMask))
             {
                 Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward, Color.blue, 3f);
                 Debug.DrawRay(hit.point, hit.point - hand.position, Color.red, 3f);

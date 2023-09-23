@@ -57,27 +57,6 @@ public class RoundResetUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private IEnumerator ShowPlayerScores()
-    {
-        foreach (int score in GameManager.Instance.playerScores)
-        {
-            int index = GameManager.Instance.playerScores.IndexOf(score);
-
-            float percentage = 0;
-            while (percentage < 1)
-            {
-                playerScoreText[index].text = ((int)Mathf.Lerp(previousScore[index], score, percentage)).ToString();
-
-                percentage += Time.deltaTime / showcaseSpeed;
-                yield return new WaitForEndOfFrame();
-            }
-
-            playerScoreText[index].text = score.ToString();
-            previousScore[index] = score;
-        }
-        yield return null;
-    }
-
     private IEnumerator ShowPlayerScores2()
     {
         float percentage = 0;
