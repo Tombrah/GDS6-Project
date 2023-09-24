@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 6298724464939031561}
   - component: {fileID: 5026977509746169258}
   - component: {fileID: 8208480538559613555}
+  - component: {fileID: 6616623345906985537}
   m_Layer: 0
   m_Name: Slabs
   m_TagString: Untagged
@@ -166,6 +167,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6616623345906985537
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2959500513678814405}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.01418305, y: 0.034624133, z: 0.028848484}
+  m_Center: {x: -0.0009239235, y: 0.0009958309, z: -0.012907789}
 --- !u!1 &6451739601851961706
 GameObject:
   m_ObjectHideFlags: 0
