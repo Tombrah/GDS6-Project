@@ -586,7 +586,7 @@ MonoBehaviour:
   dashSpeed: 0
   groundDrag: 0
   dashSpeedChangeFactor: 0
-  jumpForce: 15
+  jumpForce: 10
   jumpCooldown: 0.25
   airMultiplier: 0.9
   crouchSpeed: 3.5
@@ -605,10 +605,9 @@ MonoBehaviour:
   stunTimer: 3
   orientation: {fileID: 8041412810592455621}
   playerUi: {fileID: 2616280992580985473}
+  zapParticle: {fileID: 8355948183402615461, guid: 946c5fac185fc2d4db2221640aacdb59, type: 3}
   state: 0
   dashing: 0
-  stunned:
-    m_InternalValue: 0
 --- !u!114 &5038681111260085444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -623,7 +622,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 3588167187675678929}
   hand: {fileID: 2814766926994657707}
-  zapParticle: {fileID: 8355948183402615461, guid: 946c5fac185fc2d4db2221640aacdb59, type: 3}
   catchRadius: 3
   ShootCD: 5
 --- !u!114 &4555279288219421412
@@ -1309,7 +1307,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3322097240618067145}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.039946288, y: -0.718585, z: 0.04141782, w: 0.69305444}
+  m_LocalRotation: {x: 0.039946284, y: -0.7185851, z: 0.041417822, w: 0.6930544}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1393,8 +1391,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3588167187675678929}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2242496, y: 0.31311727, z: -0.07634742, w: 0.91969603}
-  m_LocalPosition: {x: -0.6889509, y: 0, z: 2.5205958}
+  m_LocalRotation: {x: 0.31295884, y: -0.0034164595, z: 0.0011122115, w: 0.94975996}
+  m_LocalPosition: {x: 0.43423766, y: 55.730953, z: -132.57608}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1431,11 +1429,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
-  far clip plane: 5000
-  field of view: 45
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60.000004
   orthographic: 0
-  orthographic size: 10
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2741,7 +2739,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8565862883904283618}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.31329936, y: -0.65880454, z: -0.022451371, w: 0.68360525}
+  m_LocalRotation: {x: 0.31329936, y: -0.65880454, z: -0.022451371, w: 0.6836052}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2858,6 +2856,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c9896455ab67ae24f9b0476db98f5f99, type: 3}
       propertyPath: m_Name
       value: DogMesh
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c9896455ab67ae24f9b0476db98f5f99, type: 3}
+      propertyPath: m_Layer
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c9896455ab67ae24f9b0476db98f5f99, type: 3}
       propertyPath: m_TagString

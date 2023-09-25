@@ -58,7 +58,7 @@ public class RobberAbilities : NetworkBehaviour
                     robbingItem.GetComponent<RobbingItem>().CreatePopup(playerCamera);
                     RobbingManager.Instance.UpdateItemStateServerRpc(RobbingManager.Instance.robbingItems.IndexOf(robbingItem), false);
                     robbingItem = null;
-                    GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, points, true);
+                    GameManager.Instance.UpdatePlayerRoundScoresServerRpc(OwnerClientId, points, true);
 
                     canInteract = false;
                     Debug.Log("Robbing Successful");
@@ -143,7 +143,7 @@ public class RobberAbilities : NetworkBehaviour
                 int points = robbingItem.GetComponent<RobbingItem>().points;
                 robbingItem.GetComponent<RobbingItem>().CreatePopup(playerCamera);
                 RobbingManager.Instance.UpdateItemStateServerRpc(RobbingManager.Instance.robbingItems.IndexOf(robbingItem), false);
-                GameManager.Instance.UpdatePlayerScoresServerRpc(OwnerClientId, points, true);
+                GameManager.Instance.UpdatePlayerRoundScoresServerRpc(OwnerClientId, points, true);
             }
 
             robbingItem = null;
@@ -180,15 +180,14 @@ public class RobberAbilities : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    public void RespawnPlayerClientRpc(ClientRpcParams clientRpcParams = default)
+    public void RespawnPlayer()
     {
         if (!IsOwner) return;
 
         int index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
         if (cop != null)
         {
-            while (Vector3.Distance(cop.transform.position, GameManager.Instance.respawnPoints[index].position) < 30f)
+            while (Vector3.Distance(cop.transform.position, GameManager.Instance.respawnPoints[index].position) < 40f)
             {
                 index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
             }
@@ -197,29 +196,4 @@ public class RobberAbilities : NetworkBehaviour
         transform.position = GameManager.Instance.respawnPoints[index].position;
         transform.rotation = GameManager.Instance.respawnPoints[index].rotation;
     }
-
-    //[ClientRpc]
-    //public void GetTasedClientRpc(float stunTimer)
-    //{
-    //    if (!IsOwner) return;
-    //
-    //    Debug.Log("I got stunned oh no!");
-    //    StartCoroutine(Stun(stunTimer));
-    //}
-    //
-    //private IEnumerator Stun(float stunTimer)
-    //{
-    //    StarterAssets.ThirdPersonController controller = GetComponent<StarterAssets.ThirdPersonController>();
-    //
-    //    controller.stunned = true;
-    //
-    //    float time = 0;
-    //    while (time < stunTimer)
-    //    {
-    //        time += Time.deltaTime;
-    //        yield return new WaitForEndOfFrame();
-    //    }
-    //
-    //    controller.stunned = false;
-    //}
 }

@@ -64,6 +64,7 @@ public class RigidCharacterController : NetworkBehaviour
 
     [Header("UI")]
     public GameObject playerUi;
+    public GameObject zapParticle;
 
     public MovementState state;
     public enum MovementState
@@ -77,8 +78,8 @@ public class RigidCharacterController : NetworkBehaviour
     }
 
     public bool dashing;
-    public NetworkVariable<bool> stunned = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    private bool triggerOnce;
+    private bool stunned;
+    private bool triggerOnce = true;
 
     public override void OnNetworkSpawn()
     {
@@ -176,7 +177,7 @@ public class RigidCharacterController : NetworkBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        if (Input.GetKey(jumpKey) && readyToJump && grounded)
+        if (Input.GetKey(jumpKey) && readyToJump && grounded && !stunned)
         {
             readyToJump = false;
 
@@ -203,8 +204,14 @@ public class RigidCharacterController : NetworkBehaviour
     private bool keepMomentum;
     private void StateHandler()
     {
+        if (stunned)
+        {
+            state = MovementState.stunned;
+            moveSpeed = 0;
+            desiredMoveSpeed = 0;
+        }
         //Dashing
-        if (dashing)
+        else if (dashing)
         {
             state = MovementState.dashing;
             desiredMoveSpeed = dashSpeed;
@@ -227,12 +234,6 @@ public class RigidCharacterController : NetworkBehaviour
         {
             state = MovementState.walking;
             desiredMoveSpeed = walkSpeed;
-        }
-        else if (stunned.Value)
-        {
-            state = MovementState.stunned;
-            moveSpeed = 0;
-            desiredMoveSpeed = 0;
         }
         //Air
         else
@@ -379,32 +380,26 @@ public class RigidCharacterController : NetworkBehaviour
 
     private void CheckStun()
     {
-        if (stunned.Value && triggerOnce)
+        if (Id == 1) stunned = InteractionManager.Instance.GetIsStunned();
+        if (stunned && triggerOnce)
         {
             StartCoroutine(ResetStun());
-            Debug.Log("Coroutine Started");
+            Debug.Log("Stun Coroutine Started");
         }
     }
 
     private IEnumerator ResetStun()
     {
+        GameObject zap = Instantiate(zapParticle, transform.position, Quaternion.identity);
+        Destroy(zap, 1.5f);
         triggerOnce = false;
 
         yield return new WaitForSeconds(stunTimer);
 
-        stunned.Value = false;
+        InteractionManager.Instance.SetStunServerRpc(false);
+        InteractionManager.Instance.SetIsStunned(false);
         triggerOnce = true;
 
         Debug.Log("Player is no longer stunned");
-    }
-
-    [ClientRpc]
-    public void UpdateStunClientRpc(ClientRpcParams clientRpcParams = default)
-    {
-        if (!IsOwner) return;
-
-        stunned.Value = true;
-
-        Debug.Log("Stunned is currently " + stunned.Value);
     }
 }
