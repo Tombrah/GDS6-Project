@@ -21565,7 +21565,7 @@ MonoBehaviour:
   - {fileID: 966606023}
   roundMax: 4
   countdownTimerMax: 5
-  gamePlayingTimerMax: 15
+  gamePlayingTimerMax: 60
   roundResetTimerMax: 10
 --- !u!23 &4732713579268836060
 MeshRenderer:
