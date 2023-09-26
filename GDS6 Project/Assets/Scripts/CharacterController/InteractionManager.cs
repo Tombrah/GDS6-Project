@@ -8,6 +8,7 @@ public class InteractionManager : NetworkBehaviour
     public static InteractionManager Instance { get; private set; }
 
     private bool isStunned;
+    private bool isCaught;
     private bool canStun = true;
     private bool canCatch = true;
 
@@ -54,16 +55,21 @@ public class InteractionManager : NetworkBehaviour
                 }
             }
 
-            CatchRobberClientRpc();
+            SetCaughtClientRpc(true);
         }
     }
 
-    [ClientRpc]
-    private void CatchRobberClientRpc()
+    [ServerRpc(RequireOwnership = false)]
+    public void SetCaughtServerRpc(bool caught)
     {
-        RobberAbilities robber = GameObject.FindWithTag("Robber").GetComponentInChildren<RobberAbilities>();
-        robber.RespawnPlayer();
-        canCatch = true;
+        SetCaughtClientRpc(caught);
+    }
+
+    [ClientRpc]
+    private void SetCaughtClientRpc(bool caught)
+    {
+        if (!caught) canCatch = true;
+        SetIsCaught(caught);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -81,6 +87,16 @@ public class InteractionManager : NetworkBehaviour
     {
         SetIsStunned(stunned);
         canStun = true;
+    }
+
+    public bool GetIsCaught()
+    {
+        return isCaught;
+    }
+
+    public void SetIsCaught(bool caught)
+    {
+        isCaught = caught;
     }
 
     public bool GetIsStunned()

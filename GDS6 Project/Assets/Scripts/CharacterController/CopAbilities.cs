@@ -76,6 +76,8 @@ public class CopAbilities : NetworkBehaviour
             yield return new WaitForEndOfFrame();
         }
 
+        progress.fillAmount = 1;
+
         canShoot = true;
         yield return null;
     }

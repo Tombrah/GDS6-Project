@@ -26,6 +26,7 @@ public class RobberAbilities : NetworkBehaviour
             cop = GameObject.FindWithTag("Cop");
         }
         RobInteraction();
+        CheckRespawnPlayer();
     }
 
     private void RobInteraction()
@@ -180,20 +181,26 @@ public class RobberAbilities : NetworkBehaviour
         }
     }
 
-    public void RespawnPlayer()
+    public void CheckRespawnPlayer()
     {
-        if (!IsOwner) return;
-
-        int index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
-        if (cop != null)
+        if (InteractionManager.Instance.GetIsCaught())
         {
-            while (Vector3.Distance(cop.transform.position, GameManager.Instance.respawnPoints[index].position) < 40f)
+            GetComponent<RigidCharacterController>().enabled = false;
+            int index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
+            if (cop != null)
             {
-                index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
+                while (Vector3.Distance(cop.transform.position, GameManager.Instance.respawnPoints[index].position) < 40f)
+                {
+                    index = Random.Range(0, GameManager.Instance.respawnPoints.Count);
+                }
             }
-        }
 
-        transform.position = GameManager.Instance.respawnPoints[index].position;
-        transform.rotation = GameManager.Instance.respawnPoints[index].rotation;
+            transform.position = GameManager.Instance.respawnPoints[index].position;
+            transform.rotation = GameManager.Instance.respawnPoints[index].rotation;
+
+            GetComponent<RigidCharacterController>().enabled = true;
+            InteractionManager.Instance.SetCaughtServerRpc(false);
+            InteractionManager.Instance.SetIsCaught(false);
+        }
     }
 }
