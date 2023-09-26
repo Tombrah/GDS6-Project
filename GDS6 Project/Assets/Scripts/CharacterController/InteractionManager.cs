@@ -17,6 +17,22 @@ public class InteractionManager : NetworkBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+        GameManager.Instance.OnStateChanged += GameManager_OnStateChanged;
+    }
+
+    private void GameManager_OnStateChanged(object sender, System.EventArgs e)
+    {
+        if (GameManager.Instance.IsRoundResetting())
+        {
+            SetIsCaught(false);
+            SetIsStunned(false);
+            canCatch = true;
+            canStun = true;
+        }
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F1))
@@ -69,6 +85,7 @@ public class InteractionManager : NetworkBehaviour
     private void SetCaughtClientRpc(bool caught)
     {
         if (!caught) canCatch = true;
+        else SetIsStunned(false);
         SetIsCaught(caught);
     }
 
