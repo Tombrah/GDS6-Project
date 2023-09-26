@@ -115,6 +115,10 @@ public class GameManager : NetworkBehaviour
                     if (round.Value == roundMax)
                     {
                         state.Value = State.GameEnded;
+                        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+                        {
+                            playerScores[(int)clientId] += playerRoundScores[(int)clientId];
+                        }
                         break;
                     }
                     ResetRound();
@@ -252,7 +256,6 @@ public class GameManager : NetworkBehaviour
                 allClientsJoined = false;
                 break;
             }
-
         }
 
         if (allClientsJoined)
@@ -262,8 +265,9 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void UpdatePlayerRoundScoresServerRpc(ulong clientId, int score, bool isAdditive)
+    public void UpdatePlayerRoundScoresServerRpc(int score, bool isAdditive, ServerRpcParams serverRpcParams = default)
     {
+        ulong clientId = serverRpcParams.Receive.SenderClientId;
         if (isAdditive)
         {
             playerRoundScores[(int)clientId] += score;

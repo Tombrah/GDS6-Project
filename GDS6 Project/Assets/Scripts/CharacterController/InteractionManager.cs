@@ -41,7 +41,7 @@ public class InteractionManager : NetworkBehaviour
                 }
             }
 
-            int copPoints = Mathf.CeilToInt(robberPoints * 0.7f);
+            int copPoints = Mathf.CeilToInt(robberPoints * 0.75f);
             foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
                 if (clientId == senderId)

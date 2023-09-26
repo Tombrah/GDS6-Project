@@ -58,7 +58,7 @@ public class RobberAbilities : NetworkBehaviour
                     robbingItem.GetComponent<RobbingItem>().CreatePopup(playerCamera);
                     RobbingManager.Instance.UpdateItemStateServerRpc(RobbingManager.Instance.robbingItems.IndexOf(robbingItem), false);
                     robbingItem = null;
-                    GameManager.Instance.UpdatePlayerRoundScoresServerRpc(OwnerClientId, points, true);
+                    GameManager.Instance.UpdatePlayerRoundScoresServerRpc(points, true);
 
                     canInteract = false;
                     Debug.Log("Robbing Successful");
@@ -143,7 +143,7 @@ public class RobberAbilities : NetworkBehaviour
                 int points = robbingItem.GetComponent<RobbingItem>().points;
                 robbingItem.GetComponent<RobbingItem>().CreatePopup(playerCamera);
                 RobbingManager.Instance.UpdateItemStateServerRpc(RobbingManager.Instance.robbingItems.IndexOf(robbingItem), false);
-                GameManager.Instance.UpdatePlayerRoundScoresServerRpc(OwnerClientId, points, true);
+                GameManager.Instance.UpdatePlayerRoundScoresServerRpc(points, true);
             }
 
             robbingItem = null;
