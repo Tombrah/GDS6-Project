@@ -330,7 +330,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1383892301693865668}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 2a77a8e2ea0150c4e887c13aca7ee6eb, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -599,9 +599,9 @@ MonoBehaviour:
   walkSpeed: 7
   sprintSpeed: 12
   dashSpeed: 0
-  groundDrag: 0
+  groundDrag: 6
   dashSpeedChangeFactor: 0
-  jumpForce: 10
+  jumpForce: 12
   jumpCooldown: 0.25
   airMultiplier: 0.9
   crouchSpeed: 3.5
@@ -613,7 +613,7 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
-  maxSlopeAngle: 100
+  maxSlopeAngle: 80
   TPSCamera: {fileID: 3588167187675678929}
   basicCam: {fileID: 8505808399944371005}
   combatCam: {fileID: 2523242666158391303}

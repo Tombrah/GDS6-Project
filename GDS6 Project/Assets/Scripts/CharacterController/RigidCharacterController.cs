@@ -154,14 +154,17 @@ public class RigidCharacterController : NetworkBehaviour
         CheckStun();
 
         MyInput();
-        SpeedControl();
         StateHandler();
 
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 1f, whatIsGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.1f, whatIsGround);
 
-        if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
+        if (grounded)
         {
             rb.drag = groundDrag;
+        }
+        else if (OnSlope())
+        {
+            rb.drag = groundDrag + 1;
         }
         else
         {
@@ -174,6 +177,7 @@ public class RigidCharacterController : NetworkBehaviour
         if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return;
 
         MovePlayer();
+        SpeedControl();
     }
 
     private void MyInput()
@@ -333,6 +337,7 @@ public class RigidCharacterController : NetworkBehaviour
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
         }
+
         rb.useGravity = !OnSlope();
     }
 
@@ -391,7 +396,7 @@ public class RigidCharacterController : NetworkBehaviour
 
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerheight * 0.5f + 1f))
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerheight * 0.5f + 1f, whatIsGround))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;

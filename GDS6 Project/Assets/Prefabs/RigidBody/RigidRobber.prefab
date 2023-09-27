@@ -387,9 +387,9 @@ MonoBehaviour:
   walkSpeed: 7
   sprintSpeed: 12
   dashSpeed: 35
-  groundDrag: 0
+  groundDrag: 6
   dashSpeedChangeFactor: 50
-  jumpForce: 10
+  jumpForce: 12
   jumpCooldown: 0.25
   airMultiplier: 0.9
   crouchSpeed: 3.5
@@ -1746,7 +1746,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2885863114216029469}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 2a77a8e2ea0150c4e887c13aca7ee6eb, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
