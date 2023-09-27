@@ -6,12 +6,17 @@ using Unity.Netcode;
 public class CopAbilities : NetworkBehaviour
 {
     [SerializeField] private GameObject playerCamera;
-    [SerializeField] private Transform hand;
+    [SerializeField] private Transform gun;
     [SerializeField] private float catchRadius = 3;
     //[SerializeField] private float onCatchTimeReduction = 3;
     //[SerializeField] private int catchPoints = 50;
     [SerializeField] private float ShootCD = 5;
+    [SerializeField] private float maxDistance = 20f;
 
+    private LineRenderer lr;
+    private Vector3 endPoint;
+    private float fadeDuration = 2;
+    private bool drawLine;
     private GameObject robber;
     private GameObject zapParticle;
     private bool canShoot = true;
@@ -19,6 +24,8 @@ public class CopAbilities : NetworkBehaviour
     private void Start()
     {
         if (IsOwner) zapParticle = GetComponent<RigidCharacterController>().zapParticle;
+        lr = gun.GetComponent<LineRenderer>();
+        lr.positionCount = 0;
     }
 
     private void Update()
@@ -38,30 +45,72 @@ public class CopAbilities : NetworkBehaviour
         ShootTaser();
     }
 
+    private void LateUpdate()
+    {
+        if (drawLine)
+        {
+            DrawLine();
+        }
+    }
+
     private void ShootTaser()
     {
         if (canShoot && Input.GetMouseButtonDown(0) && playerCamera.GetComponent<TestCamera>().currentStyle == TestCamera.CameraStyle.Combat)
         {
+            lr.positionCount = 2;
+            drawLine = true;
             canShoot = false;
-            RaycastHit hit;
             int layerMask = LayerMask.GetMask("Ignore Raycast");
 
-            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, 20, ~layerMask))
+            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, maxDistance, ~layerMask))
             {
-                Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward, Color.blue, 3f);
-                Debug.DrawRay(hit.point, hit.point - hand.position, Color.red, 3f);
-                Debug.Log("Hit " + hit.collider.gameObject.name);
-                GameObject particles = Instantiate(zapParticle, hit.point, Quaternion.identity);
-                Destroy(particles, 1.1f);
+                endPoint = hit.point;
 
-                if (hit.collider.gameObject.transform.parent.gameObject.CompareTag("Player"))
+                Debug.Log("Hit " + hit.collider.gameObject.name);
+
+                if (hit.collider.transform.parent != null && hit.collider.transform.parent.gameObject.CompareTag("Player"))
                 {
+                    GameObject particles = Instantiate(zapParticle, hit.point, Quaternion.identity);
+                    Destroy(particles, 1.1f);
                     InteractionManager.Instance.SetStunServerRpc(true);
                 }
             }
+            else
+            {
+                endPoint = playerCamera.transform.position + playerCamera.transform.forward * maxDistance;
+            }
 
+            StartCoroutine(FadeOut());
             StartCoroutine(ResetTaser());
         }
+    }
+
+    private void DrawLine()
+    {
+        lr.SetPosition(0, gun.position);
+        lr.SetPosition(1, endPoint);
+    }
+
+    private IEnumerator FadeOut()
+    {
+        float elapsedTime = 0;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float currentAlpha = Mathf.Lerp(1, 0, elapsedTime / fadeDuration);
+
+            Color currentColor = Color.white;
+            currentColor.a = currentAlpha;
+            lr.material.SetColor("_TintColor", currentColor);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        // Material is fully transparent after fading out.
+        drawLine = false;
+        lr.positionCount = 0;
+        yield return null;
     }
 
     private IEnumerator ResetTaser()
