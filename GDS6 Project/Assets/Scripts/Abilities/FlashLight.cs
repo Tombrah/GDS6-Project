@@ -17,6 +17,7 @@ public class Flashlight : NetworkBehaviour
     {
         off = true;
         flashlight.SetActive(false);
+        flashlightUi.SetActive(false);
     }
 
     void Update()

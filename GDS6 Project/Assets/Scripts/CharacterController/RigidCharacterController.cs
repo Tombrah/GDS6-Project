@@ -47,17 +47,19 @@ public class RigidCharacterController : NetworkBehaviour
 
     [Header("")]
     [SerializeField] private GameObject TPSCamera;
-    [SerializeField] private CinemachineFreeLook freeLookCamera;
-    [SerializeField] private CinemachineFreeLook combatCam;
+    [SerializeField] private CinemachineVirtualCamera basicCam;
+    [SerializeField] private CinemachineVirtualCamera combatCam;
 
     [SerializeField] private float stunTimer = 3;
 
-    public Transform orientation;
-
-    float horizontalInput;
-    float verticalInput;
-
+    private Vector2 movement;
     Vector3 moveDirection;
+
+    //Rotation
+    private float targetRotation = 0.0f;
+    private float rotationVelocity;
+    [Range(0.0f, 0.3f)]
+    public float rotationSmoothTime = 0.12f;
 
     Rigidbody rb;
     Dashing dashScript;
@@ -74,7 +76,8 @@ public class RigidCharacterController : NetworkBehaviour
         crouching,
         dashing,
         air,
-        stunned
+        stunned,
+        aiming
     }
 
     public bool dashing;
@@ -87,14 +90,15 @@ public class RigidCharacterController : NetworkBehaviour
 
         if (IsOwner)
         {
+            Debug.Log("I own: " + transform.parent.name);
             TPSCamera.GetComponent<AudioListener>().enabled = true;
-            freeLookCamera.Priority = 2;
+            basicCam.Priority = 2;
             if (combatCam != null)
             {
                 combatCam.Priority = 1;
             }
 
-            RobbingManager.Instance.SetPlayerCamera(TPSCamera);
+            if(RobbingManager.Instance != null) RobbingManager.Instance.SetPlayerCamera(TPSCamera);
         }
     }
 
@@ -174,8 +178,7 @@ public class RigidCharacterController : NetworkBehaviour
 
     private void MyInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         if (Input.GetKey(jumpKey) && readyToJump && grounded && !stunned)
         {
@@ -209,6 +212,12 @@ public class RigidCharacterController : NetworkBehaviour
             state = MovementState.stunned;
             moveSpeed = 0;
             desiredMoveSpeed = 0;
+        }
+        //Aiming
+        else if (TPSCamera.GetComponent<TestCamera>().currentStyle == TestCamera.CameraStyle.Combat)
+        {
+            state = MovementState.aiming;
+            desiredMoveSpeed = crouchSpeed;
         }
         //Dashing
         else if (dashing)
@@ -303,7 +312,9 @@ public class RigidCharacterController : NetworkBehaviour
 
     private void MovePlayer()
     {
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        RotatePlayer();
+
+        moveDirection = movement != Vector2.zero? Quaternion.Euler(0, targetRotation, 0) * Vector3.forward : Vector3.zero;
 
         if (OnSlope())
         {
@@ -323,6 +334,22 @@ public class RigidCharacterController : NetworkBehaviour
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
         }
         rb.useGravity = !OnSlope();
+    }
+
+    private void RotatePlayer()
+    {
+        Vector3 inputDirection = new Vector3(movement.x, 0, movement.y).normalized;
+
+        if (movement != Vector2.zero)
+        {
+            targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                              TPSCamera.transform.eulerAngles.y;
+            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref rotationVelocity,
+                rotationSmoothTime);
+
+            // rotate to face input direction relative to camera position
+            transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+        }
     }
 
     private void SpeedControl()
@@ -380,7 +407,9 @@ public class RigidCharacterController : NetworkBehaviour
 
     private void CheckStun()
     {
-        if (Id == 1) stunned = InteractionManager.Instance.GetIsStunned();
+        if (InteractionManager.Instance == null || Id == 0) return;
+
+        stunned = InteractionManager.Instance.GetIsStunned();
         if (stunned && triggerOnce)
         {
             StartCoroutine(ResetStun());

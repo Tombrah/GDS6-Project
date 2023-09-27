@@ -183,6 +183,8 @@ public class RobberAbilities : NetworkBehaviour
 
     public void CheckRespawnPlayer()
     {
+        if (InteractionManager.Instance == null) return;
+
         if (InteractionManager.Instance.GetIsCaught())
         {
             GetComponent<RigidCharacterController>().enabled = false;

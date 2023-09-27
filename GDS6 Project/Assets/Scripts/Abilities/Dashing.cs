@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class Dashing : NetworkBehaviour
 {
     [Header("References")]
-    public Transform orientation;
     public Transform playerCam;
     private Rigidbody rb;
     private RigidCharacterController pm;
@@ -18,7 +17,6 @@ public class Dashing : NetworkBehaviour
     public float dashDuration;
 
     [Header("Settings")]
-    public bool useCameraForward = true;
     public bool allowAllDirections = true;
     public bool disableGravity = false;
     public bool resetVel = true;
@@ -66,18 +64,11 @@ public class Dashing : NetworkBehaviour
 
         Transform forwardT;
 
-        if (useCameraForward)
-        {
-            forwardT = playerCam;
-        }  
-        else
-        {
-            forwardT = orientation;
-        }
+        forwardT = playerCam;
 
         Vector3 direction = GetDirection(forwardT);
 
-        Vector3 forcetoApply = direction * dashForce + orientation.up * dashUpwardForce;
+        Vector3 forcetoApply = direction * dashForce + transform.up * dashUpwardForce;
 
         delayedForceToApply = forcetoApply;
         Invoke(nameof(DelayedDashForce), 0.025f);

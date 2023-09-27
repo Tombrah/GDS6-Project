@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Unity.Netcode;
 using Cinemachine;
 using UnityEngine.UI;
 using System.Collections;
@@ -16,7 +15,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM 
     [RequireComponent(typeof(PlayerInput))]
 #endif
-    public class ThirdPersonController : NetworkBehaviour
+    public class ThirdPersonController : MonoBehaviour
     {
         public int spawnIndex;
         [Header("Player")]
@@ -110,11 +109,6 @@ namespace StarterAssets
         [Header("Ui")]
         public GameObject playerUi;
         public GameObject instructionsUi;
-        
-        [SerializeField] private InputActionAsset inputActionAsset;
-        [SerializeField] private float stunTimer = 3f;
-        public NetworkVariable<bool> stunned = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        private bool triggerOnce = true;
 
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
@@ -142,43 +136,16 @@ namespace StarterAssets
         private void Awake()
         {
             _controller = GetComponent<CharacterController>();
-            _controller.enabled = false;
-        }
-
-        public override void OnNetworkSpawn()
-        {
-            SetSpawn();
-
-            if (IsOwner)
-            {
-                Debug.Log("Owner Id is: " + OwnerClientId);
-                _controller.enabled = true;
-
-                _mainCamera.GetComponent<AudioListener>().enabled = true;
-                virtualCamera.Priority = 1;
-
-                RobbingManager.Instance.SetPlayerCamera(_mainCamera);
-            }
-        }
-
-        public override void OnNetworkDespawn()
-        {
-            GameManager.Instance.OnStateChanged -= GameManager_OnStateChanged;
         }
 
         private void Start()
         {
-            if (!IsOwner) return;
-
-            GameManager.Instance.OnStateChanged += GameManager_OnStateChanged;
-
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
             _input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM 
             _playerInput = GetComponent<PlayerInput>();
-            _playerInput.actions = inputActionAsset;
 #else
 			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
@@ -190,38 +157,11 @@ namespace StarterAssets
             _fallTimeoutDelta = FallTimeout;
         }
 
-        private void GameManager_OnStateChanged(object sender, System.EventArgs e)
-        {
-            if (GameManager.Instance.IsGamePlaying())
-            {
-                playerUi.SetActive(true);
-                instructionsUi.SetActive(false);
-            }
-            else if (GameManager.Instance.IsCountdownActive())
-            {
-                playerUi.SetActive(false);
-                instructionsUi.SetActive(true);
-            }
-            else
-            {
-                playerUi.SetActive(false);
-                instructionsUi.SetActive(false);
-            }
-        }
-
-        private void SetSpawn()
-        {
-            transform.parent.position = GameManager.Instance.playerSpawnPoints[spawnIndex].position;
-            transform.parent.rotation = GameManager.Instance.playerSpawnPoints[spawnIndex].rotation;
-        }
-
         private void Update()
         {
-            if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return;
+            //if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return;
 
             _hasAnimator = TryGetComponent(out _animator);
-
-            CheckStun();
 
             JumpAndGravity();
             GroundedCheck();
@@ -230,40 +170,9 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-            if (!IsOwner) return;
+            //if (!IsOwner) return;
 
             CameraRotation();
-        }
-
-        private void CheckStun()
-        {
-            if (stunned.Value && triggerOnce)
-            {
-                StartCoroutine(ResetStun());
-                Debug.Log("Coroutine Started");
-            } 
-        }
-
-        private IEnumerator ResetStun()
-        {
-            triggerOnce = false;
-
-            yield return new WaitForSeconds(stunTimer);
-
-            stunned.Value = false;
-            triggerOnce = true;
-
-            Debug.Log("Player is no longer stunned");
-        }
-
-        [ClientRpc]
-        public void UpdateStunClientRpc(ClientRpcParams clientRpcParams = default)
-        {
-            if (!IsOwner) return;
-
-            stunned.Value = true;
-
-            Debug.Log("Stunned is currently " + stunned.Value);
         }
 
         private void AssignAnimationIDs()
@@ -364,11 +273,6 @@ namespace StarterAssets
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
             }
 
-            if (stunned.Value)
-            {
-                _speed = 0;
-            }
-
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
             // move the player
@@ -385,7 +289,7 @@ namespace StarterAssets
 
         private void JumpAndGravity()
         {
-            if (Grounded && !stunned.Value)
+            if (Grounded)
             {
                 // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;

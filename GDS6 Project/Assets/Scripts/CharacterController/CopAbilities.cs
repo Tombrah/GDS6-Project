@@ -40,7 +40,7 @@ public class CopAbilities : NetworkBehaviour
 
     private void ShootTaser()
     {
-        if (canShoot && Input.GetMouseButtonDown(0) && playerCamera.GetComponent<ThirdPersonCam>().currentStyle == ThirdPersonCam.CameraStyle.Combat)
+        if (canShoot && Input.GetMouseButtonDown(0) && playerCamera.GetComponent<TestCamera>().currentStyle == TestCamera.CameraStyle.Combat)
         {
             canShoot = false;
             RaycastHit hit;

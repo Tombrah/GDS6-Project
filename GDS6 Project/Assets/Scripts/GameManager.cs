@@ -226,15 +226,18 @@ public class GameManager : NetworkBehaviour
 
                 roleId = (roleId * -1) + 1;
             }
-            RobbingManager.Instance.RespawnAllItems();
+            if (RobbingManager.Instance != null) RobbingManager.Instance.RespawnAllItems();
 
-            int index = 0;
-            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+            if (PlayerData.Instance != null)
             {
-                if (PlayerData.Instance.GetPlayerNamesDictionary().ContainsKey(clientId))
+                int index = 0;
+                foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
                 {
-                    SetPlayerNameClientRpc(index, PlayerData.Instance.GetPlayerNamesDictionary()[clientId]);
-                    index++;
+                    if (PlayerData.Instance.GetPlayerNamesDictionary().ContainsKey(clientId))
+                    {
+                        SetPlayerNameClientRpc(index, PlayerData.Instance.GetPlayerNamesDictionary()[clientId]);
+                        index++;
+                    }
                 }
             }
 
@@ -281,12 +284,18 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void CanSetReadyClientRpc()
     {
+        if (LoadingInformationUi.Instance == null) 
+        {
+            SetPlayerReadyServerRpc();
+            return;
+        }
         LoadingInformationUi.Instance.canInteract = true;
     }
 
     [ClientRpc]
     private void SetPlayerNameClientRpc(int index, string playerName)
     {
+        if (RoundResetUI.Instance == null || GameOverUI.Instance == null) return;
         RoundResetUI.Instance.SetPlayerName(index, playerName);
         GameOverUI.Instance.SetPlayerName(index, playerName);
     }
