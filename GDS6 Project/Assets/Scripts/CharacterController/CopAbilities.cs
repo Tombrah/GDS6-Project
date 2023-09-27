@@ -97,6 +97,7 @@ public class CopAbilities : NetworkBehaviour
 
         while (elapsedTime < fadeDuration)
         {
+            if (elapsedTime > fadeDuration / 2)lr.SetPosition(1, endPoint -= Vector3.up * 2 * Time.deltaTime);
             elapsedTime += Time.deltaTime;
             float currentAlpha = Mathf.Lerp(1, 0, elapsedTime / fadeDuration);
 

@@ -25,8 +25,14 @@ public class RobberAbilities : NetworkBehaviour
         {
             cop = GameObject.FindWithTag("Cop");
         }
-        RobInteraction();
+
         CheckRespawnPlayer();
+        if (InteractionManager.Instance.GetIsStunned())
+        {
+            if (coroutine != null) StopCoroutine(coroutine);
+            return;
+        }
+        RobInteraction();
     }
 
     private void RobInteraction()

@@ -27,6 +27,8 @@ public class HostDisconnectGameUi : MonoBehaviour
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
+        if (GameManager.Instance.IsGameOver()) return;
+
         if (clientId == NetworkManager.ServerClientId)
         {
             ShowMessage("Host Disconnected!");

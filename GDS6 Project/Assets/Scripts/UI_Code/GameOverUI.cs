@@ -8,6 +8,7 @@ using TMPro;
 public class GameOverUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text text;
+    [SerializeField] private TMP_Text winLoseText;
     [SerializeField] private Button mainMenuButton;
     public static GameOverUI Instance { get; private set; }
 
@@ -22,6 +23,11 @@ public class GameOverUI : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+
+        mainMenuButton.onClick.AddListener(() =>
+        {
+            Loader.Load(Loader.Scene.MainMenu);
+        });
     }
 
     private void Start()
@@ -112,9 +118,48 @@ public class GameOverUI : MonoBehaviour
             finalScoreText[1].text = GameManager.Instance.playerScores[1].ToString();
         }
 
+        CheckDidWin();
         mainMenuButton.gameObject.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    private void CheckDidWin()
+    {
+        if (GameManager.Instance.playerScores.Count < 2)
+        {
+            winLoseText.text = "You Win!";
+            return;
+        }
+
+        int index = 0;
+        foreach (TMP_Text text in players)
+        {
+            if (text.text == PlayerData.Instance.PlayerName)
+            {
+                index = System.Array.IndexOf(players, text);
+            }
+        }
+
+        int decide = GameManager.Instance.playerScores[0] - GameManager.Instance.playerScores[1];
+        int winningIndex = 0;
+        if (decide < 0)
+        {
+            winningIndex = 1;
+        }
+        else if (decide > 0)
+        {
+            winningIndex = 0;
+        }
+        else
+        {
+            winLoseText.text = "Draw!";
+            winLoseText.color = new Color(1, 0.64f, 0);
+            return;
+        }
+
+        winLoseText.text = index == winningIndex ? "You Win!" : "You Lose!";
+        winLoseText.color = index == winningIndex ? Color.green : Color.red;
     }
 
     public void SetPlayerName(int index, string playerName)
