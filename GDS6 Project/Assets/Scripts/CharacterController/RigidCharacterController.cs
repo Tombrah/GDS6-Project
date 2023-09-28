@@ -69,6 +69,7 @@ public class RigidCharacterController : NetworkBehaviour
 
     [Header("UI")]
     public GameObject playerUi;
+    public GameObject ruleUi;
     public GameObject zapParticle;
 
     public MovementState state;
@@ -143,10 +144,7 @@ public class RigidCharacterController : NetworkBehaviour
         if (GameManager.Instance.IsGamePlaying())
         {
             playerUi.SetActive(true);
-        }
-        else
-        {
-            playerUi.SetActive(false);
+            ruleUi.SetActive(false);
         }
     }
 
