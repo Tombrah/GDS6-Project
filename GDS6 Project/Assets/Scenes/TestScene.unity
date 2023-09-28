@@ -1719,7 +1719,7 @@ MonoBehaviour:
   respawnPoints: []
   roundMax: 4
   countdownTimerMax: 3
-  gamePlayingTimerMax: 90
+  gamePlayingTimerMax: 1000
   roundResetTimerMax: 10
 --- !u!4 &2097310019
 Transform:

@@ -16,8 +16,11 @@ public class RigidCharacterController : NetworkBehaviour
 
     [Header("Dashing")]
     public float dashSpeed;
-    public float groundDrag;
     public float dashSpeedChangeFactor;
+
+    [Header("Drag")]
+    public float groundDrag;
+    public float slopeDrag;
 
     [Header("Jumping")]
     public float jumpForce;
@@ -156,15 +159,15 @@ public class RigidCharacterController : NetworkBehaviour
         MyInput();
         StateHandler();
 
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.1f, whatIsGround);
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.3f, whatIsGround);
 
-        if (grounded)
+        if (OnSlope())
+        {
+            rb.drag = slopeDrag;
+        }
+        else if (grounded)
         {
             rb.drag = groundDrag;
-        }
-        else if (OnSlope())
-        {
-            rb.drag = groundDrag + 1;
         }
         else
         {
@@ -396,7 +399,7 @@ public class RigidCharacterController : NetworkBehaviour
 
     private bool OnSlope()
     {
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerheight * 0.5f + 0.4f, whatIsGround))
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerheight * 0.5f + 0.2f, whatIsGround))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;

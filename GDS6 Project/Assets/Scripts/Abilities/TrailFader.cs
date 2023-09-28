@@ -12,7 +12,6 @@ public class TrailFader : NetworkBehaviour
     private float fadeDuration = 1.0f;
     private float maxAlpha = 1.0f;
     private float currentAlpha = 0.0f;
-    private bool isVisible = false;
 
     [SerializeField] private float abilityDuration = 5;
     [SerializeField] private float rechargeTimer = 10;
@@ -55,9 +54,6 @@ public class TrailFader : NetworkBehaviour
 
             yield return new WaitForEndOfFrame();
         }
-
-        // Material is fully visible after fading in.
-        isVisible = true;
 
         // Wait for ability duration seconds before fading out.
         yield return new WaitForSeconds(abilityDuration);
@@ -103,9 +99,6 @@ public class TrailFader : NetworkBehaviour
 
             yield return null;
         }
-
-        // Material is fully transparent after fading out.
-        isVisible = false;
     }
 
     public void SetTargetMaterial(Material mat)

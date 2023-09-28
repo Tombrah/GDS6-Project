@@ -7,25 +7,41 @@ public class CopAbilities : NetworkBehaviour
 {
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private Transform gun;
+
+    [Header("Cathing")]
     [SerializeField] private float catchRadius = 3;
     //[SerializeField] private float onCatchTimeReduction = 3;
     //[SerializeField] private int catchPoints = 50;
+
+    [Header("Shooting")]
     [SerializeField] private float ShootCD = 5;
     [SerializeField] private float maxDistance = 20f;
+    private bool canShoot = true;
 
-    private LineRenderer lr;
-    private Vector3 endPoint;
-    private float fadeDuration = 2;
-    private bool drawLine;
     private GameObject robber;
     private GameObject zapParticle;
-    private bool canShoot = true;
+
+    [Header("Line")]
+    public int ropeQuality;
+    public float damper;
+    public float strength;
+    public float velocity;
+    public float waveCount;
+    public float waveHeight;
+    public AnimationCurve ropeCurve;
+    private Spring spring;
+    private LineRenderer lr;
+    private Vector3 endPoint;
+    private Vector3 currentPoint;
+    private bool drawLine;
 
     private void Start()
     {
         if (IsOwner) zapParticle = GetComponent<RigidCharacterController>().zapParticle;
         lr = gun.GetComponent<LineRenderer>();
         lr.positionCount = 0;
+        spring = new Spring();
+        spring.SetTarget(0);
     }
 
     private void Update()
@@ -47,17 +63,13 @@ public class CopAbilities : NetworkBehaviour
 
     private void LateUpdate()
     {
-        if (drawLine)
-        {
-            DrawLine();
-        }
+        DrawLine();
     }
 
     private void ShootTaser()
     {
         if (canShoot && Input.GetMouseButtonDown(0) && playerCamera.GetComponent<TestCamera>().currentStyle == TestCamera.CameraStyle.Combat)
         {
-            lr.positionCount = 2;
             drawLine = true;
             canShoot = false;
             int layerMask = LayerMask.GetMask("Ignore Raycast");
@@ -80,37 +92,60 @@ public class CopAbilities : NetworkBehaviour
                 endPoint = playerCamera.transform.position + playerCamera.transform.forward * maxDistance;
             }
 
-            StartCoroutine(FadeOut());
+            //StartCoroutine(FadeOut());
             StartCoroutine(ResetTaser());
         }
     }
 
     private void DrawLine()
     {
-        lr.SetPosition(0, gun.position);
-        lr.SetPosition(1, endPoint);
+        if (!drawLine)
+        {
+            currentPoint = gun.position;
+            spring.Reset();
+            if (lr.positionCount > 0) lr.positionCount = 0;
+            return;
+        }
+
+        if (lr.positionCount == 0)
+        {
+            spring.SetVelocity(velocity);
+            lr.positionCount = ropeQuality + 1;
+        }
+
+        spring.SetDamper(damper);
+        spring.SetStrength(strength);
+        spring.Update(Time.deltaTime);
+
+        Vector3 up = Quaternion.LookRotation((endPoint - gun.position).normalized) * Vector3.up;
+        //var right = Quaternion.LookRotation((endPoint - gun.position).normalized) * Vector3.right;
+
+
+        currentPoint = Vector3.Lerp(currentPoint, endPoint, Time.deltaTime * 12f);
+
+        for (int i = 0; i < ropeQuality + 1; i++)
+        {
+            float delta = i / (float)ropeQuality;
+            Vector3 offset = up * waveHeight * Mathf.Sin(delta * waveCount * Mathf.PI) * spring.Value * ropeCurve.Evaluate(delta);
+            //Vector3 offset = up * waveHeight * Mathf.Sin(delta * waveCount * Mathf.PI) * spring.Value *
+            //                         ropeCurve.Evaluate(delta) +
+            //                         right * waveHeight * Mathf.Cos(delta * waveCount * Mathf.PI) * spring.Value *
+            //                         ropeCurve.Evaluate(delta);
+
+            lr.SetPosition(i, Vector3.Lerp(gun.position, currentPoint, delta) + offset);
+        }
+
+        if (spring.Value < 0)
+        {
+            StartCoroutine(FadeOut());
+        }
     }
 
     private IEnumerator FadeOut()
     {
-        float elapsedTime = 0;
+        yield return new WaitForSeconds(0.5f);
 
-        while (elapsedTime < fadeDuration)
-        {
-            if (elapsedTime > fadeDuration / 2)lr.SetPosition(1, endPoint -= Vector3.up * 2 * Time.deltaTime);
-            elapsedTime += Time.deltaTime;
-            float currentAlpha = Mathf.Lerp(1, 0, elapsedTime / fadeDuration);
-
-            Color currentColor = Color.white;
-            currentColor.a = currentAlpha;
-            lr.material.SetColor("_TintColor", currentColor);
-
-            yield return new WaitForEndOfFrame();
-        }
-
-        // Material is fully transparent after fading out.
         drawLine = false;
-        lr.positionCount = 0;
         yield return null;
     }
 
