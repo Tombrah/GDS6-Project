@@ -6,6 +6,7 @@ using Unity.Netcode;
 public class PlayerData : NetworkBehaviour
 {
     public static PlayerData Instance { get; private set; }
+    public string PlayerName;
 
     private Dictionary<ulong, string> playerNames;
 
@@ -21,6 +22,7 @@ public class PlayerData : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         UpdatePlayerNameServerRpc(LobbyManager.Instance.playerName);
+        PlayerName = LobbyManager.Instance.playerName;
     }
 
     [ServerRpc(RequireOwnership = false)]

@@ -24,6 +24,7 @@ public class GameManager : NetworkBehaviour
     public List<Transform> playerSpawnPoints;
     public List<Transform> respawnPoints;
 
+    [HideInInspector] public NetworkList<int> playerRoundScores;
     [HideInInspector] public NetworkList<int> playerScores;
     private Dictionary<ulong, bool> playerReadyDictionary;
     private Dictionary<ulong, bool> playerJoinDictionary;
@@ -46,6 +47,7 @@ public class GameManager : NetworkBehaviour
     {
         Instance = this;
 
+        playerRoundScores = new NetworkList<int>();
         playerScores = new NetworkList<int>();
 
         playerReadyDictionary = new Dictionary<ulong, bool>();
@@ -113,6 +115,10 @@ public class GameManager : NetworkBehaviour
                     if (round.Value == roundMax)
                     {
                         state.Value = State.GameEnded;
+                        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+                        {
+                            playerScores[(int)clientId] += playerRoundScores[(int)clientId];
+                        }
                         break;
                     }
                     ResetRound();
@@ -158,6 +164,12 @@ public class GameManager : NetworkBehaviour
     {
         return gamePlayingTimer.Value;
     }
+
+    public int GetRoundNumber()
+    {
+        return round.Value;
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public void UpdateGameTimerServerRpc(float reductionTime)
     {
@@ -176,6 +188,9 @@ public class GameManager : NetworkBehaviour
             Transform player = Instantiate(playerPrefabs[roleId], playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
             player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
             player.GetComponent<NetworkObject>().ChangeOwnership(clientId);
+
+            playerScores[(int)clientId] += playerRoundScores[(int)clientId];
+            playerRoundScores[(int)clientId] = 0;
 
             roleId = (roleId * -1) + 1;
         }
@@ -203,6 +218,7 @@ public class GameManager : NetworkBehaviour
             foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
                 playerScores.Add(0);
+                playerRoundScores.Add(0);
 
                 Transform player = Instantiate(playerPrefabs[roleId], playerSpawnPoints[roleId].position, playerSpawnPoints[roleId].rotation);
                 player.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
@@ -210,15 +226,18 @@ public class GameManager : NetworkBehaviour
 
                 roleId = (roleId * -1) + 1;
             }
-            RobbingManager.Instance.RespawnAllItems();
+            if (RobbingManager.Instance != null) RobbingManager.Instance.RespawnAllItems();
 
-            int index = 0;
-            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+            if (PlayerData.Instance != null)
             {
-                if (PlayerData.Instance.GetPlayerNamesDictionary().ContainsKey(clientId))
+                int index = 0;
+                foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
                 {
-                    SetPlayerNameClientRpc(index, PlayerData.Instance.GetPlayerNamesDictionary()[clientId]);
-                    index++;
+                    if (PlayerData.Instance.GetPlayerNamesDictionary().ContainsKey(clientId))
+                    {
+                        SetPlayerNameClientRpc(index, PlayerData.Instance.GetPlayerNamesDictionary()[clientId]);
+                        index++;
+                    }
                 }
             }
 
@@ -240,7 +259,6 @@ public class GameManager : NetworkBehaviour
                 allClientsJoined = false;
                 break;
             }
-
         }
 
         if (allClientsJoined)
@@ -250,28 +268,35 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void UpdatePlayerScoresServerRpc(ulong clientId, int score, bool isAdditive)
+    public void UpdatePlayerRoundScoresServerRpc(int score, bool isAdditive, ServerRpcParams serverRpcParams = default)
     {
+        ulong clientId = serverRpcParams.Receive.SenderClientId;
         if (isAdditive)
         {
-            int oldScore = playerScores[(int)clientId];
-            playerScores[(int)clientId] = oldScore + score;
+            playerRoundScores[(int)clientId] += score;
         }
         else
         {
-            playerScores[(int)clientId] = score;
+            playerRoundScores[(int)clientId] = score;
         }
     }
 
     [ClientRpc]
     private void CanSetReadyClientRpc()
     {
+        if (LoadingInformationUi.Instance == null) 
+        {
+            SetPlayerReadyServerRpc();
+            return;
+        }
         LoadingInformationUi.Instance.canInteract = true;
     }
 
     [ClientRpc]
     private void SetPlayerNameClientRpc(int index, string playerName)
     {
+        if (RoundResetUI.Instance == null || GameOverUI.Instance == null) return;
         RoundResetUI.Instance.SetPlayerName(index, playerName);
+        GameOverUI.Instance.SetPlayerName(index, playerName);
     }
 }

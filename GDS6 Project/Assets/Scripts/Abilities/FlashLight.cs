@@ -6,6 +6,7 @@ using Unity.Netcode;
 public class Flashlight : NetworkBehaviour
 {
     public GameObject flashlight;
+    public GameObject flashlightUi;
 
     public bool on;
     public bool off;
@@ -16,6 +17,7 @@ public class Flashlight : NetworkBehaviour
     {
         off = true;
         flashlight.SetActive(false);
+        flashlightUi.SetActive(false);
     }
 
     void Update()
@@ -25,6 +27,7 @@ public class Flashlight : NetworkBehaviour
         if (off && Input.GetKeyDown(flashlightKey))
         {
             flashlight.SetActive(true);
+            flashlightUi.SetActive(true);
             off = false;
             on = true;
             UpdateFlashlightServerRpc(true);
@@ -32,6 +35,7 @@ public class Flashlight : NetworkBehaviour
         else if (on && Input.GetKeyDown(flashlightKey))
         {
             flashlight.SetActive(false);
+            flashlightUi.SetActive(false);
             off = true;
             on = false;
             UpdateFlashlightServerRpc(false);
