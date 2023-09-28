@@ -27,7 +27,7 @@ public class RobberAbilities : NetworkBehaviour
         }
 
         CheckRespawnPlayer();
-        if (InteractionManager.Instance.GetIsStunned())
+        if (InteractionManager.Instance != null && InteractionManager.Instance.GetIsStunned())
         {
             if (coroutine != null) StopCoroutine(coroutine);
             return;

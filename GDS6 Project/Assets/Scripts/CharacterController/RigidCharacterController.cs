@@ -104,6 +104,10 @@ public class RigidCharacterController : NetworkBehaviour
 
             if(RobbingManager.Instance != null) RobbingManager.Instance.SetPlayerCamera(TPSCamera);
         }
+        else
+        {
+            ruleUi.SetActive(false);
+        }
     }
 
     private void Start()
