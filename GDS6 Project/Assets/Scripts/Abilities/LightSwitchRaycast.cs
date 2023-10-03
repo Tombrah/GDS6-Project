@@ -25,8 +25,7 @@ public class LightSwitchRaycast : MonoBehaviour
             if(raycastObj != null)
             {
                 interactiveObj = raycastObj;
-                Debug.Log("Object Found");
-                //CrosshairChange(true);
+                CrosshairChange(true);
             }
             else
             {
@@ -52,7 +51,7 @@ public class LightSwitchRaycast : MonoBehaviour
     {
         if(interactiveObj != null)
         {
-            //CrosshairChange(false);
+            CrosshairChange(false);
             interactiveObj = null;
         }
     }
