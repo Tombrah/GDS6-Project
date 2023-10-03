@@ -6,30 +6,46 @@ using Unity.Netcode;
 
 public class LightSwitchController : NetworkBehaviour
 {
-    [SerializeField] private Texture2D _dir;
-    [SerializeField] private Texture2D _light;
-    [SerializeField] private Texture2D _shadow;
+    [SerializeField] private Texture2D[] darkLightmapDir, darkLightmapColour, darkLightmapShadow;
+    [SerializeField] private Texture2D[] brightLightmapDir, brightLightmapColour, brightLightmapShadow;
 
     [SerializeField] private bool isLightOn;
     [SerializeField] private UnityEvent lightOnEvent;
     [SerializeField] private UnityEvent lightOffEvent;
 
-    private LightmapData[] lightsOnData;
-    private LightmapData[] lightsOffData;
+    private LightmapData[] darkLightmap, brightLightmap;
 
     private void Start()
     {
-        lightsOnData = LightmapSettings.lightmaps;
+        List<LightmapData> dLightMap = new List<LightmapData>();
 
-        LightmapData mapdata = new LightmapData();
-        for (var i = 0; i < lightsOnData.Length; i++)
+        for (int i = 0; i < darkLightmapDir.Length; i++)
         {
-            mapdata.lightmapDir = _dir;
-            mapdata.lightmapColor = _light;
-            mapdata.shadowMask = _shadow;
+            LightmapData lightmapData = new LightmapData();
 
-            lightsOffData[i] = mapdata;
+            lightmapData.lightmapDir = darkLightmapDir[i];
+            lightmapData.lightmapColor = darkLightmapColour[i];
+            lightmapData.shadowMask = darkLightmapShadow[i];
+
+            dLightMap.Add(lightmapData);
         }
+
+        darkLightmap = dLightMap.ToArray();
+
+        List<LightmapData> bLightMap = new List<LightmapData>();
+
+        for (int i = 0; i < brightLightmapDir.Length; i++)
+        {
+            LightmapData lightmapData = new LightmapData();
+
+            lightmapData.lightmapDir = brightLightmapDir[i];
+            lightmapData.lightmapColor = brightLightmapColour[i];
+            lightmapData.shadowMask = brightLightmapShadow[i];
+
+            bLightMap.Add(lightmapData);
+        }
+
+        brightLightmap = bLightMap.ToArray();
     }
     public void InteractSwitch()
     {
@@ -37,13 +53,13 @@ public class LightSwitchController : NetworkBehaviour
         {
             isLightOn = true;
             lightOnEvent.Invoke();
-            LightmapSettings.lightmaps = lightsOnData;
+            LightmapSettings.lightmaps = brightLightmap;
         }
         else
         {
             isLightOn = false;
             lightOffEvent.Invoke();
-            LightmapSettings.lightmaps = lightsOffData;
+            LightmapSettings.lightmaps = darkLightmap;
         }
     }
 
