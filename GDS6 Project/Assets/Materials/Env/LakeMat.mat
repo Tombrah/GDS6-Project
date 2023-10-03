@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: New Material
+  m_Name: LakeMat
   m_Shader: {fileID: 4800000, guid: efcaf526ceb1f4efd9eb4e4c30c6ade6, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -144,7 +144,7 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _WaterClearness: 0.372
-    - _WaterDepth: 3
+    - _WaterDepth: 0.66
     - _WaveAmplitude: 0.25
     - _WaveDirection: 0
     - _WaveFrequency: 1
@@ -156,8 +156,8 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorDeep: {r: 0.22000714, g: 0.3874305, b: 0.4528302, a: 1}
-    - _ColorShallow: {r: 0.7005607, g: 0.7992669, b: 0.8584906, a: 0.8}
+    - _ColorDeep: {r: 0.4575472, g: 0.8528942, b: 1, a: 1}
+    - _ColorShallow: {r: 0.7973923, g: 0.88274854, b: 0.9339623, a: 0.8}
     - _CrestColor: {r: 1, g: 1, b: 1, a: 0.7529412}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 1}
