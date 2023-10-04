@@ -69,6 +69,7 @@ public class RigidCharacterController : NetworkBehaviour
 
     [Header("UI")]
     public GameObject playerUi;
+    public GameObject postProcess;
     public GameObject ruleUi;
     public GameObject zapParticle;
 
@@ -101,6 +102,7 @@ public class RigidCharacterController : NetworkBehaviour
             {
                 combatCam.Priority = 1;
             }
+            postProcess.SetActive(true);
 
             if(RobbingManager.Instance != null) RobbingManager.Instance.SetPlayerCamera(TPSCamera);
         }
