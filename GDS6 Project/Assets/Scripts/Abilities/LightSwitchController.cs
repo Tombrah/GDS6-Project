@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,8 @@ using Unity.Netcode;
 
 public class LightSwitchController : NetworkBehaviour
 {
+    public static LightSwitchController Instance { get; private set; }
+
     [SerializeField] private Texture2D[] darkLightmapDir, darkLightmapColour, darkLightmapShadow;
     [SerializeField] private Texture2D[] brightLightmapDir, brightLightmapColour, brightLightmapShadow;
 
@@ -13,7 +16,15 @@ public class LightSwitchController : NetworkBehaviour
     [SerializeField] private UnityEvent lightOnEvent;
     [SerializeField] private UnityEvent lightOffEvent;
 
+    public event EventHandler lightOn;
+    public event EventHandler lightOff;
+
     private LightmapData[] darkLightmap, brightLightmap;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -53,12 +64,14 @@ public class LightSwitchController : NetworkBehaviour
         {
             isLightOn = true;
             lightOnEvent.Invoke();
+            lightOn?.Invoke(this, EventArgs.Empty);
             LightmapSettings.lightmaps = brightLightmap;
         }
         else
         {
             isLightOn = false;
             lightOffEvent.Invoke();
+            lightOff?.Invoke(this, EventArgs.Empty);
             LightmapSettings.lightmaps = darkLightmap;
         }
     }
