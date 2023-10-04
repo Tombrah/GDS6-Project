@@ -12,7 +12,7 @@ public class LightSwitchController : NetworkBehaviour
     [SerializeField] private Texture2D[] darkLightmapDir, darkLightmapColour, darkLightmapShadow;
     [SerializeField] private Texture2D[] brightLightmapDir, brightLightmapColour, brightLightmapShadow;
 
-    [SerializeField] private bool isLightOn;
+    public bool isLightOn;
     [SerializeField] private UnityEvent lightOnEvent;
     [SerializeField] private UnityEvent lightOffEvent;
 
@@ -28,6 +28,8 @@ public class LightSwitchController : NetworkBehaviour
 
     private void Start()
     {
+        GameManager.Instance.OnStateChanged += GameManager_OnStateChanged;
+
         List<LightmapData> dLightMap = new List<LightmapData>();
 
         for (int i = 0; i < darkLightmapDir.Length; i++)
@@ -58,6 +60,18 @@ public class LightSwitchController : NetworkBehaviour
 
         brightLightmap = bLightMap.ToArray();
     }
+
+    private void GameManager_OnStateChanged(object sender, EventArgs e)
+    {
+        if (GameManager.Instance.IsRoundResetting())
+        {
+            if (!isLightOn)
+            {
+                InteractSwitch();
+            }
+        }
+    }
+
     public void InteractSwitch()
     {
         if(!isLightOn)

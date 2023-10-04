@@ -2,21 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
 
-public class LightSwitchRaycast : MonoBehaviour
+public class LightSwitchRaycast : NetworkBehaviour
 {
     [SerializeField] private int rayLength = 5;
-    private LightSwitchController interactiveObj;
     [SerializeField] private Image crosshair;
     [SerializeField] private LayerMask playerLayer;
 
+    private LightSwitchController interactiveObj;
+    private RigidCharacterController controller;
+
+    private void Start()
+    {
+        controller = transform.parent.GetComponentInChildren<RigidCharacterController>();
+    }
+
     private void Update()
     {
-        if (!GameManager.Instance.IsGamePlaying())
-        {
-            return;
-        }
+        if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return;
+
         Vector3 fwd = transform.TransformDirection(Vector3.forward);
 
         if(Physics.Raycast(transform.position, fwd, out RaycastHit hit, rayLength, ~playerLayer))
@@ -41,7 +47,15 @@ public class LightSwitchRaycast : MonoBehaviour
         {
             if(Input.GetKeyDown(KeyCode.Mouse0))
             {
-                interactiveObj.InteractSwitchServerRpc();
+                if (controller.Id == 0 && !interactiveObj.isLightOn)
+                {
+                    interactiveObj.InteractSwitchServerRpc();  
+                }
+
+                if (controller.Id == 1 && interactiveObj.isLightOn)
+                {
+                    interactiveObj.InteractSwitchServerRpc();
+                }
                 Debug.Log("Clicking");
             }
         }
@@ -60,7 +74,7 @@ public class LightSwitchRaycast : MonoBehaviour
     {
         if(on)
         {
-            crosshair.color = Color.red;
+            crosshair.color = Color.green;
         }
         else
         {
