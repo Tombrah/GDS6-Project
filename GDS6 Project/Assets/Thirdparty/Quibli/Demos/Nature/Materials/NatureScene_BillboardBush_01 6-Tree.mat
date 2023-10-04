@@ -133,7 +133,7 @@ Material:
     - Offset_Along_Normal: 0.08
     - Smoothness: 0
     - Wind: 0
-    - Wind_Speed: 0.1
+    - Wind_Speed: 0
     - Wind_Strength: 0.2
     - Wind_Turbulence: 1
     - _AlphaClip: 0
@@ -216,7 +216,7 @@ Texture2D:
   m_Name: z__ShadingGradientTextureTex{"mode":0,"colorKeys":[{"color":{"r":0.16460484266281129,"g":0.25471699237823489,"b":0.1815008670091629,"a":1.0},"time":0.18529030680656434},{"color":{"r":0.16156993806362153,"g":0.27358490228652956,"b":0.15356887876987458,"a":1.0},"time":0.4411841034889221},{"color":{"r":0.25383636355400088,"g":0.4433962106704712,"b":0.2363385409116745,"a":1.0},"time":0.5705958604812622},{"color":{"r":0.3224011957645416,"g":0.4245283007621765,"b":0.2503114938735962,"a":1.0},"time":0.7970550060272217},{"color":{"r":0.48417019844055178,"g":0.5471698045730591,"b":0.08517266809940338,"a":1.0},"time":0.9000076055526733}],"alphaKeys":[{"alpha":1.0,"time":0.0},{"alpha":1.0,"time":1.0}]}
   m_ImageContentsHash:
     serializedVersion: 2
-    Hash: 00000000000000000000000000000000
+    Hash: cc0f821f7730d2acd1c9c1123f3b4daa
   m_ForcedFallbackFormat: 4
   m_DownscaleFallback: 0
   m_IsAlphaChannelOptional: 0
