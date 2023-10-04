@@ -101,8 +101,8 @@ Material:
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _ColorMode: 0
-    - _CrestSharpness: 1
-    - _CrestSize: 0.434
+    - _CrestSharpness: 0.769
+    - _CrestSize: 0.372
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -113,13 +113,13 @@ Material:
     - _FadeDistance: 1
     - _FoamAmount: 0.17
     - _FoamDepth: 1.08
-    - _FoamDirection: 0.795
+    - _FoamDirection: -0.786
     - _FoamMode: 1
     - _FoamNoiseAmount: 1
     - _FoamScale: 0.88
-    - _FoamSharpness: 0.912
-    - _FoamSpeed: 7.48
-    - _FoamStretchX: 0.48
+    - _FoamSharpness: 1
+    - _FoamSpeed: 4.27
+    - _FoamStretchX: 0.14
     - _FoamStretchY: 0.05
     - _GlossMapScale: 0
     - _Glossiness: 0
@@ -134,7 +134,7 @@ Material:
     - _RefractionAmplitude: 0.01
     - _RefractionFrequency: 35
     - _RefractionScale: 1
-    - _RefractionSpeed: 2.71
+    - _RefractionSpeed: 1
     - _ShadowStrength: 0.11
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
@@ -145,8 +145,8 @@ Material:
     - _WaterClearness: 0.372
     - _WaterDepth: 0.66
     - _WaveAmplitude: 1
-    - _WaveDirection: -1
-    - _WaveFrequency: 1.5
+    - _WaveDirection: 0.472
+    - _WaveFrequency: 4.71
     - _WaveMode: 1
     - _WaveNoise: 1
     - _WaveSpeed: 0.36
