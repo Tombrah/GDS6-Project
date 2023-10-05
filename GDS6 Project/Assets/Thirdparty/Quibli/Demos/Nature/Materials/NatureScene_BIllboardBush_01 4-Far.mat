@@ -199,7 +199,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - Fresnel_Color: {r: 0.68396217, g: 1, b: 0.8415377, a: 0.08627451}
+    - Fresnel_Color: {r: 0.46889642, g: 0.103462085, b: 0.7075472, a: 0.08627451}
     - Wind_Direction: {r: 1, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
