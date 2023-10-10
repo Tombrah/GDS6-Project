@@ -49,6 +49,7 @@ public class RigidCharacterController : NetworkBehaviour
     private bool exitingSlope;
 
     [Header("")]
+    [SerializeField] private Animator animator;
     [SerializeField] private GameObject TPSCamera;
     [SerializeField] private CinemachineVirtualCamera basicCam;
     [SerializeField] private CinemachineVirtualCamera combatCam;
@@ -63,6 +64,8 @@ public class RigidCharacterController : NetworkBehaviour
     private float rotationVelocity;
     [Range(0.0f, 0.3f)]
     public float rotationSmoothTime = 0.12f;
+    private float blend = 0;
+    public float blendSpeed = 1f;
 
     Rigidbody rb;
     Dashing dashScript;
@@ -76,6 +79,7 @@ public class RigidCharacterController : NetworkBehaviour
     public MovementState state;
     public enum MovementState
     {
+        idle,
         walking,
         sprinting,
         crouching,
@@ -164,6 +168,7 @@ public class RigidCharacterController : NetworkBehaviour
         StateHandler();
 
         grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.3f, whatIsGround);
+        animator.SetBool("Grounded", grounded);
 
         if (OnSlope())
         {
@@ -196,6 +201,7 @@ public class RigidCharacterController : NetworkBehaviour
             readyToJump = false;
 
             Jump();
+            animator.SetTrigger("Jump");
 
             Invoke(nameof(ResetJump), jumpCooldown);
         }
@@ -244,16 +250,22 @@ public class RigidCharacterController : NetworkBehaviour
             desiredMoveSpeed = crouchSpeed;
         }
         //Sprinting
-        else if (grounded && Input.GetKey(sprintKey))
+        else if (grounded && Input.GetKey(sprintKey) && movement != Vector2.zero)
         {
             state = MovementState.sprinting;
             desiredMoveSpeed = sprintSpeed;
         }
         //Walking
-        else if (grounded)
+        else if (grounded && movement != Vector2.zero)
         {
             state = MovementState.walking;
             desiredMoveSpeed = walkSpeed;
+        }
+        //Idle
+        else if (grounded)
+        {
+            state = MovementState.idle;
+            desiredMoveSpeed = 0;
         }
         //Air
         else
@@ -290,6 +302,11 @@ public class RigidCharacterController : NetworkBehaviour
             }
         }
 
+        blend = Mathf.Lerp(blend, desiredMoveSpeed, Time.deltaTime * blendSpeed);
+        if (blend < 0.01f) blend = 0;
+
+        animator.SetFloat("Blend", blend);
+
         lastDesiredMoveSpeed = desiredMoveSpeed;
         lastState = state;
 
@@ -319,6 +336,11 @@ public class RigidCharacterController : NetworkBehaviour
         moveSpeed = desiredMoveSpeed;
         speedChangeFactor = 1f;
         keepMomentum = false;
+    }
+
+    public float GetMoveSpeed()
+    {
+        return moveSpeed;
     }
 
     private void MovePlayer()
