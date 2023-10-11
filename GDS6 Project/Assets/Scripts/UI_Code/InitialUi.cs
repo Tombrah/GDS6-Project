@@ -7,9 +7,15 @@ public class InitialUi : MonoBehaviour
 {
     [SerializeField] private Button createLobbyButton;
     [SerializeField] private Button listLobbiesButton;
+    [SerializeField] private Button HtpButton;
+    [SerializeField] private Button SettingsButton;
+
     [SerializeField] private GameObject playerNameInput;
     [SerializeField] private GameObject createLobbyUi;
     [SerializeField] private GameObject listLobbiesUi;
+    [SerializeField] private GameObject HtpUi;
+    [SerializeField] private GameObject SettingsUi;
+
 
     private void Awake()
     {
@@ -22,6 +28,16 @@ public class InitialUi : MonoBehaviour
         {
             listLobbiesUi.SetActive(true);
             LobbyManager.Instance.ListLobbies();
+            Hide();
+        });
+        HtpButton.onClick.AddListener(() =>
+        {
+            HtpUi.SetActive(true);
+            Hide();
+        });
+        SettingsButton.onClick.AddListener(() =>
+        {
+            SettingsUi.SetActive(true);
             Hide();
         });
     }
