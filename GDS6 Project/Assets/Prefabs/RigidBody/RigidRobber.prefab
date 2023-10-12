@@ -812,7 +812,7 @@ MonoBehaviour:
   combatCam: {fileID: 0}
   stunTimer: 3
   rotationSmoothTime: 0.12
-  blendSpeed: 1
+  blendSpeed: 10
   playerUi: {fileID: 3126679777509414710}
   postProcess: {fileID: 3640553992939045866}
   ruleUi: {fileID: 5156602886758796799}
@@ -1221,7 +1221,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7813997819453066306
 RectTransform:
   m_ObjectHideFlags: 0

@@ -1031,7 +1031,7 @@ MonoBehaviour:
   combatCam: {fileID: 2523242666158391303}
   stunTimer: 3
   rotationSmoothTime: 0.12
-  blendSpeed: 1
+  blendSpeed: 10
   playerUi: {fileID: 2616280992580985473}
   postProcess: {fileID: 1131052792317439511}
   ruleUi: {fileID: 1104850702679263187}
@@ -1604,7 +1604,7 @@ Transform:
   m_GameObject: {fileID: 3588167187675678929}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.75, y: 2.03, z: -2.25}
+  m_LocalPosition: {x: 0.75, y: 2.03, z: -4.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1643,7 +1643,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 1000
-  field of view: 40
+  field of view: 50
   orthographic: 0
   orthographic size: 10
   m_Depth: -1
