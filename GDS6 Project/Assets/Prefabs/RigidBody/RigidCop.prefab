@@ -5054,8 +5054,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad8deae8091111f4eb30a56c1f4e0d3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TransitionStateInfoList: []
-  m_Animator: {fileID: 0}
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 134727305
+    DestinationState: -392784796
+    TransitionDuration: 0.1
+    TriggerNameHash: 125937960
+    TransitionIndex: 1
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: -2065647494
+    DestinationState: -392784796
+    TransitionDuration: 0
+    TriggerNameHash: 125937960
+    TransitionIndex: 0
+  m_Animator: {fileID: 8571058610244649632}
 --- !u!4 &3171661401402700785 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5ad16b162450dc449a68787a1d7a092f, type: 3}
