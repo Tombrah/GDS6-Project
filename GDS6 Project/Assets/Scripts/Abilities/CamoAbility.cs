@@ -7,37 +7,25 @@ using Unity.Netcode;
 public class CamoAbility : NetworkBehaviour
 {
     public KeyCode activationKey = KeyCode.X; // Change this to the desired key
-    private List<MeshRenderer> meshRenderer;
 
+    [SerializeField] private List<Renderer> meshRenderer;
     [SerializeField] private float rechargeTimer = 10f;
     [SerializeField] private Image progress;
     private bool canCamo = true;
 
-    private void Awake()
-    {
-        meshRenderer = new List<MeshRenderer>();
-    }
-
     private void Start()
     {
-        // Get the MeshRenderer component from the GameObject
-        foreach (Transform child in transform.GetChild(1).transform)
-        {
-            if (child.GetComponent<MeshRenderer>() != null)
-            {
-                meshRenderer.Add(child.GetComponent<MeshRenderer>());
-            }
-        }
         canCamo = true;
     }
 
     private void Update()
     {
-        if (!IsOwner) return;
+        if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return;
 
         // Check if the activation key is pressed
         if (Input.GetKeyDown(activationKey) && canCamo)
         {
+            Debug.Log("Going invisible");
             canCamo = false;
             StartCoroutine(ToggleRendererForDuration(5.0f));
             ToggleRendererForDurationServerRpc();
@@ -48,7 +36,7 @@ public class CamoAbility : NetworkBehaviour
     private IEnumerator ToggleRendererForDuration(float duration)
     {
         // Turn off the MeshRenderer
-        foreach (MeshRenderer renderer in meshRenderer)
+        foreach (Renderer renderer in meshRenderer)
         {
             renderer.enabled = false;
         }
@@ -57,7 +45,7 @@ public class CamoAbility : NetworkBehaviour
         yield return new WaitForSeconds(duration);
 
         // Turn the MeshRenderer back on
-        foreach (MeshRenderer renderer in meshRenderer)
+        foreach (Renderer renderer in meshRenderer)
         {
             renderer.enabled = true;
         }

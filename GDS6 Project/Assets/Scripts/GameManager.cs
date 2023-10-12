@@ -61,7 +61,7 @@ public class GameManager : NetworkBehaviour
         {
             round.Value = 0;
         }
-        PlayerJoinedServerRpc();
+        SetPlayerReadyServerRpc();
     }
 
     private void State_OnValueChanged(State previousValue, State newValue)
@@ -247,27 +247,6 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void PlayerJoinedServerRpc(ServerRpcParams serverRpcParams = default)
-    {
-        playerJoinDictionary[serverRpcParams.Receive.SenderClientId] = true;
-
-        bool allClientsJoined = true;
-        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
-        {
-            if (!playerJoinDictionary.ContainsKey(clientId) || !playerJoinDictionary[clientId])
-            {
-                allClientsJoined = false;
-                break;
-            }
-        }
-
-        if (allClientsJoined)
-        {
-            CanSetReadyClientRpc();
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
     public void UpdatePlayerRoundScoresServerRpc(int score, bool isAdditive, ServerRpcParams serverRpcParams = default)
     {
         ulong clientId = serverRpcParams.Receive.SenderClientId;
@@ -279,17 +258,6 @@ public class GameManager : NetworkBehaviour
         {
             playerRoundScores[(int)clientId] = score;
         }
-    }
-
-    [ClientRpc]
-    private void CanSetReadyClientRpc()
-    {
-        if (LoadingInformationUi.Instance == null) 
-        {
-            SetPlayerReadyServerRpc();
-            return;
-        }
-        LoadingInformationUi.Instance.canInteract = true;
     }
 
     [ClientRpc]
