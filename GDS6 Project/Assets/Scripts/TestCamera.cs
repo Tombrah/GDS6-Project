@@ -53,6 +53,11 @@ public class TestCamera : NetworkBehaviour
         RotateCamera();
     }
 
+    public GameObject GetCameraRoot()
+    {
+        return cinemachineTarget;
+    }
+
     private void RotateCamera()
     {
         cinemachineTargetYaw += Input.GetAxis("Mouse X") * sensitivity;

@@ -234,7 +234,7 @@ public class RigidCharacterController : NetworkBehaviour
         else if (TPSCamera.GetComponent<TestCamera>().currentStyle == TestCamera.CameraStyle.Combat)
         {
             state = MovementState.aiming;
-            desiredMoveSpeed = crouchSpeed;
+            desiredMoveSpeed = movement != Vector2.zero ? crouchSpeed : 0;
         }
         //Dashing
         else if (dashing)
@@ -374,7 +374,7 @@ public class RigidCharacterController : NetworkBehaviour
     {
         Vector3 inputDirection = new Vector3(movement.x, 0, movement.y).normalized;
 
-        if (movement != Vector2.zero)
+        if (movement != Vector2.zero && TPSCamera.GetComponent<TestCamera>().currentStyle == TestCamera.CameraStyle.Basic)
         {
             targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                               TPSCamera.transform.eulerAngles.y;
@@ -383,6 +383,14 @@ public class RigidCharacterController : NetworkBehaviour
 
             // rotate to face input direction relative to camera position
             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+        }
+        else if (TPSCamera.GetComponent<TestCamera>().currentStyle == TestCamera.CameraStyle.Combat)
+        {
+            Vector3 shoulder = TPSCamera.transform.position + TPSCamera.transform.forward * 4.5f;
+            Vector3 dirToShoulder = shoulder - new Vector3(TPSCamera.transform.position.x, shoulder.y, TPSCamera.transform.position.z);
+            transform.forward = dirToShoulder;
+            targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                              TPSCamera.transform.eulerAngles.y;
         }
     }
 
