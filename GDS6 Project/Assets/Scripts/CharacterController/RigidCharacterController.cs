@@ -216,6 +216,15 @@ public class RigidCharacterController : NetworkBehaviour
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
         }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            animator.SetLayerWeight(animator.GetLayerIndex("Aiming"), 1);
+        }
+        if(Input.GetMouseButtonUps(1))
+        {
+            animator.SetLayerWeight(animator.GetLayerIndex("Aiming"), 0);
+        }
     }
 
     private float desiredMoveSpeed;
@@ -235,6 +244,7 @@ public class RigidCharacterController : NetworkBehaviour
         {
             state = MovementState.aiming;
             desiredMoveSpeed = movement != Vector2.zero ? crouchSpeed : 0;
+            
         }
         //Dashing
         else if (dashing)
