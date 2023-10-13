@@ -24,7 +24,8 @@ public class PauseUi : MonoBehaviour
 
         sensitivitySlider.onValueChanged.AddListener(delegate { ValueChanged(); });
 
-        Hide();
+        IsPaused = false;
+        gameObject.SetActive(false);
     }
 
     private void ValueChanged()

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class Dashing : NetworkBehaviour
 {
+    [SerializeField] private Image fillImage;
     [Header("References")]
     public Transform playerCam;
     private Rigidbody rb;
@@ -79,16 +80,15 @@ public class Dashing : NetworkBehaviour
     private IEnumerator SetDashUi()
     {
         float percentage = 0;
-        Image progress = pm.playerUi.GetComponentInChildren<Image>();
 
         while (percentage < 1)
         {
-            progress.fillAmount = percentage;
+            fillImage.fillAmount = -percentage + 1;
             percentage += Time.deltaTime / dashCd;
             yield return new WaitForEndOfFrame();
         }
 
-        progress.fillAmount = 1;
+        fillImage.fillAmount = 0;
         yield return null;
     }
 

@@ -7,19 +7,14 @@ public class TrailFader : NetworkBehaviour
 {
     [HideInInspector]
     public Material targetMaterial;
-    private GameObject TrailUi;
     private bool canFade = true;
     private float fadeDuration = 1.0f;
     private float maxAlpha = 1.0f;
     private float currentAlpha = 0.0f;
 
+    [SerializeField] private Image fillImage;
     [SerializeField] private float abilityDuration = 5;
     [SerializeField] private float rechargeTimer = 10;
-
-    private void Start()
-    {
-        TrailUi = GetComponent<RigidCharacterController>().playerUi.transform.GetChild(1).gameObject;
-    }
 
     private void Update()
     {
@@ -40,7 +35,7 @@ public class TrailFader : NetworkBehaviour
     private IEnumerator FadeIn()
     {
         float elapsedTime = 0;
-        TrailUi.GetComponentInChildren<Image>().fillAmount = 0;
+        fillImage.fillAmount = 1;
 
         while (elapsedTime < fadeDuration)
         {
@@ -73,13 +68,13 @@ public class TrailFader : NetworkBehaviour
         float percentage = 0;
         while (percentage < 1)
         {
-            TrailUi.GetComponentInChildren<Image>().fillAmount = percentage;
+            fillImage.fillAmount = -percentage + 1;
 
             percentage += Time.deltaTime / rechargeTimer;
             yield return new WaitForEndOfFrame();
         }
 
-        TrailUi.GetComponentInChildren<Image>().fillAmount = 1;
+        fillImage.fillAmount = 0;
         canFade = true;
         yield return null;
     }

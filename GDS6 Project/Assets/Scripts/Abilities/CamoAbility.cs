@@ -10,7 +10,7 @@ public class CamoAbility : NetworkBehaviour
 
     [SerializeField] private List<Renderer> meshRenderer;
     [SerializeField] private float rechargeTimer = 10f;
-    [SerializeField] private Image progress;
+    [SerializeField] private Image fillImage;
     private bool canCamo = true;
 
     private void Start()
@@ -28,8 +28,8 @@ public class CamoAbility : NetworkBehaviour
             Debug.Log("Going invisible");
             canCamo = false;
             StartCoroutine(ToggleRendererForDuration(5.0f));
+            fillImage.fillAmount = 1;
             ToggleRendererForDurationServerRpc();
-            progress.fillAmount = 0;
         }
     }
 
@@ -57,12 +57,12 @@ public class CamoAbility : NetworkBehaviour
         float percentage = 0;
         while (percentage < 1)
         {
+            fillImage.fillAmount = -percentage + 1;
             percentage += Time.deltaTime / rechargeTimer;
-            progress.fillAmount = percentage;
             yield return new WaitForEndOfFrame();
         }
 
-        progress.fillAmount = 1;
+        fillImage.fillAmount = 0;
         canCamo = true;
     }
 

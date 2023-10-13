@@ -7,6 +7,7 @@ public class CopAbilities : NetworkBehaviour
 {
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private Transform gun;
+    [SerializeField] private Image fillImage;
 
     [Header("Cathing")]
     [SerializeField] private float catchRadius = 3;
@@ -152,16 +153,15 @@ public class CopAbilities : NetworkBehaviour
     private IEnumerator ResetTaser()
     {
         float percentage = 0;
-        Image progress = GetComponent<RigidCharacterController>().playerUi.transform.GetChild(0).GetComponentInChildren<Image>();
 
         while (percentage < 1)
         {
-            progress.fillAmount = percentage;
+            fillImage.fillAmount = -percentage + 1;
             percentage += Time.deltaTime / ShootCD;
             yield return new WaitForEndOfFrame();
         }
 
-        progress.fillAmount = 1;
+        fillImage.fillAmount = 0;
 
         canShoot = true;
         yield return null;

@@ -6,7 +6,7 @@ using Unity.Netcode;
 public class NightVision : NetworkBehaviour
 {
     [SerializeField] private GameObject nightVision;
-    [SerializeField] private GameObject progress;
+    [SerializeField] private GameObject fillImage;
 
     private bool active = false;
 
@@ -18,7 +18,7 @@ public class NightVision : NetworkBehaviour
         {
             active = !active;
             nightVision.SetActive(active);
-            progress.SetActive(active);
+            fillImage.SetActive(!active);
         }
     }
 }

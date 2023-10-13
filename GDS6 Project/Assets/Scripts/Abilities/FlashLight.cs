@@ -17,7 +17,7 @@ public class Flashlight : NetworkBehaviour
     {
         off = true;
         flashlight.SetActive(false);
-        flashlightUi.SetActive(false);
+        flashlightUi.SetActive(true);
     }
 
     void Update()
@@ -27,7 +27,7 @@ public class Flashlight : NetworkBehaviour
         if (off && Input.GetKeyDown(flashlightKey))
         {
             flashlight.SetActive(true);
-            flashlightUi.SetActive(true);
+            flashlightUi.SetActive(false);
             off = false;
             on = true;
             UpdateFlashlightServerRpc(true);
@@ -35,7 +35,7 @@ public class Flashlight : NetworkBehaviour
         else if (on && Input.GetKeyDown(flashlightKey))
         {
             flashlight.SetActive(false);
-            flashlightUi.SetActive(false);
+            flashlightUi.SetActive(true);
             off = true;
             on = false;
             UpdateFlashlightServerRpc(false);
