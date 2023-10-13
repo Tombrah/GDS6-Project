@@ -135,7 +135,7 @@ public class GameOverUI : MonoBehaviour
         int index = 0;
         foreach (TMP_Text text in players)
         {
-            if (text.text == PlayerData.Instance.PlayerName)
+            if (text.text == PlayerData.Instance.GetPlayerName())
             {
                 index = System.Array.IndexOf(players, text);
             }

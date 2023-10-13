@@ -111,13 +111,13 @@ public class LobbyManager : MonoBehaviour
     {
         if (playerNameInput.text == "")
         {
-            MessageUi.Instance.ShowMessage("Must input a Name!", true);
+            MessageUi.Instance.ShowMessage("Must input a player name!", true);
             return;
         }
         OnCreateLobbyStarted?.Invoke(this, EventArgs.Empty);
         try
         {
-            if (lobbyName == "") lobbyName = "My Lobby!";
+            if (string.IsNullOrWhiteSpace(lobbyName)) lobbyName = "My Lobby!";
 
             int maxPlayers = 2;
 
@@ -184,7 +184,7 @@ public class LobbyManager : MonoBehaviour
     {
         if (playerNameInput.text == "")
         {
-            MessageUi.Instance.ShowMessage("Must input a Name!", true);
+            MessageUi.Instance.ShowMessage("Must input a player name!", true);
             return;
         }
         OnJoinLobbyStarted?.Invoke(this, EventArgs.Empty);

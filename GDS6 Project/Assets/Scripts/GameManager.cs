@@ -27,7 +27,7 @@ public class GameManager : NetworkBehaviour
     [HideInInspector] public NetworkList<int> playerRoundScores;
     [HideInInspector] public NetworkList<int> playerScores;
     private Dictionary<ulong, bool> playerReadyDictionary;
-    private Dictionary<ulong, bool> playerJoinDictionary;
+    private Dictionary<ulong, string> playerNameDictionary;
 
     private NetworkVariable<State> state = new NetworkVariable<State>(State.WaitingToStart);
     private NetworkVariable<int> round = new NetworkVariable<int>(0);
@@ -51,17 +51,14 @@ public class GameManager : NetworkBehaviour
         playerScores = new NetworkList<int>();
 
         playerReadyDictionary = new Dictionary<ulong, bool>();
-        playerJoinDictionary = new Dictionary<ulong, bool>();
+        playerNameDictionary = new Dictionary<ulong, string>();
     }
 
     public override void OnNetworkSpawn()
     {
         state.OnValueChanged += State_OnValueChanged;
-        if (IsServer)
-        {
-            round.Value = 0;
-        }
-        SetPlayerReadyServerRpc();
+
+        SetPlayerReadyServerRpc(PlayerData.Instance.GetPlayerName());
     }
 
     private void State_OnValueChanged(State previousValue, State newValue)
@@ -197,9 +194,10 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void SetPlayerReadyServerRpc(ServerRpcParams serverRpcParams = default)
+    public void SetPlayerReadyServerRpc(string playerName, ServerRpcParams serverRpcParams = default)
     {
         playerReadyDictionary[serverRpcParams.Receive.SenderClientId] = true;
+        playerNameDictionary[serverRpcParams.Receive.SenderClientId] = playerName;
 
         bool allClientsReady = true;
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
@@ -233,9 +231,9 @@ public class GameManager : NetworkBehaviour
                 int index = 0;
                 foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
                 {
-                    if (PlayerData.Instance.GetPlayerNamesDictionary().ContainsKey(clientId))
+                    if (playerNameDictionary.ContainsKey(clientId))
                     {
-                        SetPlayerNameClientRpc(index, PlayerData.Instance.GetPlayerNamesDictionary()[clientId]);
+                        SetPlayerNameClientRpc(index, playerNameDictionary[clientId]);
                         index++;
                     }
                 }

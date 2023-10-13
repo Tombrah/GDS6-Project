@@ -1,38 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode;
 
-public class PlayerData : NetworkBehaviour
+public class PlayerData : MonoBehaviour
 {
-    public static PlayerData Instance { get; private set; }
-    public string PlayerName;
+    private const string PLAYER_NAME_KEY = "Name";
+    private const string PLAYER_SENSITIVITY_KEY = "Sensitivity";
 
-    private Dictionary<ulong, string> playerNames;
+    public static PlayerData Instance { get; private set; }
 
     private void Awake()
     {
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
-
-        playerNames = new Dictionary<ulong, string>();
     }
 
-    public override void OnNetworkSpawn()
+    public string GetPlayerName()
     {
-        UpdatePlayerNameServerRpc(LobbyManager.Instance.playerName);
-        PlayerName = LobbyManager.Instance.playerName;
+        return PlayerPrefs.GetString(PLAYER_NAME_KEY);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void UpdatePlayerNameServerRpc(string playerName, ServerRpcParams serverRpcParams = default)
+    public void SetPlayerName(string name)
     {
-        playerNames[serverRpcParams.Receive.SenderClientId] = playerName;
+        PlayerPrefs.SetString(PLAYER_NAME_KEY, name);
     }
 
-    public Dictionary<ulong, string> GetPlayerNamesDictionary()
+    public float GetSensitivity()
     {
-        return playerNames;
+        return PlayerPrefs.GetFloat(PLAYER_SENSITIVITY_KEY);
+    }
+
+    public void SetSensitivity(float newSens)
+    {
+        PlayerPrefs.SetFloat(PLAYER_SENSITIVITY_KEY, newSens);
     }
 }

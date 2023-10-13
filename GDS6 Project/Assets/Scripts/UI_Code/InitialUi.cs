@@ -44,13 +44,17 @@ public class InitialUi : MonoBehaviour
 
     private void Start()
     {
-        Show();
+        if (string.IsNullOrWhiteSpace(PlayerData.Instance.GetPlayerName()))
+        {
+            Hide();
+        }
+        Debug.Log(PlayerData.Instance.GetPlayerName());
     }
 
     public void Show()
     {
         gameObject.SetActive(true);
-        playerNameInput.SetActive(true);
+        playerNameInput.GetComponent<PlayerNameUi>().Show();
     }
 
     private void Hide()
