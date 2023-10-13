@@ -15,8 +15,6 @@ public class TestCamera : NetworkBehaviour
     private float topClamp = 70.0f;
     private float bottomClamp = -30.0f;
 
-    public float normalSensitivity;
-    public float aimSensitivity;
     private float sensitivity;
 
     public CameraStyle currentStyle;
@@ -29,7 +27,7 @@ public class TestCamera : NetworkBehaviour
     private void Start()
     {
         cinemachineTargetYaw = cinemachineTarget.transform.eulerAngles.y;
-        sensitivity = normalSensitivity;
+        sensitivity = PlayerData.Instance.GetSensitivity();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -75,7 +73,7 @@ public class TestCamera : NetworkBehaviour
         thirdPersonCam.GetComponent<CinemachineVirtualCamera>().Priority = newStyle == CameraStyle.Basic ? 2 : 1;
         combatCam.GetComponent<CinemachineVirtualCamera>().Priority = newStyle == CameraStyle.Combat ? 2 : 1;
 
-        sensitivity = newStyle == CameraStyle.Basic ? normalSensitivity : aimSensitivity;
+        sensitivity = newStyle == CameraStyle.Basic ? PlayerData.Instance.GetSensitivity() : PlayerData.Instance.GetSensitivity() * 0.7f; ;
 
         currentStyle = newStyle;
     }

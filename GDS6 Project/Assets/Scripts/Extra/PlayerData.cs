@@ -28,7 +28,7 @@ public class PlayerData : MonoBehaviour
 
     public float GetSensitivity()
     {
-        return PlayerPrefs.GetFloat(PLAYER_SENSITIVITY_KEY);
+        return PlayerPrefs.GetFloat(PLAYER_SENSITIVITY_KEY, 1);
     }
 
     public void SetSensitivity(float newSens)
