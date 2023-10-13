@@ -14,7 +14,7 @@ public class NightVision : NetworkBehaviour
     {
         if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return;
 
-        if (Input.GetKeyDown(KeyCode.G))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             active = !active;
             nightVision.SetActive(active);

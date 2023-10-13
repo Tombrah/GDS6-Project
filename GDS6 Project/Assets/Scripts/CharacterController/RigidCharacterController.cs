@@ -106,7 +106,6 @@ public class RigidCharacterController : NetworkBehaviour
             {
                 combatCam.Priority = 1;
             }
-            //postProcess.SetActive(true);
 
             if(RobbingManager.Instance != null) RobbingManager.Instance.SetPlayerCamera(TPSCamera);
         }

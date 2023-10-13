@@ -92,12 +92,9 @@ public class LobbyManager : MonoBehaviour
             {
                 lobbyUpdateTimer = 1.1f;
 
-                if (joinedLobby == null) return;
-
                 try
                 {
-                    Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
-                    joinedLobby = lobby;
+                    joinedLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 }
                 catch (LobbyServiceException e)
                 {
@@ -130,15 +127,13 @@ public class LobbyManager : MonoBehaviour
                     { "RelayCode", new DataObject(DataObject.VisibilityOptions.Public, "0", DataObject.IndexOptions.S1) }
                 }
             };
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, lobbyOptions);
-
-            joinedLobby = lobby;
+            joinedLobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, lobbyOptions);
 
             isHost = true;
 
             CreateRelay();
 
-            Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + " " + lobby.Id + " " + lobby.LobbyCode);
+            Debug.Log("Created Lobby! " + joinedLobby.Name + " " + joinedLobby.MaxPlayers + " " + joinedLobby.Id + " " + joinedLobby.LobbyCode);
         }
         catch (LobbyServiceException e)
         {
@@ -196,9 +191,7 @@ public class LobbyManager : MonoBehaviour
                 Player = GetPlayer()
             };
 
-            Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(targetLobby.Id, joinLobbyOptions);
-
-            joinedLobby = lobby;
+            joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(targetLobby.Id, joinLobbyOptions);
 
             JoinRelay(joinedLobby.Data["RelayCode"].Value);
 
@@ -296,7 +289,7 @@ public class LobbyManager : MonoBehaviour
     {
         string readyState = isReady ? "Ready" : "Unready";
 
-        await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions 
+        joinedLobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions 
         {
             Data = new Dictionary<string, PlayerDataObject>
             {

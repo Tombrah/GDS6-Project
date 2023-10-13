@@ -56,6 +56,7 @@ public class CopAbilities : NetworkBehaviour
             {
                 Debug.Log("Found Robber GameObject");
                 GetComponent<TrailFader>().SetTargetMaterial(robber.GetComponentInChildren<TrailRenderer>().material);
+                Debug.Log(robber.GetComponentInChildren<TrailRenderer>().material.name);
             }
         }
         CatchRobber();

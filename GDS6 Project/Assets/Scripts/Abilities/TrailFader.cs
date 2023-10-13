@@ -20,8 +20,9 @@ public class TrailFader : NetworkBehaviour
     {
         if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return; 
 
-        if (Input.GetKeyDown(KeyCode.G) && canFade)
+        if (Input.GetKeyDown(KeyCode.R) && canFade)
         {
+            Debug.Log("Sniffing");
             StartFadeIn();
         }
     }
