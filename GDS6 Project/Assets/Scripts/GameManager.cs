@@ -40,6 +40,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float gamePlayingTimerMax = 90f;
     [SerializeField] private float roundResetTimerMax = 10f;
 
+    [SerializeField] private PauseUi pauseUi;
+
     private int roleId;
     private bool callOnce;
 
@@ -68,10 +70,12 @@ public class GameManager : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsServer)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            return;
+            TogglePause();
         }
+
+        if (!IsServer) return;
 
         switch (state.Value)
         {
@@ -128,10 +132,24 @@ public class GameManager : NetworkBehaviour
                 break;
         }
     }
+
+    private void TogglePause()
+    {
+        if (pauseUi.gameObject.activeSelf)
+        {
+            pauseUi.Hide();
+        }
+        else
+        {
+            pauseUi.Show();
+        }
+    }
+
     public bool IsWaitingToStart()
     {
         return state.Value == State.WaitingToStart;
     }
+
     public bool IsCountdownActive()
     {
         return state.Value == State.CountdownToStart;

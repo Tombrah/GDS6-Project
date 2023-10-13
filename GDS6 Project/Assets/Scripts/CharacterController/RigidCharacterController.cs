@@ -160,15 +160,18 @@ public class RigidCharacterController : NetworkBehaviour
 
     private void Update()
     {
-        if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return;
+        if (!IsOwner) return;
+
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.3f, whatIsGround);
+        animator.SetBool("Grounded", grounded);
+
+        if (!GameManager.Instance.IsGamePlaying()) return;
 
         CheckStun();
 
         MyInput();
         StateHandler();
 
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.3f, whatIsGround);
-        animator.SetBool("Grounded", grounded);
 
         if (OnSlope())
         {
@@ -194,6 +197,12 @@ public class RigidCharacterController : NetworkBehaviour
 
     private void MyInput()
     {
+        if (PauseUi.IsPaused)
+        {
+            movement = Vector2.zero;
+            return;
+        }
+
         movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         if (Input.GetKey(jumpKey) && readyToJump && grounded && !stunned)
@@ -216,6 +225,8 @@ public class RigidCharacterController : NetworkBehaviour
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
         }
+
+        if (Id == 1) return;
 
         if (Input.GetMouseButtonDown(1))
         {

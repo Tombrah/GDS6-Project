@@ -5,17 +5,27 @@ using TMPro;
 
 public class PlayerNameUi : MonoBehaviour
 {
+    private TMP_InputField nameInputField;
+
     private void Start()
     {
+        nameInputField = GetComponent<TMP_InputField>();
+
         LobbyManager.Instance.OnCreateLobbyStarted += LobbyManager_OnCreateLobbyStarted;
         LobbyManager.Instance.OnJoinLobbyStarted += LobbyManager_OnJoinLobbyStarted;
+        nameInputField.onValueChanged.AddListener(delegate { ValueChanged(); });
 
         if (string.IsNullOrWhiteSpace(PlayerData.Instance.GetPlayerName()))
         {
             Hide();
         }
 
-        GetComponent<TMP_InputField>().text = PlayerData.Instance.GetPlayerName();
+        nameInputField.text = PlayerData.Instance.GetPlayerName();
+    }
+
+    private void ValueChanged()
+    {
+        PlayerData.Instance.SetPlayerName(nameInputField.text);
     }
 
     private void LobbyManager_OnJoinLobbyStarted(object sender, System.EventArgs e)
@@ -31,7 +41,7 @@ public class PlayerNameUi : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
-        GetComponent<TMP_InputField>().text = PlayerData.Instance.GetPlayerName();
+        nameInputField.text = PlayerData.Instance.GetPlayerName();
     }
 
     private void Hide()

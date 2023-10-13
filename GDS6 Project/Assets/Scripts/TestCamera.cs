@@ -37,8 +37,14 @@ public class TestCamera : NetworkBehaviour
     {
         if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return;
 
+
         if (combatCam != null)
         {
+            if (PauseUi.IsPaused)
+            {
+                SwitchCameraStyle(CameraStyle.Basic);
+                return;
+            }
             if (Input.GetMouseButtonUp(1)) SwitchCameraStyle(CameraStyle.Basic);
             if (Input.GetMouseButtonDown(1)) SwitchCameraStyle(CameraStyle.Combat);
         }
@@ -46,7 +52,7 @@ public class TestCamera : NetworkBehaviour
 
     private void LateUpdate()
     {
-        if (!IsOwner) return;
+        if (!IsOwner || PauseUi.IsPaused) return;
 
         RotateCamera();
     }
