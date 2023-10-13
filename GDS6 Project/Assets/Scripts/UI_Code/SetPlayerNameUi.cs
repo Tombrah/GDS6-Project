@@ -33,7 +33,6 @@ public class SetPlayerNameUi : MonoBehaviour
         {
             Hide();
         }
-        Debug.Log(PlayerData.Instance.GetPlayerName());
     }
 
     private void Update()

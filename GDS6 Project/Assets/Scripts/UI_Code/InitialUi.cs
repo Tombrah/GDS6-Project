@@ -48,7 +48,6 @@ public class InitialUi : MonoBehaviour
         {
             Hide();
         }
-        Debug.Log(PlayerData.Instance.GetPlayerName());
     }
 
     public void Show()
