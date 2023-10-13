@@ -153,7 +153,7 @@ public class LobbyManager : MonoBehaviour
         {
             QueryLobbiesOptions queryLobbyOptions = new QueryLobbiesOptions
             {
-                Count = 25,
+                Count = 6,
                 Filters = new List<QueryFilter>
                 {
                     new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "0", QueryFilter.OpOptions.GT),

@@ -27,8 +27,8 @@ public class CamoAbility : NetworkBehaviour
         {
             Debug.Log("Going invisible");
             canCamo = false;
-            StartCoroutine(ToggleRendererForDuration(5.0f));
             fillImage.fillAmount = 1;
+            StartCoroutine(ToggleRendererForDuration(5.0f));
             ToggleRendererForDurationServerRpc();
         }
     }

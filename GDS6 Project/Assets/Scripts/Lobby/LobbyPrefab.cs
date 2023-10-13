@@ -9,7 +9,6 @@ using UnityEngine.UI;
 public class LobbyPrefab : MonoBehaviour
 {
     [SerializeField] private TMP_Text lobbyName;
-    [SerializeField] private TMP_Text lobbyPlayers;
 
     private Lobby lobby;
 
@@ -23,7 +22,6 @@ public class LobbyPrefab : MonoBehaviour
         this.lobby = lobby;
 
         lobbyName.text = lobby.Name;
-        lobbyPlayers.text = $"{lobby.Players.Count}/{lobby.MaxPlayers}";
     }
 
     public void JoinLobby()
