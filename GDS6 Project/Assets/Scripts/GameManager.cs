@@ -60,6 +60,13 @@ public class GameManager : NetworkBehaviour
     {
         state.OnValueChanged += State_OnValueChanged;
 
+        StartCoroutine(DelayStart());
+    }
+
+    private IEnumerator DelayStart()
+    {
+        yield return new WaitForSeconds(1);
+
         SetPlayerReadyServerRpc(PlayerData.Instance.GetPlayerName());
     }
 

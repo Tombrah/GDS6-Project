@@ -9,7 +9,6 @@ public class RoundResetUI : MonoBehaviour
 {
     public static RoundResetUI Instance { get; private set; }
 
-    [SerializeField] private CinemachineVirtualCamera cam;
     public TMP_Text[] players;
     [SerializeField] float showcaseSpeed = 3;
 
@@ -43,14 +42,12 @@ public class RoundResetUI : MonoBehaviour
 
     private void Show()
     {
-        cam.Priority = 10;
         gameObject.SetActive(true);
         StartCoroutine(ShowPlayerScores());
     }
 
     private void Hide()
     {
-        cam.Priority = 0;
         gameObject.SetActive(false);
     }
 

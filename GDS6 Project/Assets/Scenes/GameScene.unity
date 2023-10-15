@@ -24010,7 +24010,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f9f5943cb2d7514685a14521995816c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 1115906984}
   players:
   - {fileID: 1926541473}
   - {fileID: 488044796}
@@ -34274,7 +34273,6 @@ MonoBehaviour:
   text: {fileID: 1346889706}
   winLoseText: {fileID: 777537710}
   mainMenuButton: {fileID: 708642370}
-  cam: {fileID: 1115906984}
   showcaseSpeed: 2
   players:
   - {fileID: 849636596}
@@ -36806,6 +36804,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1751981849}
+  - component: {fileID: 1751981850}
   m_Layer: 0
   m_Name: RoundResetCamera
   m_TagString: Untagged
@@ -36830,6 +36829,20 @@ Transform:
   - {fileID: 1115906983}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1751981850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1751981848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5609d0147f042054c8d0c6a75243bba0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 1203587376}
+  vCam: {fileID: 1115906984}
 --- !u!4 &1757555700 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2789088053405751880, guid: 22d47d3ad53c9d641b1a6c070607e7c4, type: 3}
