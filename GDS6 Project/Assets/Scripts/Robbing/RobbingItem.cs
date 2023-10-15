@@ -6,30 +6,29 @@ using TMPro;
 public class RobbingItem : MonoBehaviour
 {
     [SerializeField] private GameObject pointPopup;
-    public bool isQuickTime;
+    public bool isFruitBox;
+    public bool isClothing;
+    public bool isActive;
     public int points;
     private float robTimer = 0.5f;
 
-    public void CreatePopup(GameObject playerCam, bool failed = false)
+    public void CreatePopup(GameObject playerCam)
     {
         GameObject popup = Instantiate(pointPopup, gameObject.transform.position, Quaternion.identity);
         TextMeshProUGUI popupText = popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         PointsPopupAnimator popupAnimation = popup.GetComponentInChildren<PointsPopupAnimator>();
 
         popupText.text = points.ToString();
-        if (failed)
-        {
-            popupText.text = "Failed!";
-        }
+
         popupAnimation.SetPlayerCamera(playerCam);
         Destroy(popup, 1.5f);
     }
 
-    public void SetActiveState(bool isActive, bool isQuickTimeRandom, float quickTimePercentage)
+    public void SetActiveState(bool isActive)
     {
         if (isActive)
         {
-            Show(isQuickTimeRandom, quickTimePercentage);
+            Show();
         }
         else
         {
@@ -37,27 +36,54 @@ public class RobbingItem : MonoBehaviour
         }
     }
 
-    private void Show(bool isQuickTimeRandom, float quickTimePercentage)
+    public void Show()
     {
-        gameObject.SetActive(true);
-        if (isQuickTimeRandom)
+        isActive = true;
+        if (isFruitBox)
         {
-            isQuickTime = Random.value > quickTimePercentage;
+            foreach (Transform child in transform)
+            {
+                child.GetChild(1).gameObject.SetActive(true);
+            }
         }
-
-        if (isQuickTime)
+        else if (isClothing)
         {
-            points = 100;
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                if (i == 0) continue;
+                transform.GetChild(i).gameObject.SetActive(true);
+            }
         }
         else
         {
-            points = 20;
+            gameObject.SetActive(true);
         }
+
+        points = 20;
     }
 
-    private void Hide()
+    public void Hide()
     {
-        gameObject.SetActive(false);
+        isActive = false;
+        if (isFruitBox)
+        {
+            foreach (Transform child in transform)
+            {
+                child.GetChild(1).gameObject.SetActive(false);
+            }
+        }
+        else if (isClothing)
+        {
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                if (i == 0) continue;
+                transform.GetChild(i).gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            gameObject.SetActive(false);    
+        }
     }
 
     public float GetRobTimer()
