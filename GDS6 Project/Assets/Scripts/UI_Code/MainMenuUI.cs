@@ -8,6 +8,7 @@ public class MainMenuUI : MonoBehaviour
     {
         if (Input.anyKeyDown)
         {
+            PlayerPrefs.DeleteAll();
             Loader.Load(Loader.Scene.LobbyScene);
         }
     }

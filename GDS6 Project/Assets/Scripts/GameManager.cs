@@ -11,6 +11,8 @@ public class GameManager : NetworkBehaviour
 
     public event EventHandler OnStateChanged;
 
+    public AudioSource roundsound;
+
     private enum State
     {
         WaitingToStart,

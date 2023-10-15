@@ -6,7 +6,6 @@ using TMPro;
 public class CountdownUI : MonoBehaviour
 {
     private TMP_Text text;
-
     private void Awake()
     {
         text = GetComponent<TMP_Text>();
