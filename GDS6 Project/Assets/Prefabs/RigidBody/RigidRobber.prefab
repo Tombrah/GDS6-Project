@@ -1963,7 +1963,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2500938017339146587}
   - component: {fileID: 2198705458764078740}
-  m_Layer: 4
+  m_Layer: 7
   m_Name: RaccoonV2Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2318,7 +2318,7 @@ MonoBehaviour:
   crosshair: {fileID: 3705082828954694777}
   playerLayer:
     serializedVersion: 2
-    m_Bits: 16
+    m_Bits: 128
 --- !u!1 &7131577790036272988
 GameObject:
   m_ObjectHideFlags: 0
