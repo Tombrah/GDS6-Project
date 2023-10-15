@@ -16,6 +16,8 @@ public class TrailFader : NetworkBehaviour
     [SerializeField] private float abilityDuration = 5;
     [SerializeField] private float rechargeTimer = 10;
 
+    public Animator animator;
+
     private void Update()
     {
         if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return; 
@@ -35,6 +37,7 @@ public class TrailFader : NetworkBehaviour
 
     private IEnumerator FadeIn()
     {
+        animator.SetLayerWeight(animator.GetLayerIndex("Sniffing"), 1);
         float elapsedTime = 0;
         fillImage.fillAmount = 1;
 
@@ -55,6 +58,7 @@ public class TrailFader : NetworkBehaviour
         yield return new WaitForSeconds(abilityDuration);
 
         // Start fading out.
+        animator.SetLayerWeight(animator.GetLayerIndex("Sniffing"), 0);
         StartFadeOut();
     }
 

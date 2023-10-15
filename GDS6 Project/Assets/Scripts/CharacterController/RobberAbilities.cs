@@ -22,6 +22,8 @@ public class RobberAbilities : NetworkBehaviour
     private Coroutine coroutine;
     private bool isRunning = false;
 
+    public Animator animator;
+
     private void Update()
     {
         if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return;
@@ -55,6 +57,7 @@ public class RobberAbilities : NetworkBehaviour
             if (robbingItem != null) robbingItem = null;
             if (isRunning) StopCoroutine(coroutine);
             isRunning = false;
+            animator.SetBool("Stealing", false);
         }
     }
 
@@ -77,25 +80,21 @@ public class RobberAbilities : NetworkBehaviour
             {
                 StopCoroutine(coroutine);
                 isRunning = false;
+                animator.SetBool("Stealing", false);
             }
 
             chargeWheel.SetActive(false);
         }
     }
 
-    private float CalculatePercentageHeight(Transform fillMeter)
-    {
-        float height = fillMeter.GetComponent<RectTransform>().rect.height;
-        return fillMeter.position.y + height / 2 - (height - (height * fillMeter.GetComponent<Image>().fillAmount));
-    }
-
     private IEnumerator Interact()
     {
+        animator.SetBool("Stealing", true);
         isRunning = true;
         chargeWheel.SetActive(true);
         Image wheelImage = chargeWheel.GetComponent<Image>();
         robTimer = robbingItem.GetComponent<RobbingItem>().GetRobTimer();
-
+       
         float percentage = 0;
         while (percentage < 1)
         {
@@ -121,30 +120,8 @@ public class RobberAbilities : NetworkBehaviour
         Debug.Log("Robbing Successful");
 
         isRunning = false;
+        animator.SetBool("Stealing", false);
         yield return null;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Collectable"))
-        {
-            Debug.Log("Can Interact");
-            robbingItem = other.gameObject;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Collectable"))
-        {
-            Debug.Log("Can't Interact");
-            if (coroutine != null)
-            {
-                StopCoroutine(coroutine);
-            }
-            chargeWheel.SetActive(false);
-            robbingItem = null;
-        }
     }
 
     public void CheckRespawnPlayer()

@@ -262,7 +262,6 @@ public class RigidCharacterController : NetworkBehaviour
             state = MovementState.dashing;
             desiredMoveSpeed = dashSpeed;
             speedChangeFactor = dashSpeedChangeFactor;
-            animator.SetTrigger("Dashing");
         }
         //Crouching
         else if (Input.GetKey(crouchKey))

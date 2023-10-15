@@ -29,6 +29,8 @@ public class Dashing : NetworkBehaviour
     [Header("Keybinds")]
     public KeyCode dashKey = KeyCode.E;
 
+    public Animator animator;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -42,6 +44,7 @@ public class Dashing : NetworkBehaviour
         if(Input.GetKeyDown(dashKey))
         {
             Dash();
+            
         }
 
         if(dashCdTimer > 0)
@@ -59,9 +62,11 @@ public class Dashing : NetworkBehaviour
         else
         {
             dashCdTimer = dashCd;
+            animator.SetTrigger("Dashing");
             StartCoroutine(SetDashUi());
         }
             pm.dashing = true;
+        
 
         Transform forwardT;
 
