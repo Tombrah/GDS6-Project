@@ -384,7 +384,7 @@ ModelImporter:
       name: Steal
       takeName: Steal
       internalID: -2080817098074423165
-      firstFrame: 0
+      firstFrame: 30
       lastFrame: 54
       wrapMode: 0
       orientationOffsetY: 0
