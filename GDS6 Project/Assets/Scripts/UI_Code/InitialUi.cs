@@ -9,6 +9,7 @@ public class InitialUi : MonoBehaviour
     [SerializeField] private Button listLobbiesButton;
     [SerializeField] private Button HtpButton;
     [SerializeField] private Button SettingsButton;
+    [SerializeField] private Button QuitButton;
 
     [SerializeField] private GameObject playerNameInput;
     [SerializeField] private GameObject createLobbyUi;
@@ -40,17 +41,27 @@ public class InitialUi : MonoBehaviour
             SettingsUi.SetActive(true);
             Hide();
         });
+        QuitButton.onClick.AddListener(() =>
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
+            Application.Quit();
+        });
     }
 
     private void Start()
     {
-        Show();
+        if (string.IsNullOrWhiteSpace(PlayerData.Instance.GetPlayerName()))
+        {
+            Hide();
+        }
     }
 
     public void Show()
     {
         gameObject.SetActive(true);
-        playerNameInput.SetActive(true);
+        playerNameInput.GetComponent<PlayerNameUi>().Show();
     }
 
     private void Hide()

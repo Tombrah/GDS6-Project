@@ -8,10 +8,7 @@ public class RobbingManager : NetworkBehaviour
     public static RobbingManager Instance { get; private set; }
 
     public List<GameObject> robbingItems;
-    [SerializeField] private int maxActiveItems = 5;
-    [SerializeField] private bool isQuickTimeRandom = true;
-    [Range(0,1), Tooltip("Percentage chance of an object being a quick time event")]
-    [SerializeField] private float quickTimePercentage = 0.75f;
+    [SerializeField] private int maxActiveItems = 10;
 
     private GameObject playerCamera;
 
@@ -23,7 +20,7 @@ public class RobbingManager : NetworkBehaviour
 
         foreach (GameObject item in robbingItems)
         {
-            item.SetActive(false);
+            item.GetComponent<RobbingItem>().Hide();
         }
     }
     public void RespawnAllItems()
@@ -32,14 +29,14 @@ public class RobbingManager : NetworkBehaviour
 
         foreach (GameObject item in robbingItems)
         {
-            item.SetActive(false);
+            item.GetComponent<RobbingItem>().Hide();
         }
         activeCount = 0;
 
         while (activeCount < maxActiveItems)
         {
             int index = Random.Range(0, robbingItems.Count);
-            if (robbingItems[index].activeSelf) continue;
+            if (robbingItems[index].GetComponent<RobbingItem>().isActive) continue;
 
             UpdateItemStateClientRpc(index, true);
             activeCount++;
@@ -58,7 +55,7 @@ public class RobbingManager : NetworkBehaviour
             while (activeCount < maxActiveItems)
             {
                 int index = Random.Range(0, robbingItems.Count);
-                if (robbingItems[index].activeSelf) continue;
+                if (robbingItems[index].GetComponent<RobbingItem>().isActive) continue;
                 if (index == previousIndex) continue;
 
                 UpdateItemStateClientRpc(index, true);
@@ -70,7 +67,7 @@ public class RobbingManager : NetworkBehaviour
     [ClientRpc]
     private void UpdateItemStateClientRpc(int itemIndex, bool setActive)
     {
-        robbingItems[itemIndex].GetComponent<RobbingItem>().SetActiveState(setActive, isQuickTimeRandom,  1 - quickTimePercentage);
+        robbingItems[itemIndex].GetComponent<RobbingItem>().SetActiveState(setActive);
     }
 
     public void SetPlayerCamera(GameObject cam)

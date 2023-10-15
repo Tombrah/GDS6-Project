@@ -106,7 +106,6 @@ public class RigidCharacterController : NetworkBehaviour
             {
                 combatCam.Priority = 1;
             }
-            //postProcess.SetActive(true);
 
             if(RobbingManager.Instance != null) RobbingManager.Instance.SetPlayerCamera(TPSCamera);
         }
@@ -160,15 +159,18 @@ public class RigidCharacterController : NetworkBehaviour
 
     private void Update()
     {
-        if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return;
+        if (!IsOwner) return;
+
+        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.3f, whatIsGround);
+        animator.SetBool("Grounded", grounded);
+
+        if (!GameManager.Instance.IsGamePlaying()) return;
 
         CheckStun();
 
         MyInput();
         StateHandler();
 
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerheight * 0.5f + 0.3f, whatIsGround);
-        animator.SetBool("Grounded", grounded);
 
         if (OnSlope())
         {
@@ -194,6 +196,12 @@ public class RigidCharacterController : NetworkBehaviour
 
     private void MyInput()
     {
+        if (PauseUi.IsPaused)
+        {
+            movement = Vector2.zero;
+            return;
+        }
+
         movement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         if (Input.GetKey(jumpKey) && readyToJump && grounded && !stunned)
@@ -216,6 +224,17 @@ public class RigidCharacterController : NetworkBehaviour
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
         }
+
+        if (Id == 1) return;
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            animator.SetLayerWeight(animator.GetLayerIndex("Aiming"), 1);
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            animator.SetLayerWeight(animator.GetLayerIndex("Aiming"), 0);
+        }
     }
 
     private float desiredMoveSpeed;
@@ -234,7 +253,8 @@ public class RigidCharacterController : NetworkBehaviour
         else if (TPSCamera.GetComponent<TestCamera>().currentStyle == TestCamera.CameraStyle.Combat)
         {
             state = MovementState.aiming;
-            desiredMoveSpeed = crouchSpeed;
+            desiredMoveSpeed = movement != Vector2.zero ? crouchSpeed : 0;
+            
         }
         //Dashing
         else if (dashing)
@@ -374,7 +394,7 @@ public class RigidCharacterController : NetworkBehaviour
     {
         Vector3 inputDirection = new Vector3(movement.x, 0, movement.y).normalized;
 
-        if (movement != Vector2.zero)
+        if (movement != Vector2.zero && TPSCamera.GetComponent<TestCamera>().currentStyle == TestCamera.CameraStyle.Basic)
         {
             targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                               TPSCamera.transform.eulerAngles.y;
@@ -383,6 +403,14 @@ public class RigidCharacterController : NetworkBehaviour
 
             // rotate to face input direction relative to camera position
             transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+        }
+        else if (TPSCamera.GetComponent<TestCamera>().currentStyle == TestCamera.CameraStyle.Combat)
+        {
+            Vector3 shoulder = TPSCamera.transform.position + TPSCamera.transform.forward * 4.5f;
+            Vector3 dirToShoulder = shoulder - new Vector3(TPSCamera.transform.position.x, shoulder.y, TPSCamera.transform.position.z);
+            transform.forward = dirToShoulder;
+            targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                              TPSCamera.transform.eulerAngles.y;
         }
     }
 

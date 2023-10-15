@@ -27,7 +27,7 @@ public class GameManager : NetworkBehaviour
     [HideInInspector] public NetworkList<int> playerRoundScores;
     [HideInInspector] public NetworkList<int> playerScores;
     private Dictionary<ulong, bool> playerReadyDictionary;
-    private Dictionary<ulong, bool> playerJoinDictionary;
+    private Dictionary<ulong, string> playerNameDictionary;
 
     private NetworkVariable<State> state = new NetworkVariable<State>(State.WaitingToStart);
     private NetworkVariable<int> round = new NetworkVariable<int>(0);
@@ -40,6 +40,8 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private float gamePlayingTimerMax = 90f;
     [SerializeField] private float roundResetTimerMax = 10f;
 
+    [SerializeField] private PauseUi pauseUi;
+
     private int roleId;
     private bool callOnce;
 
@@ -51,17 +53,21 @@ public class GameManager : NetworkBehaviour
         playerScores = new NetworkList<int>();
 
         playerReadyDictionary = new Dictionary<ulong, bool>();
-        playerJoinDictionary = new Dictionary<ulong, bool>();
+        playerNameDictionary = new Dictionary<ulong, string>();
     }
 
     public override void OnNetworkSpawn()
     {
         state.OnValueChanged += State_OnValueChanged;
-        if (IsServer)
-        {
-            round.Value = 0;
-        }
-        PlayerJoinedServerRpc();
+
+        StartCoroutine(DelayStart());
+    }
+
+    private IEnumerator DelayStart()
+    {
+        yield return new WaitForSeconds(1);
+
+        SetPlayerReadyServerRpc(PlayerData.Instance.GetPlayerName());
     }
 
     private void State_OnValueChanged(State previousValue, State newValue)
@@ -71,10 +77,12 @@ public class GameManager : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsServer)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            return;
+            TogglePause();
         }
+
+        if (!IsServer) return;
 
         switch (state.Value)
         {
@@ -131,10 +139,24 @@ public class GameManager : NetworkBehaviour
                 break;
         }
     }
+
+    private void TogglePause()
+    {
+        if (pauseUi.gameObject.activeSelf)
+        {
+            pauseUi.Hide();
+        }
+        else
+        {
+            pauseUi.Show();
+        }
+    }
+
     public bool IsWaitingToStart()
     {
         return state.Value == State.WaitingToStart;
     }
+
     public bool IsCountdownActive()
     {
         return state.Value == State.CountdownToStart;
@@ -197,9 +219,10 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void SetPlayerReadyServerRpc(ServerRpcParams serverRpcParams = default)
+    public void SetPlayerReadyServerRpc(string playerName, ServerRpcParams serverRpcParams = default)
     {
         playerReadyDictionary[serverRpcParams.Receive.SenderClientId] = true;
+        playerNameDictionary[serverRpcParams.Receive.SenderClientId] = playerName;
 
         bool allClientsReady = true;
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
@@ -233,9 +256,9 @@ public class GameManager : NetworkBehaviour
                 int index = 0;
                 foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
                 {
-                    if (PlayerData.Instance.GetPlayerNamesDictionary().ContainsKey(clientId))
+                    if (playerNameDictionary.ContainsKey(clientId))
                     {
-                        SetPlayerNameClientRpc(index, PlayerData.Instance.GetPlayerNamesDictionary()[clientId]);
+                        SetPlayerNameClientRpc(index, playerNameDictionary[clientId]);
                         index++;
                     }
                 }
@@ -243,27 +266,6 @@ public class GameManager : NetworkBehaviour
 
             state.Value = State.CountdownToStart;
             countdownTimer.Value = countdownTimerMax;
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void PlayerJoinedServerRpc(ServerRpcParams serverRpcParams = default)
-    {
-        playerJoinDictionary[serverRpcParams.Receive.SenderClientId] = true;
-
-        bool allClientsJoined = true;
-        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
-        {
-            if (!playerJoinDictionary.ContainsKey(clientId) || !playerJoinDictionary[clientId])
-            {
-                allClientsJoined = false;
-                break;
-            }
-        }
-
-        if (allClientsJoined)
-        {
-            CanSetReadyClientRpc();
         }
     }
 
@@ -279,17 +281,6 @@ public class GameManager : NetworkBehaviour
         {
             playerRoundScores[(int)clientId] = score;
         }
-    }
-
-    [ClientRpc]
-    private void CanSetReadyClientRpc()
-    {
-        if (LoadingInformationUi.Instance == null) 
-        {
-            SetPlayerReadyServerRpc();
-            return;
-        }
-        LoadingInformationUi.Instance.canInteract = true;
     }
 
     [ClientRpc]

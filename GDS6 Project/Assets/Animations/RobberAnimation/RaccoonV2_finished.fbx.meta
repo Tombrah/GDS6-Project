@@ -182,7 +182,7 @@ ModelImporter:
       takeName: Jump-start
       internalID: -2019849104917151154
       firstFrame: 0
-      lastFrame: 29
+      lastFrame: 15
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -674,7 +674,7 @@ ModelImporter:
       name: Jump-start (1)
       takeName: Jump-start
       internalID: 2551755860969685564
-      firstFrame: 16
+      firstFrame: 15
       lastFrame: 29
       wrapMode: 0
       orientationOffsetY: 0
@@ -682,7 +682,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0

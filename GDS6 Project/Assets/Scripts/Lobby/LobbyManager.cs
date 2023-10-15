@@ -92,12 +92,9 @@ public class LobbyManager : MonoBehaviour
             {
                 lobbyUpdateTimer = 1.1f;
 
-                if (joinedLobby == null) return;
-
                 try
                 {
-                    Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
-                    joinedLobby = lobby;
+                    joinedLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                 }
                 catch (LobbyServiceException e)
                 {
@@ -111,13 +108,13 @@ public class LobbyManager : MonoBehaviour
     {
         if (playerNameInput.text == "")
         {
-            MessageUi.Instance.ShowMessage("Must input a Name!", true);
+            MessageUi.Instance.ShowMessage("Must input a player name!", true);
             return;
         }
         OnCreateLobbyStarted?.Invoke(this, EventArgs.Empty);
         try
         {
-            if (lobbyName == "") lobbyName = "My Lobby!";
+            if (string.IsNullOrWhiteSpace(lobbyName)) lobbyName = "My Lobby!";
 
             int maxPlayers = 2;
 
@@ -130,15 +127,13 @@ public class LobbyManager : MonoBehaviour
                     { "RelayCode", new DataObject(DataObject.VisibilityOptions.Public, "0", DataObject.IndexOptions.S1) }
                 }
             };
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, lobbyOptions);
-
-            joinedLobby = lobby;
+            joinedLobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, lobbyOptions);
 
             isHost = true;
 
             CreateRelay();
 
-            Debug.Log("Created Lobby! " + lobby.Name + " " + lobby.MaxPlayers + " " + lobby.Id + " " + lobby.LobbyCode);
+            Debug.Log("Created Lobby! " + joinedLobby.Name + " " + joinedLobby.MaxPlayers + " " + joinedLobby.Id + " " + joinedLobby.LobbyCode);
         }
         catch (LobbyServiceException e)
         {
@@ -153,7 +148,7 @@ public class LobbyManager : MonoBehaviour
         {
             QueryLobbiesOptions queryLobbyOptions = new QueryLobbiesOptions
             {
-                Count = 25,
+                Count = 6,
                 Filters = new List<QueryFilter>
                 {
                     new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "0", QueryFilter.OpOptions.GT),
@@ -184,7 +179,7 @@ public class LobbyManager : MonoBehaviour
     {
         if (playerNameInput.text == "")
         {
-            MessageUi.Instance.ShowMessage("Must input a Name!", true);
+            MessageUi.Instance.ShowMessage("Must input a player name!", true);
             return;
         }
         OnJoinLobbyStarted?.Invoke(this, EventArgs.Empty);
@@ -196,9 +191,7 @@ public class LobbyManager : MonoBehaviour
                 Player = GetPlayer()
             };
 
-            Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(targetLobby.Id, joinLobbyOptions);
-
-            joinedLobby = lobby;
+            joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(targetLobby.Id, joinLobbyOptions);
 
             JoinRelay(joinedLobby.Data["RelayCode"].Value);
 
@@ -296,7 +289,7 @@ public class LobbyManager : MonoBehaviour
     {
         string readyState = isReady ? "Ready" : "Unready";
 
-        await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions 
+        joinedLobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions 
         {
             Data = new Dictionary<string, PlayerDataObject>
             {

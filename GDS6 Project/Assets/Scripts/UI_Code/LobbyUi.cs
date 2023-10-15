@@ -69,6 +69,8 @@ public class LobbyUi : MonoBehaviour
 
     private void Update()
     {
+        UpdateReadyUi();
+
         if (previousPlayerCount != LobbyManager.Instance.GetPlayersInLobby().Count)
         {
             UpdatePlayerList();
@@ -131,6 +133,20 @@ public class LobbyUi : MonoBehaviour
         {
             GameObject prefab = Instantiate(playerPrefab, container);
             prefab.GetComponent<PlayerPrefab>().SetName(player.Data["PlayerName"].Value);
+        }
+    }
+
+    private void UpdateReadyUi()
+    {
+        foreach (Player player in LobbyManager.Instance.GetPlayersInLobby())
+        {
+            foreach (Transform prefab in container)
+            {
+                if (prefab.GetComponent<PlayerPrefab>().GetName() == player.Data["PlayerName"].Value)
+                {
+                    prefab.GetComponent<PlayerPrefab>().SetReady(player.Data["ReadyState"].Value);
+                }
+            }
         }
     }
 

@@ -7,6 +7,8 @@ public class CopAbilities : NetworkBehaviour
 {
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private Transform gun;
+    [SerializeField] private Image fillImage;
+    [SerializeField] private GameObject buttonPrompt;
 
     [Header("Cathing")]
     [SerializeField] private float catchRadius = 3;
@@ -35,6 +37,13 @@ public class CopAbilities : NetworkBehaviour
     private Vector3 currentPoint;
     private bool drawLine;
 
+    private Collider[] colliders = new Collider[1];
+    [SerializeField] private Transform interactionPoint;
+    [SerializeField] private float interactionRadius = 0.5f;
+    [SerializeField] private LayerMask robberLayer;
+    [SerializeField] private Animator animator;
+    private int numFound;
+
     private void Start()
     {
         if (IsOwner) zapParticle = GetComponent<RigidCharacterController>().zapParticle;
@@ -55,15 +64,36 @@ public class CopAbilities : NetworkBehaviour
             {
                 Debug.Log("Found Robber GameObject");
                 GetComponent<TrailFader>().SetTargetMaterial(robber.GetComponentInChildren<TrailRenderer>().material);
+                Debug.Log(robber.GetComponentInChildren<TrailRenderer>().material.name);
             }
         }
-        CatchRobber();
+        numFound = Physics.OverlapSphereNonAlloc(interactionPoint.position, interactionRadius, colliders, robberLayer);
+        if (numFound > 0)
+        {
+            if (!buttonPrompt.activeSelf) buttonPrompt.SetActive(true);
+            buttonPrompt.transform.LookAt(playerCamera.transform);
+            if (Input.GetKeyDown(KeyCode.E) && colliders[0].gameObject != null)
+            {
+                animator.SetTrigger("Catch");
+                InteractionManager.Instance.CatchRobberServerRpc();
+            }
+        }
+        else
+        {
+            if (buttonPrompt.activeSelf) buttonPrompt.SetActive(false);
+        }
         ShootTaser();
     }
 
     private void LateUpdate()
     {
         DrawLine();
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(interactionPoint.position, interactionRadius);
     }
 
     private void ShootTaser()
@@ -152,16 +182,15 @@ public class CopAbilities : NetworkBehaviour
     private IEnumerator ResetTaser()
     {
         float percentage = 0;
-        Image progress = GetComponent<RigidCharacterController>().playerUi.transform.GetChild(0).GetComponentInChildren<Image>();
 
         while (percentage < 1)
         {
-            progress.fillAmount = percentage;
+            fillImage.fillAmount = -percentage + 1;
             percentage += Time.deltaTime / ShootCD;
             yield return new WaitForEndOfFrame();
         }
 
-        progress.fillAmount = 1;
+        fillImage.fillAmount = 0;
 
         canShoot = true;
         yield return null;

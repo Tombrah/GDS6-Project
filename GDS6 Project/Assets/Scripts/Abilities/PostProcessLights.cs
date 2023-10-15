@@ -10,8 +10,11 @@ public class PostProcessLights : MonoBehaviour
 
     private void Start()
     {
-        LightSwitchController.Instance.lightOn += Lights_lightOn;
-        LightSwitchController.Instance.lightOff += Lights_lightOff;
+        if (LightSwitchController.Instance != null)
+        {
+            LightSwitchController.Instance.lightOn += Lights_lightOn;
+            LightSwitchController.Instance.lightOff += Lights_lightOff;
+        }
 
         height = transform.localPosition.y;
 

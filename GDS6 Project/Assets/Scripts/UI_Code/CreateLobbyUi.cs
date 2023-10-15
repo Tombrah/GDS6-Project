@@ -31,6 +31,14 @@ public class CreateLobbyUi : MonoBehaviour
         Hide();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            LobbyManager.Instance.CreateLobby(lobbyNameInput.text);
+        }
+    }
+
     private void LobbyManager_OnCreateLobbyStarted(object sender, System.EventArgs e)
     {
         Hide();

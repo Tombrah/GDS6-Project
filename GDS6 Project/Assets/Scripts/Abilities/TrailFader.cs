@@ -7,26 +7,24 @@ public class TrailFader : NetworkBehaviour
 {
     [HideInInspector]
     public Material targetMaterial;
-    private GameObject TrailUi;
     private bool canFade = true;
     private float fadeDuration = 1.0f;
     private float maxAlpha = 1.0f;
     private float currentAlpha = 0.0f;
 
+    [SerializeField] private Image fillImage;
     [SerializeField] private float abilityDuration = 5;
     [SerializeField] private float rechargeTimer = 10;
 
-    private void Start()
-    {
-        TrailUi = GetComponent<RigidCharacterController>().playerUi.transform.GetChild(1).gameObject;
-    }
+    public Animator animator;
 
     private void Update()
     {
         if (!GameManager.Instance.IsGamePlaying() || !IsOwner) return; 
 
-        if (Input.GetKeyDown(KeyCode.G) && canFade)
+        if (Input.GetKeyDown(KeyCode.R) && canFade)
         {
+            Debug.Log("Sniffing");
             StartFadeIn();
         }
     }
@@ -39,8 +37,9 @@ public class TrailFader : NetworkBehaviour
 
     private IEnumerator FadeIn()
     {
+        animator.SetLayerWeight(animator.GetLayerIndex("Sniffing"), 1);
         float elapsedTime = 0;
-        TrailUi.GetComponentInChildren<Image>().fillAmount = 0;
+        fillImage.fillAmount = 1;
 
         while (elapsedTime < fadeDuration)
         {
@@ -59,6 +58,7 @@ public class TrailFader : NetworkBehaviour
         yield return new WaitForSeconds(abilityDuration);
 
         // Start fading out.
+        animator.SetLayerWeight(animator.GetLayerIndex("Sniffing"), 0);
         StartFadeOut();
     }
 
@@ -73,13 +73,13 @@ public class TrailFader : NetworkBehaviour
         float percentage = 0;
         while (percentage < 1)
         {
-            TrailUi.GetComponentInChildren<Image>().fillAmount = percentage;
+            fillImage.fillAmount = -percentage + 1;
 
             percentage += Time.deltaTime / rechargeTimer;
             yield return new WaitForEndOfFrame();
         }
 
-        TrailUi.GetComponentInChildren<Image>().fillAmount = 1;
+        fillImage.fillAmount = 0;
         canFade = true;
         yield return null;
     }

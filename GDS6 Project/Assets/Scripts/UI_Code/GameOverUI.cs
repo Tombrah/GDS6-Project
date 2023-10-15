@@ -12,7 +12,6 @@ public class GameOverUI : MonoBehaviour
     [SerializeField] private Button mainMenuButton;
     public static GameOverUI Instance { get; private set; }
 
-    [SerializeField] private CinemachineVirtualCamera cam;
     [SerializeField] float showcaseSpeed = 2;
     public TMP_Text[] players;
     public Transform[] playerScoreText;
@@ -61,7 +60,6 @@ public class GameOverUI : MonoBehaviour
 
     private void Show()
     {
-        cam.Priority = 10;
         gameObject.SetActive(true);
         mainMenuButton.gameObject.SetActive(false);
         StartCoroutine(ShowPlayerScores());
@@ -69,7 +67,6 @@ public class GameOverUI : MonoBehaviour
 
     private void Hide()
     {
-        cam.Priority = 0;
         gameObject.SetActive(false);
     }
 
@@ -135,7 +132,7 @@ public class GameOverUI : MonoBehaviour
         int index = 0;
         foreach (TMP_Text text in players)
         {
-            if (text.text == PlayerData.Instance.PlayerName)
+            if (text.text == PlayerData.Instance.GetPlayerName())
             {
                 index = System.Array.IndexOf(players, text);
             }
