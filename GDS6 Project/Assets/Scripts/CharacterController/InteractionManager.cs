@@ -7,8 +7,8 @@ public class InteractionManager : NetworkBehaviour
 {
     public static InteractionManager Instance { get; private set; }
 
+    public NetworkVariable<bool> isCaught;
     private bool isStunned;
-    private bool isCaught;
     private bool canStun = true;
     private bool canCatch = true;
 
@@ -26,7 +26,7 @@ public class InteractionManager : NetworkBehaviour
     {
         if (GameManager.Instance.IsRoundResetting())
         {
-            SetIsCaught(false);
+            isCaught.Value = false;
             SetIsStunned(false);
             canCatch = true;
             canStun = true;
@@ -71,22 +71,16 @@ public class InteractionManager : NetworkBehaviour
                 }
             }
 
-            SetCaughtClientRpc(true);
+            isCaught.Value = true;
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void SetCaughtServerRpc(bool caught)
     {
-        SetCaughtClientRpc(caught);
-    }
-
-    [ClientRpc]
-    private void SetCaughtClientRpc(bool caught)
-    {
+        isCaught.Value = caught;
         if (!caught) canCatch = true;
-        else SetIsStunned(false);
-        SetIsCaught(caught);
+        SetStunClientRpc(false);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -108,12 +102,7 @@ public class InteractionManager : NetworkBehaviour
 
     public bool GetIsCaught()
     {
-        return isCaught;
-    }
-
-    public void SetIsCaught(bool caught)
-    {
-        isCaught = caught;
+        return isCaught.Value;
     }
 
     public bool GetIsStunned()

@@ -145,7 +145,6 @@ public class RobberAbilities : NetworkBehaviour
 
             GetComponent<RigidCharacterController>().enabled = true;
             InteractionManager.Instance.SetCaughtServerRpc(false);
-            InteractionManager.Instance.SetIsCaught(false);
         }
     }
 }
