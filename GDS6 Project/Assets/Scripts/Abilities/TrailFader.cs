@@ -15,6 +15,7 @@ public class TrailFader : NetworkBehaviour
     [SerializeField] private Image fillImage;
     [SerializeField] private float abilityDuration = 5;
     [SerializeField] private float rechargeTimer = 10;
+    [SerializeField] private AudioSource sniffAudio;
 
     public Animator animator;
 
@@ -32,6 +33,7 @@ public class TrailFader : NetworkBehaviour
     private void StartFadeIn()
     {
         canFade = false;
+        sniffAudio.Play();
         StartCoroutine(FadeIn());
     }
 
@@ -59,6 +61,7 @@ public class TrailFader : NetworkBehaviour
 
         // Start fading out.
         animator.SetLayerWeight(animator.GetLayerIndex("Sniffing"), 0);
+        sniffAudio.Stop();
         StartFadeOut();
     }
 

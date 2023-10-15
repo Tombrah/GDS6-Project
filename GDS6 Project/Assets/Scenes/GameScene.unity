@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.27740768, g: 0.22751972, b: 0.41588414, a: 1}
+  m_IndirectSpecularColor: {r: 0.27740163, g: 0.22753134, b: 0.41588014, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1219,8 +1219,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 303b703e2d451e646bd7f1f37fba532d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roundsound: {fileID: 0}
-  BGM: {fileID: 0}
+  roundsound: {fileID: 1218838708}
+  BGM: {fileID: 1711430538}
 --- !u!4 &60799406
 Transform:
   m_ObjectHideFlags: 0
@@ -1233,7 +1233,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1218838709}
+  - {fileID: 1711430539}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &62008088
@@ -25184,12 +25186,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1218838707}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 121.18177, y: -109.88535, z: 230.75471}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 60799406}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1220101132 stripped
 GameObject:
@@ -35797,12 +35799,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1711430537}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 171.8018, y: -119.72896, z: 166.84052}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 60799406}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1711515707
 PrefabInstance:
@@ -51907,6 +51909,4 @@ SceneRoots:
   - {fileID: 404465362}
   - {fileID: 1692026363}
   - {fileID: 611465257}
-  - {fileID: 1218838709}
-  - {fileID: 1711430539}
   - {fileID: 60799406}

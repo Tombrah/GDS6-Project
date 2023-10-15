@@ -42,6 +42,7 @@ public class CopAbilities : NetworkBehaviour
     [SerializeField] private float interactionRadius = 0.5f;
     [SerializeField] private LayerMask robberLayer;
     [SerializeField] private Animator animator;
+    [SerializeField] private AudioSource taserSound;
     private int numFound;
 
     private void Start()
@@ -102,6 +103,7 @@ public class CopAbilities : NetworkBehaviour
         {
             drawLine = true;
             canShoot = false;
+            taserSound.Play();
             int layerMask = LayerMask.GetMask("Ignore Raycast");
 
             if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, maxDistance, ~layerMask))
@@ -194,16 +196,5 @@ public class CopAbilities : NetworkBehaviour
 
         canShoot = true;
         yield return null;
-    }
-
-    private void CatchRobber()
-    {
-        if (Input.GetKeyDown(KeyCode.E) && robber != null)
-        {
-            if ((transform.position - robber.transform.GetChild(0).transform.position).sqrMagnitude < catchRadius * catchRadius)
-            {
-                InteractionManager.Instance.CatchRobberServerRpc();
-            }
-        }
     }
 }

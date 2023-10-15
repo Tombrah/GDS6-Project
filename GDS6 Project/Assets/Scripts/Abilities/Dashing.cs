@@ -30,6 +30,7 @@ public class Dashing : NetworkBehaviour
     public KeyCode dashKey = KeyCode.E;
 
     public Animator animator;
+    [SerializeField] private AudioSource dashAudio;
 
     private void Start()
     {
@@ -63,6 +64,7 @@ public class Dashing : NetworkBehaviour
         {
             dashCdTimer = dashCd;
             animator.SetTrigger("Dashing");
+            dashAudio.Play();
             StartCoroutine(SetDashUi());
         }
             pm.dashing = true;

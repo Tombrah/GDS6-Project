@@ -7,6 +7,7 @@ public class NightVision : NetworkBehaviour
 {
     [SerializeField] private GameObject nightVision;
     [SerializeField] private GameObject fillImage;
+    [SerializeField] private AudioSource goggleAudio;
 
     private bool active = false;
 
@@ -17,6 +18,9 @@ public class NightVision : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             active = !active;
+            float pitch = active ? 1 : 0.8f;
+            goggleAudio.pitch = pitch;
+            goggleAudio.Play();
             nightVision.SetActive(active);
             fillImage.SetActive(!active);
         }

@@ -13,6 +13,7 @@ public class RobberAbilities : NetworkBehaviour
     [SerializeField] private float interactionRadius = 0.5f;
     [SerializeField] private float robTimer = 1;
     [SerializeField] private LayerMask interactableMask;
+    [SerializeField] private AudioSource stealAudio;
 
     private readonly Collider[] colliders = new Collider[3];
     private int numFound;
@@ -118,6 +119,7 @@ public class RobberAbilities : NetworkBehaviour
         robbingItem = null;
         chargeWheel.SetActive(false);
         Debug.Log("Robbing Successful");
+        stealAudio.Play();
 
         isRunning = false;
         animator.SetBool("Stealing", false);

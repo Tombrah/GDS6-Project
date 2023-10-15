@@ -55,6 +55,7 @@ public class RigidCharacterController : NetworkBehaviour
     [SerializeField] private CinemachineVirtualCamera combatCam;
 
     [SerializeField] private float stunTimer = 3;
+    [SerializeField] private AudioSource stunAudio;
 
     private Vector2 movement;
     Vector3 moveDirection;
@@ -474,6 +475,8 @@ public class RigidCharacterController : NetworkBehaviour
         stunned = InteractionManager.Instance.GetIsStunned();
         if (stunned && triggerOnce)
         {
+            stunAudio.Play();
+            animator.SetTrigger("Stun");
             StartCoroutine(ResetStun());
             Debug.Log("Stun Coroutine Started");
         }
