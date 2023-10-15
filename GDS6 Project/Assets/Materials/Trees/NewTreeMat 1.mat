@@ -81,11 +81,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: a0202cce5acd58344adf954b2ef9d0a3, type: 3}
+        m_Texture: {fileID: 2800000, guid: 77c6d7dc9a2db8a41b6be41a86af957c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 320f1a43f5638f14197a69ea6550255c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 44eabe509232eba4c842ecc871ba3656, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
