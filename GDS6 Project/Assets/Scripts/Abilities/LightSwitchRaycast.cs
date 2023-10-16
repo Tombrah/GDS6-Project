@@ -71,6 +71,7 @@ public class LightSwitchRaycast : NetworkBehaviour
                 {
                     interactiveObj.InteractSwitchServerRpc();
                 }
+                CrosshairChange(false);
                 buttonPrompt.SetActive(false);
                 Debug.Log("Clicking");
             }
