@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
 using TMPro;
+using Unity.Netcode;
 
 public class GameOverUI : MonoBehaviour
 {
@@ -116,6 +117,7 @@ public class GameOverUI : MonoBehaviour
         }
 
         CheckDidWin();
+        NetworkManager.Singleton.Shutdown();
         mainMenuButton.gameObject.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;

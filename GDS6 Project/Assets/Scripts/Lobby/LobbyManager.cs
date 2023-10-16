@@ -106,7 +106,7 @@ public class LobbyManager : MonoBehaviour
 
     public async void CreateLobby(string lobbyName)
     {
-        if (playerNameInput.text == "")
+        if (string.IsNullOrWhiteSpace(playerNameInput.text))
         {
             MessageUi.Instance.ShowMessage("Must input a player name!", true);
             return;
@@ -177,7 +177,7 @@ public class LobbyManager : MonoBehaviour
 
     public async void JoinLobby(Lobby targetLobby)
     {
-        if (playerNameInput.text == "")
+        if (string.IsNullOrWhiteSpace(playerNameInput.text))
         {
             MessageUi.Instance.ShowMessage("Must input a player name!", true);
             return;
@@ -277,14 +277,6 @@ public class LobbyManager : MonoBehaviour
     {
         if (isHost)
         {
-            try
-            {
-                await LobbyService.Instance.DeleteLobbyAsync(joinedLobby.Id);
-            }
-            catch (LobbyServiceException e)
-            {
-                Debug.Log(e);
-            }
             foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
                 Debug.Log(clientId);
