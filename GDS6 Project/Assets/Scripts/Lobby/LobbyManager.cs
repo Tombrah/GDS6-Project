@@ -273,10 +273,18 @@ public class LobbyManager : MonoBehaviour
         return joinedLobby;
     }
 
-    public void StartGame()
+    public async void StartGame()
     {
         if (isHost)
         {
+            try
+            {
+                await LobbyService.Instance.DeleteLobbyAsync(joinedLobby.Id);
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
             foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
                 Debug.Log(clientId);
