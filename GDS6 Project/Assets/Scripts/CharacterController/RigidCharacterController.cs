@@ -77,6 +77,10 @@ public class RigidCharacterController : NetworkBehaviour
     public GameObject ruleUi;
     public GameObject zapParticle;
 
+    [Header("Footsteps")]
+    public AudioClip LandingAudioClip;
+    public AudioClip[] FootstepAudioClips;
+
     public MovementState state;
     public enum MovementState
     {
@@ -495,5 +499,25 @@ public class RigidCharacterController : NetworkBehaviour
         triggerOnce = true;
 
         Debug.Log("Player is no longer stunned");
+    }
+
+    private void OnFootstep(AnimationEvent animationEvent)
+    {
+        if (animationEvent.animatorClipInfo.weight > 0.5f)
+        {
+            if (FootstepAudioClips.Length > 0)
+            {
+                var index = Random.Range(0, FootstepAudioClips.Length);
+                AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.position, 1);
+            }
+        }
+    }
+
+    private void OnLand(AnimationEvent animationEvent)
+    {
+        if (animationEvent.animatorClipInfo.weight > 0.5f)
+        {
+            AudioSource.PlayClipAtPoint(LandingAudioClip, transform.position, 1);
+        }
     }
 }
