@@ -43,26 +43,6 @@ public class LobbyManager : MonoBehaviour
         Instance = this;
     }
 
-    private async void Start()
-    {
-        if (UnityServices.State != ServicesInitializationState.Initialized)
-        {
-            try
-            {
-                await UnityServices.InitializeAsync();
-
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            }
-            catch (AuthenticationException e)
-            {
-                Debug.Log(e);
-                Debug.Log("Failed to sign in");
-                MessageUi.Instance.ShowMessage("Failed to sign in");
-                MessageUi.Instance.restart = true;
-            }
-        }
-    }
-
     private void Update()
     {
         HandleHeartbeat();
@@ -273,7 +253,7 @@ public class LobbyManager : MonoBehaviour
         return joinedLobby;
     }
 
-    public async void StartGame()
+    public void StartGame()
     {
         if (isHost)
         {
