@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Services.Core;
-using Unity.Services.Authentication;
 
 public class PlayerData : MonoBehaviour
 {
@@ -16,26 +14,6 @@ public class PlayerData : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
-    }
-
-    private async void Start()
-    {
-        if (UnityServices.State != ServicesInitializationState.Initialized)
-        {
-            try
-            {
-                await UnityServices.InitializeAsync();
-
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            }
-            catch (AuthenticationException e)
-            {
-                Debug.Log(e);
-                Debug.Log("Failed to sign in");
-                MessageUi.Instance.ShowMessage("Failed to sign in");
-                MessageUi.Instance.restart = true;
-            }
-        }
     }
 
     public string GetPlayerName()
