@@ -128880,7 +128880,7 @@ MonoBehaviour:
   - {fileID: 966606023}
   roundMax: 4
   countdownTimerMax: 3
-  gamePlayingTimerMax: 60
+  gamePlayingTimerMax: 5
   roundResetTimerMax: 10
   pauseUi: {fileID: 758531560}
 --- !u!23 &4732713579268836060
