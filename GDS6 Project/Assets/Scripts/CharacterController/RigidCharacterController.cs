@@ -219,16 +219,16 @@ public class RigidCharacterController : NetworkBehaviour
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
-        if (Input.GetKey(crouchKey))
-        {
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-            rb.AddForce(Vector3.down, ForceMode.Impulse);
-        }
-
-        if (Input.GetKeyUp(crouchKey))
-        {
-            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-        }
+        //if (Input.GetKey(crouchKey))
+        //{
+        //    transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+        //    rb.AddForce(Vector3.down, ForceMode.Impulse);
+        //}
+        //
+        //if (Input.GetKeyUp(crouchKey))
+        //{
+        //    transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+        //}
 
         if (Id == 1) return;
 
