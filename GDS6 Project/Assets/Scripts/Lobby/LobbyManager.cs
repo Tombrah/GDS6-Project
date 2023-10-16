@@ -62,6 +62,7 @@ public class LobbyManager : MonoBehaviour
             }
         }
 
+        Debug.Log(AuthenticationService.Instance.PlayerId);
         Debug.Log($"Is SignedIn: {AuthenticationService.Instance.IsSignedIn}");
         Debug.Log($"Is Authorized: {AuthenticationService.Instance.IsAuthorized}");
         Debug.Log($"Is Expired: {AuthenticationService.Instance.IsExpired}");
