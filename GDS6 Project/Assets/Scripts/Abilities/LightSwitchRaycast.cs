@@ -9,7 +9,8 @@ public class LightSwitchRaycast : NetworkBehaviour
 {
     [SerializeField] private int rayLength = 5;
     [SerializeField] private Image crosshair;
-    [SerializeField] private LayerMask playerLayer;
+    [SerializeField] private GameObject buttonPrompt;
+    [SerializeField] private LayerMask switchLayer;
 
     private LightSwitchController interactiveObj;
     private RigidCharacterController controller;
@@ -25,21 +26,35 @@ public class LightSwitchRaycast : NetworkBehaviour
 
         Vector3 fwd = transform.TransformDirection(Vector3.forward);
 
-        if(Physics.Raycast(transform.position, fwd, out RaycastHit hit, rayLength, ~playerLayer))
+        if(Physics.Raycast(transform.position, fwd, out RaycastHit hit, rayLength, switchLayer))
         {
             var raycastObj = hit.collider.gameObject.GetComponent<LightSwitchController>();
             if(raycastObj != null)
             {
                 interactiveObj = raycastObj;
-                CrosshairChange(true);
+                if (controller.Id == 0 && !interactiveObj.isLightOn)
+                {
+                    if (!buttonPrompt.activeSelf) buttonPrompt.SetActive(true);
+                    buttonPrompt.transform.LookAt(transform.position);
+                    CrosshairChange(true);
+                }
+
+                if (controller.Id == 1 && interactiveObj.isLightOn)
+                {
+                    if (!buttonPrompt.activeSelf) buttonPrompt.SetActive(true);
+                    buttonPrompt.transform.LookAt(transform.position);
+                    CrosshairChange(true);
+                }
             }
             else
             {
+                if (buttonPrompt.activeSelf) buttonPrompt.SetActive(false);
                 ClearInteraction();
             }
         }
         else
         {
+            if (buttonPrompt.activeSelf) buttonPrompt.SetActive(false);
             ClearInteraction();
         }
 
@@ -56,6 +71,7 @@ public class LightSwitchRaycast : NetworkBehaviour
                 {
                     interactiveObj.InteractSwitchServerRpc();
                 }
+                buttonPrompt.SetActive(false);
                 Debug.Log("Clicking");
             }
         }

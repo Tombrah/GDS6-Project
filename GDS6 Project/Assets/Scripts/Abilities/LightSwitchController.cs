@@ -21,9 +21,12 @@ public class LightSwitchController : NetworkBehaviour
 
     private LightmapData[] darkLightmap, brightLightmap;
 
+    private Animator animator;
+
     private void Awake()
     {
         Instance = this;
+        animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -79,6 +82,7 @@ public class LightSwitchController : NetworkBehaviour
             isLightOn = true;
             lightOnEvent.Invoke();
             lightOn?.Invoke(this, EventArgs.Empty);
+            animator.SetBool("LightOn", true);
             LightmapSettings.lightmaps = brightLightmap;
         }
         else
@@ -86,6 +90,7 @@ public class LightSwitchController : NetworkBehaviour
             isLightOn = false;
             lightOffEvent.Invoke();
             lightOff?.Invoke(this, EventArgs.Empty);
+            animator.SetBool("LightOn", false);
             LightmapSettings.lightmaps = darkLightmap;
         }
     }
