@@ -62,6 +62,20 @@ public class LobbyManager : MonoBehaviour
             }
         }
 
+        if (AuthenticationService.Instance.PlayerId == null)
+        {
+            try
+            {
+                AuthenticationService.Instance.SignOut();
+
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+            catch (AuthenticationException e)
+            {
+                Debug.Log(e);
+            }
+        }
+
         Debug.Log(AuthenticationService.Instance.PlayerId);
         Debug.Log($"Is SignedIn: {AuthenticationService.Instance.IsSignedIn}");
         Debug.Log($"Is Authorized: {AuthenticationService.Instance.IsAuthorized}");
