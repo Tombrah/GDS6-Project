@@ -100,7 +100,14 @@ public class RigidCharacterController : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        SetSpawn();
+        if (GameManager.Instance.IsGamePlaying())
+        {
+
+        }
+        else
+        {
+            SetSpawn();
+        }
 
         if (IsOwner)
         {

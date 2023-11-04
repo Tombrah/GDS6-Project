@@ -22,7 +22,7 @@ public class GameManager : NetworkBehaviour
         GameEnded
     }
 
-    [SerializeField] private Transform[] playerPrefabs;
+    public Transform[] playerPrefabs;
     public List<Transform> playerSpawnPoints;
     public List<Transform> respawnPoints;
 

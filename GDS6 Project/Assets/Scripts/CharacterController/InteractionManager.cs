@@ -7,10 +7,11 @@ public class InteractionManager : NetworkBehaviour
 {
     public static InteractionManager Instance { get; private set; }
 
-    public NetworkVariable<bool> isCaught;
+    public NetworkVariable<bool> canCatch = new NetworkVariable<bool>(true);
     private bool isStunned;
     private bool canStun = true;
-    private bool canCatch = true;
+
+    public NetworkVariable<int> index;
 
     private void Awake()
     {
@@ -20,67 +21,85 @@ public class InteractionManager : NetworkBehaviour
     private void Start()
     {
         GameManager.Instance.OnStateChanged += GameManager_OnStateChanged;
+
+        if (IsServer) index.Value = Random.Range(0, GameManager.Instance.respawnPoints.Count);
     }
 
     private void GameManager_OnStateChanged(object sender, System.EventArgs e)
     {
         if (GameManager.Instance.IsRoundResetting())
         {
-            isCaught.Value = false;
             SetIsStunned(false);
-            canCatch = true;
+            canCatch.Value = true;
             canStun = true;
         }
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            SetIsStunned(true);
-        }
-    }
-
     [ServerRpc(RequireOwnership = false)]
     public void CatchRobberServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        if (canCatch)
-        {
-            ulong senderId = serverRpcParams.Receive.SenderClientId;
-            canCatch = false;
+        if (canCatch.Value == false) return;
 
-            int robberPoints = 0;
-            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
-            {
-                if (clientId != senderId)
-                {
-                    robberPoints = GameManager.Instance.playerRoundScores[(int)clientId];
-                }
-            }
-
-            int copPoints = Mathf.CeilToInt(robberPoints * 0.75f);
-            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
-            {
-                if (clientId == senderId)
-                {
-                    GameManager.Instance.playerRoundScores[(int)clientId] += copPoints;
-                }
-                else
-                {
-                    GameManager.Instance.playerRoundScores[(int)clientId] -= copPoints;
-                }
-            }
-
-            isCaught.Value = true;
-        }
+        SetStunClientRpc(false);
+        ulong senderID = serverRpcParams.Receive.SenderClientId;
+        StartCoroutine(RespawnPlayer(senderID));
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void SetCaughtServerRpc(bool caught)
+    private IEnumerator RespawnPlayer(ulong senderId)
     {
-        isCaught.Value = caught;
-        if (!caught) canCatch = true;
-        SetStunClientRpc(false);
+        canCatch.Value = false;
+        ulong robberId = 0;
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (clientId != senderId)
+            {
+                robberId = clientId;
+                NetworkObject robber = NetworkManager.Singleton.ConnectedClients[robberId].PlayerObject;
+                robber.Despawn();
+            }
+        }
+
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[] { robberId }
+            }
+        };
+
+        float startScore = GameManager.Instance.playerRoundScores[(int)robberId];
+        SetCaughtUiClientRpc(true, robberId, startScore, clientRpcParams);
+        GameManager.Instance.playerRoundScores[(int)senderId] += Mathf.CeilToInt(GameManager.Instance.playerRoundScores[(int)robberId] * 0.70f);
+        GameManager.Instance.playerRoundScores[(int)robberId] = Mathf.CeilToInt(GameManager.Instance.playerRoundScores[(int)robberId] * 0.30f);
+
+        yield return new WaitForSeconds(2);
+
+        while (Vector3.Distance(NetworkManager.Singleton.ConnectedClients[senderId].PlayerObject.transform.position, GameManager.Instance.respawnPoints[index.Value].position) < 40f)
+        {
+            index.Value = Random.Range(0, GameManager.Instance.respawnPoints.Count);
+        }
+
+        Transform player = Instantiate(GameManager.Instance.playerPrefabs[1], GameManager.Instance.respawnPoints[index.Value].position, GameManager.Instance.respawnPoints[index.Value].rotation);
+        player.GetComponent<NetworkObject>().SpawnAsPlayerObject(robberId, true);
+        player.GetComponent<NetworkObject>().ChangeOwnership(robberId);
+
+        SetCaughtUiClientRpc(false, robberId, startScore, clientRpcParams);
+
+
+        index.Value = Random.Range(0, GameManager.Instance.respawnPoints.Count);
+        canCatch.Value = true;
+    }
+
+    [ClientRpc]
+    private void SetCaughtUiClientRpc(bool isActive, ulong robberId, float startScore, ClientRpcParams clientRpcParams = default)
+    {
+        if (isActive)
+        {
+            CaughtUi.Instance.Show(robberId, startScore);
+        }
+        else
+        {
+            CaughtUi.Instance.Hide();
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -98,11 +117,6 @@ public class InteractionManager : NetworkBehaviour
     {
         SetIsStunned(stunned);
         canStun = true;
-    }
-
-    public bool GetIsCaught()
-    {
-        return isCaught.Value;
     }
 
     public bool GetIsStunned()
