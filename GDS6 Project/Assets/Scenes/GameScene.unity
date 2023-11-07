@@ -10086,10 +10086,10 @@ RectTransform:
   - {fileID: 517064553}
   m_Father: {fileID: 1653914407}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: 1.3607}
-  m_SizeDelta: {x: 897.03, y: 502.29}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -0, y: -0.000002503395}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &220279147
 MonoBehaviour:
@@ -120471,10 +120471,10 @@ RectTransform:
   - {fileID: 2143366353}
   m_Father: {fileID: 428792112}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: 1.3607}
-  m_SizeDelta: {x: 897.03, y: 502.29}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1917637597
 MonoBehaviour:
@@ -123333,8 +123333,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8ae533011bc3dc479750778a0bf270b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canCatch:
-    m_InternalValue: 0
   index:
     m_InternalValue: 0
 --- !u!4 &2022217630

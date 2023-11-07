@@ -7,7 +7,7 @@ public class InteractionManager : NetworkBehaviour
 {
     public static InteractionManager Instance { get; private set; }
 
-    public NetworkVariable<bool> canCatch = new NetworkVariable<bool>(true);
+    private bool canCatch = true;
     private bool isStunned;
     private bool canStun = true;
 
@@ -30,14 +30,14 @@ public class InteractionManager : NetworkBehaviour
         if (GameManager.Instance.IsRoundResetting())
         {
             SetIsStunned(false);
-            canCatch.Value = true;
+            canCatch = true;
             canStun = true;
         }
     }
     [ServerRpc(RequireOwnership = false)]
     public void CatchRobberServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        if (canCatch.Value == false) return;
+        if (!canCatch) return;
 
         SetStunClientRpc(false);
         ulong senderID = serverRpcParams.Receive.SenderClientId;
@@ -46,7 +46,8 @@ public class InteractionManager : NetworkBehaviour
 
     private IEnumerator RespawnPlayer(ulong senderId)
     {
-        canCatch.Value = false;
+        Debug.Log("catching...");
+        canCatch = false;
         ulong robberId = 0;
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
         {
@@ -84,9 +85,8 @@ public class InteractionManager : NetworkBehaviour
 
         SetCaughtUiClientRpc(false, robberId, startScore, clientRpcParams);
 
-
         index.Value = Random.Range(0, GameManager.Instance.respawnPoints.Count);
-        canCatch.Value = true;
+        canCatch = true;
     }
 
     [ClientRpc]

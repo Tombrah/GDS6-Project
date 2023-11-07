@@ -102,7 +102,9 @@ public class RigidCharacterController : NetworkBehaviour
     {
         if (GameManager.Instance.IsGamePlaying())
         {
-
+            SetRespawn(InteractionManager.Instance.index.Value);
+            ruleUi.SetActive(false);
+            playerUi.SetActive(true);
         }
         else
         {
@@ -159,6 +161,10 @@ public class RigidCharacterController : NetworkBehaviour
         transform.parent.SetPositionAndRotation(GameManager.Instance.playerSpawnPoints[Id].position, GameManager.Instance.playerSpawnPoints[Id].rotation);
     }
 
+    public void SetRespawn(int index)
+    {
+        transform.parent.SetPositionAndRotation(GameManager.Instance.respawnPoints[index].position, GameManager.Instance.respawnPoints[index].rotation);
+    }
 
     private void GameManager_OnStateChanged(object sender, System.EventArgs e)
     {
