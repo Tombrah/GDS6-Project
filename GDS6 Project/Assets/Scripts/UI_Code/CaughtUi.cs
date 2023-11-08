@@ -29,7 +29,7 @@ public class CaughtUi : MonoBehaviour
     public void Show(ulong clientId, float startScore)
     {
         gameObject.SetActive(true);
-        StartCoroutine(DeductPoints(clientId, startScore));
+        StartCoroutine(DeductPoints(startScore));
     }
 
     public void Hide()
@@ -37,10 +37,10 @@ public class CaughtUi : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private IEnumerator DeductPoints(ulong clientId, float startScore)
+    private IEnumerator DeductPoints(float startScore)
     {
         float percentage = 0;
-        float newPoints = startScore * 0.30f;
+        float newPoints = startScore * 0.25f;
         while (percentage < 1)
         {
             string score = ((int)Mathf.Lerp(startScore, newPoints, percentage)).ToString();
@@ -50,7 +50,7 @@ public class CaughtUi : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        text.text = newPoints.ToString();
+        text.text = "Points: " + newPoints;
         yield return null;
     }
 }

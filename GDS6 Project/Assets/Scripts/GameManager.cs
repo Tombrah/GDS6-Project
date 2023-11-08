@@ -114,8 +114,11 @@ public class GameManager : NetworkBehaviour
                 {
                     foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
                     {
-                        NetworkObject player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
-                        player.Despawn();
+                        if (NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject != null)
+                        {
+                            NetworkObject player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+                            player.Despawn();
+                        }
                     }
 
                     callOnce = true;

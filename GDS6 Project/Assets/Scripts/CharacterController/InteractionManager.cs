@@ -69,8 +69,8 @@ public class InteractionManager : NetworkBehaviour
 
         float startScore = GameManager.Instance.playerRoundScores[(int)robberId];
         SetCaughtUiClientRpc(true, robberId, startScore, clientRpcParams);
-        GameManager.Instance.playerRoundScores[(int)senderId] += Mathf.CeilToInt(GameManager.Instance.playerRoundScores[(int)robberId] * 0.70f);
-        GameManager.Instance.playerRoundScores[(int)robberId] = Mathf.CeilToInt(GameManager.Instance.playerRoundScores[(int)robberId] * 0.30f);
+        GameManager.Instance.playerRoundScores[(int)senderId] += Mathf.CeilToInt(GameManager.Instance.playerRoundScores[(int)robberId] * 0.75f);
+        GameManager.Instance.playerRoundScores[(int)robberId] = Mathf.CeilToInt(GameManager.Instance.playerRoundScores[(int)robberId] * 0.25f);
 
         yield return new WaitForSeconds(2);
 
