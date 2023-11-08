@@ -75,6 +75,7 @@ public class LobbyUi : MonoBehaviour
         {
             UpdatePlayerList();
             previousPlayerCount = LobbyManager.Instance.GetPlayersInLobby().Count;
+            readyButton.gameObject.SetActive(LobbyManager.Instance.GetPlayersInLobby().Count == 2);
         }
 
         bool allPlayersReady = true;
@@ -157,6 +158,7 @@ public class LobbyUi : MonoBehaviour
         isLocalPlayerReady = false;
         lobbyName.text = LobbyManager.Instance.GetJoinedLobby().Name;
         previousPlayerCount = 0;
+        readyButton.gameObject.SetActive(false);
     }
 
     private void Hide()
