@@ -16,7 +16,7 @@ public class PlayerPointRoundUi : NetworkBehaviour
 
     private void Start()
     {
-        round.text = (GameManager.Instance.GetRoundNumber() + 1) + "/4";
+        round.text = (GameManager.Instance.GetRoundNumber()) + "/4";
         points.text = GameManager.Instance.playerRoundScores[(int)OwnerClientId].ToString();
     }
 

@@ -74,6 +74,12 @@ public class InteractionManager : NetworkBehaviour
 
         yield return new WaitForSeconds(2);
 
+        if (!GameManager.Instance.IsGamePlaying())
+        {
+            SetCaughtUiClientRpc(false, robberId, startScore, clientRpcParams);
+            yield return null;
+        }
+
         while (Vector3.Distance(NetworkManager.Singleton.ConnectedClients[senderId].PlayerObject.transform.position, GameManager.Instance.respawnPoints[index.Value].position) < 40f)
         {
             index.Value = Random.Range(0, GameManager.Instance.respawnPoints.Count);
