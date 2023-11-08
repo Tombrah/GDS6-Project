@@ -43,7 +43,8 @@ public class CaughtUi : MonoBehaviour
         float newPoints = startScore * 0.30f;
         while (percentage < 1)
         {
-            text.text = ((int)Mathf.Lerp(startScore, newPoints, percentage)).ToString();         
+            string score = ((int)Mathf.Lerp(startScore, newPoints, percentage)).ToString();
+            text.text = "Points: " + score;          
 
             percentage += Time.deltaTime / 1;
             yield return new WaitForEndOfFrame();
