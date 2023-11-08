@@ -104,7 +104,6 @@ public class RigidCharacterController : NetworkBehaviour
         {
             SetRespawn(InteractionManager.Instance.index.Value);
             ruleUi.SetActive(false);
-            playerUi.SetActive(true);
         }
         else
         {
@@ -122,10 +121,13 @@ public class RigidCharacterController : NetworkBehaviour
             }
 
             if(RobbingManager.Instance != null) RobbingManager.Instance.SetPlayerCamera(TPSCamera);
+
+            playerUi.SetActive(GameManager.Instance.IsGamePlaying());
         }
         else
         {
             ruleUi.SetActive(false);
+            playerUi.SetActive(false);
         }
     }
 
