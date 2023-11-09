@@ -6,7 +6,6 @@ public class AudioManager : MonoBehaviour
 
 {
     public AudioSource roundsound;
-    public AudioSource BGM;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,20 +17,7 @@ public class AudioManager : MonoBehaviour
         if(GameManager.Instance.IsCountdownActive())
         {
             roundsound.Play();
-        }
-        else if(GameManager.Instance.IsGamePlaying())
-        {
-            if(!BGM.isPlaying)
-            {
-                BGM.Play();
-            }
-            
-        }    
+        } 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
